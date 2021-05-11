@@ -1,6 +1,6 @@
 import pytest
 from random import randint
-from MinMaxObj import Min, Max, MinMax
+from MinMax import Min, Max, MinMax
 
 def test_min_class():
     for i in range(100):
@@ -48,7 +48,11 @@ def test_minmax_function():
         assert obj.minimum == min1
         assert obj.maximum == max1
         minIndex,maxIndex = arr.index(min1), arr.index(max1)
-        print(minIndex,maxIndex)
+        print(f"minIndex {minIndex}")
+        print(f"maxIndex {maxIndex}")
+        print(f"obj.minindex {obj.minindex}")
+        print(f"obj.maxindex {obj.maxindex}")
+        print(arr)
         assert obj.minindex == minIndex
         assert obj.maxindex == maxIndex
 

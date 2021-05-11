@@ -63,8 +63,8 @@ class MinMax:
             n -= 1
         for i in range(0,n,2):
             if arr[i+1] > arr[i]:
-                maximum, minindex = arr[i+1], i + 1
-                minimum, maxindex = arr[i], i
+                maximum, maxindex = arr[i+1], i + 1
+                minimum, minindex = arr[i], i
             else:
                 minimum, minindex = arr[i+1], i + 1
                 maximum, maxindex = arr[i], i
