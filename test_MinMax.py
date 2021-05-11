@@ -44,17 +44,22 @@ def test_minmax_function():
         obj.get(arr)
         assert obj.array == arr
         min1,max1 = min(arr),max(arr)
-        print(min1,max1)
-        assert obj.minimum == min1
-        assert obj.maximum == max1
+        assert obj.min_value == min1
+        assert obj.max_value == max1
         minIndex,maxIndex = arr.index(min1), arr.index(max1)
-        print(f"minIndex {minIndex}")
-        print(f"maxIndex {maxIndex}")
-        print(f"obj.minindex {obj.minindex}")
-        print(f"obj.maxindex {obj.maxindex}")
-        print(arr)
-        assert obj.minindex == minIndex
-        assert obj.maxindex == maxIndex
+        assert obj.min_index == minIndex
+        assert obj.max_index == maxIndex
+
+def test_empty_array():
+    arr = []
+    minobj = Min()
+    maxobj = Max()
+    minobj.get(arr)
+    maxobj.get(arr)
+    assert minobj.value == None
+    assert maxobj.value == None
+    assert maxobj.index == None
+    assert minobj.index == None
 
 
 
