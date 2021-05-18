@@ -1,6 +1,36 @@
 import pytest
+from time import time
 from random import randint
 from MinMax import Min, Max, MinMax
+from funcs import min_get, max_get, minmax_get
+
+def gen_array(n):
+    arr = []
+    for _ in range(n):
+        for _ in range(n):
+            arr.append(randint(1,n*n))
+    return arr
+
+def gen_arrays(start=10,stop=350,step=8):
+    for x in range(start,stop,step):
+        yield [randint(-300,300) for i in range(x)]
+
+def test_max_get():
+    arr = gen_array(100)
+    mx_val,mx_ind = max_get(arr)
+    max_tuple,min_tuple = minmax_get(arr)
+    assert max(arr) == mx_val
+    assert max_tuple == (mx_val,mx_ind)
+    assert arr[mx_ind] == mx_val
+
+def test_min_get():
+    arr = gen_array(100)
+    min_val,min_ind = min_get(arr)
+    max_tuple,min_tuple = minmax_get(arr)
+    assert min_tuple == (min_val,min_ind)
+    assert min(arr) == min_val
+    assert arr[min_ind] == min_val
+
 
 def test_min_class():
     for i in range(100):
@@ -60,9 +90,3 @@ def test_empty_array():
     assert maxobj.value == None
     assert maxobj.index == None
     assert minobj.index == None
-
-
-
-def gen_arrays(start=10,stop=350,step=8):
-    for x in range(start,stop,step):
-        yield [randint(-300,300) for i in range(x)]

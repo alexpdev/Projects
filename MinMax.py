@@ -63,6 +63,7 @@ class Max:
     def indmax(self):
         return (self.max_index,self.max_value)
 
+
     def get(self,arr):
         max_, max_i, n = -sys.maxsize, 0, len(arr)
         if n == 0: return
