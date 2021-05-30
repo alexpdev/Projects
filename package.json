@@ -1,7 +1,7 @@
 {
   "name": "minmax-aspdev",
   "displayName": "MinMaxObj",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Min and Max functions and classes for python",
   "longDescription": "Expands on the builtin min and max functions for python. Provides objects that store the value and index of the minimum and/or maximum elements.",
   "keywords": ["arrays","algorithm","minimum","maximum"],
