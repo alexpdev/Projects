@@ -26,5 +26,5 @@ output = '''MinMaxObj  Copyright (C) 2021  alexpdev
     This is free software, and you are welcome to redistribute it
     under certain conditions; type 'show c' for details.'''
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 print("version:",__version__,"\n",output)
