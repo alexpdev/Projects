@@ -1,8 +1,31 @@
-### MinMaxObj
+# MinMaxObj
 
-Classes and functions that extend python's built in `min()` and `max()` functions.
+![Python](https://img.shields.io/badge/python-3.3%2B-green)
+![License](https://img.shields.io/badge/GNU%20LGPL-blue)
 
-#### Classes
+MinMaxObj is a utility library containing classes and functions that extend python's built in `min()` and `max()` functions.
+
+## Requires
+
+- Python 3+
+- pip
+
+## Installing
+
+```Windows:
+pip install MinMaxObj-alexpdev
+```
+
+## Usage
+
+Import the module into your source code as needed.
+
+```python:
+import MinMaxObj
+from MinMaxObj import get_min, Max, MinMax
+```
+
+## Classes
 
 - Min
   - requires an iterable sequence to construct
@@ -17,7 +40,7 @@ Classes and functions that extend python's built in `min()` and `max()` function
   - stores the minimum and maximum values
   - stores the minimum and maximum value indeces
 
-#### Functions
+## Functions
 
 - min_get
   - requires and iterable sequence as arguement
@@ -29,6 +52,6 @@ Classes and functions that extend python's built in `min()` and `max()` function
   - requires and iterable sequence as arguement
   - calculates and returns minimum and maximum values and their indeces
 
-### Usage
+## License
 
-> todo later.
+GNU Lesser General Public License v3.0

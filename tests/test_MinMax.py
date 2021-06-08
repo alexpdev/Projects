@@ -22,41 +22,41 @@ import os
 import sys
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0,BASE)
-import pytest
+sys.path.insert(0, BASE)
 import random
 from time import time
-from MinMax import (
-    Min,
-    Max,
-    MinMax,
-    min_get,
-    max_get,
-    minmax_get,
-    InputError,
-    EmptySequenceError)
+
+import pytest
+
+from MinMax import (EmptySequenceError, InputError, Max, Min, MinMax, max_get, min_get,
+                    minmax_get)
+
 
 def timer(func):
     """Decorate functions to calculate the time taken to run and return."""
+
     def wrapper(*args, **kwargs):
         print(func.__name__)
         then = time()
-        result = func(*args,**kwargs)
+        result = func(*args, **kwargs)
         now = time()
 
-        print(f'completed in {now - then} seconds')
+        print(f"completed in {now - then} seconds")
         return result
+
     return wrapper
+
 
 def array_gen():
     for size in range(100, 20000, 100):
         seq = []
         while size > 0:
-            sm, lg = random.randint(-1000,0), random.randint(0,7000)
+            sm, lg = random.randint(-1000, 0), random.randint(0, 7000)
             elem = random.randint(sm, lg)
             seq.append(elem)
             size -= 1
         yield seq
+
 
 @timer
 def test_min_speed():
@@ -68,6 +68,7 @@ def test_min_speed():
         mins.append([m, i])
     return True
 
+
 @timer
 def test_min_get_speed():
     mins = []
@@ -77,8 +78,8 @@ def test_min_get_speed():
         mins.append(struc)
     return True
 
-class TestMinMaxFunctions:
 
+class TestMinMaxFunctions:
     @timer
     def test_max_get(self):
         for seq in [[], ""]:
@@ -86,11 +87,11 @@ class TestMinMaxFunctions:
         for var in [None, 7, True, False, 0]:
             assert pytest.raises(InputError, max_get, var)
         for seq in array_gen():
-            max_val,max_ind = max_get(seq)
+            max_val, max_ind = max_get(seq)
             assert max_val == max(seq)
             assert seq[max_ind] == max_val
         for seq in [[3], (3,)]:
-            max_val,max_ind = max_get(seq)
+            max_val, max_ind = max_get(seq)
             assert max_val == max(seq)
             assert max_val == 3
             assert seq[max_ind] == max_val
@@ -142,9 +143,7 @@ class TestMinMaxFunctions:
         return True
 
 
-
 class TestMinMaxClasses:
-
     @timer
     def test_Min(self):
         for seq in [{}, [], set()]:
@@ -155,7 +154,7 @@ class TestMinMaxClasses:
             min_ = Min(seq)
             assert min_.value == min(seq)
             assert seq[min_.index] == min_.value
-        for seq in [ [3],  (3,)]:
+        for seq in [[3], (3,)]:
             min_ = Min(seq)
             assert min_.value == min(seq)
             assert min_.value == 3
@@ -174,7 +173,7 @@ class TestMinMaxClasses:
             max_ = Max(seq)
             assert max_.value == max(seq)
             assert seq[max_.index] == max_.value
-        for seq in [ [3],  (3,)]:
+        for seq in [[3], (3,)]:
             max_ = Max(seq)
             assert max_.value == max(seq)
             assert max_.value == 3
@@ -195,7 +194,7 @@ class TestMinMaxClasses:
             assert seq[minmax.min_index] == minmax.min_value
             assert minmax.max_value == max(seq)
             assert seq[minmax.max_index] == minmax.max_value
-        for seq in [ [3],  (3,)]:
+        for seq in [[3], (3,)]:
             minmax = MinMax(seq)
             assert minmax.min_value == min(seq)
             assert minmax.min_value == 3
@@ -209,10 +208,12 @@ class TestMinMaxClasses:
             assert minmax.min_index == 0
         return True
 
+
 def conf(func):
     assert func() == True
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     classes = TestMinMaxClasses()
     funcs = TestMinMaxFunctions()
     tests = [
@@ -223,6 +224,6 @@ if __name__ == '__main__':
         classes.test_Min,
         classes.test_MinMax,
         test_min_speed,
-        test_min_get_speed
+        test_min_get_speed,
     ]
     map(lambda x: conf(x), tests)

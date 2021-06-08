@@ -19,7 +19,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ############################################################################
 
-"""Objects and functions that provide a more robust way obtain min and max.
+"""
+Objects and functions that provide a more robust way obtain min and max.
 
 Functions and Classes that help deal with minimum and maximum
 values in an array or sequence.
@@ -283,7 +284,7 @@ def max_get(seq):
         seq list/dict/tuple/set: any iterable sequence
 
     - Returns:
-        (sny,int) : (max_value, max_index)
+        (any,int) : (max_value, max_index)
     """
     if not hasattr(seq, "__len__"):
         raise InputError
