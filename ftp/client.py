@@ -1,9 +1,8 @@
 #! /usr/bin/python3
 # -*- coding: utf-8 -*-
 
+import os
 from ftplib import FTP
-import logging
-
 
 class Client:
 
@@ -89,3 +88,50 @@ class Client:
     def user(self,user=None,passwd=None):
         self._user = user
         self._passwd = passwd
+
+    def size(self,fp,*args,**kwargs):
+        ftp = self.get_client()
+        return ftp.size(fp,*args,**kwargs)
+
+    def ftype(self,mode=None):
+        if not mode:
+            print(self._mode)
+            return self._mode
+        self._mode = mode
+
+    def get(self, src, dest=None):
+        client = self.get_client()
+        if not dest:
+            name = os.path.split(src)[-1]
+            dest = os.path.join(os.getcwd(),name)
+        if self._mode == "ascii":
+            with open(dest,"wt") as textfile:
+                client.retrlines(f'RETR {src}',textfile.write)
+        else:
+            with open(dest,"wb") as binfile:
+                client.retrbinary(f"RETR {src}", binfile.write)
+        print("transfer complete")
+        return client.close()
+
+    def mget(self,lst):
+        for path in lst:
+            self.get(path)
+        return
+
+    def put(self, src, dest=None):
+        client = self.get_client()
+        data = open(src, 'rt')
+        if not dest:
+            name = os.path.split(src)[-1]
+            dest = os.path.join(os.getcwd(),name)
+        if self._mode == "ascii":
+            client.storlines(f'STOR {data}',dest)
+        else:
+            client.storbinary("STOR {data}", dest)
+        print("completed transfer")
+        return client.close()
+
+    def mput(self,srclst,*args,**kwargs):
+        for path in srclst:
+            self.put(path,None)
+        return
