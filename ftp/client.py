@@ -3,8 +3,12 @@
 
 import os
 from ftplib import FTP
+import logging
 
 class Client:
+    """
+     FTP Client Implementation
+    """
 
     def __init__(self,host=None,port=None,user=None,
                     passwd=None,source=None,encoding="utf-8"):
@@ -16,6 +20,13 @@ class Client:
         self._encoding = encoding
         self._mode = "bin"
         self._remote = "."
+
+    def open(self,host,port=21):
+        self._host = host
+        self._port = port
+
+    def set_local_path(self,path):
+        self._source = path
 
     def cd(self,path=None):
         if path is None:
@@ -100,18 +111,18 @@ class Client:
         self._mode = mode
 
     def get(self, src, dest=None):
-        client = self.get_client()
+        ftp = self.get_client()
         if not dest:
             name = os.path.split(src)[-1]
             dest = os.path.join(os.getcwd(),name)
         if self._mode == "ascii":
             with open(dest,"wt") as textfile:
-                client.retrlines(f'RETR {src}',textfile.write)
+                ftp.retrlines(f'RETR {src}',textfile.write)
         else:
             with open(dest,"wb") as binfile:
-                client.retrbinary(f"RETR {src}", binfile.write)
+                ftp.retrbinary(f"RETR {src}", binfile.write)
         print("transfer complete")
-        return client.close()
+        return ftp.close()
 
     def mget(self,lst):
         for path in lst:
@@ -119,17 +130,17 @@ class Client:
         return
 
     def put(self, src, dest=None):
-        client = self.get_client()
+        ftp = self.get_client()
         data = open(src, 'rt')
         if not dest:
             name = os.path.split(src)[-1]
             dest = os.path.join(os.getcwd(),name)
         if self._mode == "ascii":
-            client.storlines(f'STOR {data}',dest)
+            ftp.storlines(f'STOR {data}',dest)
         else:
-            client.storbinary("STOR {data}", dest)
+            ftp.storbinary("STOR {data}", dest)
         print("completed transfer")
-        return client.close()
+        return ftp.close()
 
     def mput(self,srclst,*args,**kwargs):
         for path in srclst:

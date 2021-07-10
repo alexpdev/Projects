@@ -1,20 +1,19 @@
 import os
-import sys
-from ftplib import FTP, error_perm
 from time import time
+from ftplib import FTP, error_perm
 import dotenv
+dotenv.load_environment()
+assert os.environ.get('ENVTEST') == 1
 
 then = time()
-
-local = "/home/asp/HDisk/sync"
-remote = "/storage/downloads/rtorrent"
-
 host = os.environ.get("HOST")
 port = int(os.environ.get("PORT"))
 auth = os.environ.get("AUTH")
-user = "alexpdev"
-client = FTP()
+user = os.environ.get("USER")
+remote = os.environ.get("REMOTE")
+local = os.environ.get("LOCAL")
 
+client = FTP()
 
 def syncremote(client,remote,local):
     contents = os.listdir(local)
