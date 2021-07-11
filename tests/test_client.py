@@ -7,7 +7,7 @@ LOAD_ENVIRONMENT_VARIABLES()
 from ftp.client import Client
 
 class TestClient:
-
+    env = os.environ
     user = os.environ.get("user")
     passwd = os.environ.get("passwd")
     host = os.environ.get("host")
@@ -35,6 +35,9 @@ class TestClient:
     def test_init_with_args(self):
         ftp = Client(host=self. host,user=self.user,
                     passwd=self.passwd, port=self.port)
+        print(ftp._user)
+        print(ftp._host)
+        print(ftp._user)
         assert ftp._host == self.host
         assert ftp._port == self.port
         assert ftp._user == self.user

@@ -49,7 +49,7 @@ class Client:
 
     def ls(self,path=None):
         if not path:
-            path = "."
+            path = self._remote
         ftp = self.get_client()
         ftp.dir(path)
         lst = ftp.nlst(path)
@@ -61,7 +61,9 @@ class Client:
             self._port = 21
         ftp = FTP()
         ftp.connect(host=self._host,port=self._port)
+        print("Connect Successfull")
         ftp.login(user=self._user,passwd=self._passwd)
+        print("Login Successfull")
         ftp.cwd(self._remote)
         return ftp
 

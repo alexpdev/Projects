@@ -4,6 +4,8 @@ import inspect
 
 development = False
 
+env = os.environ
+
 class NoDotenv(Exception):
     pass
 
@@ -17,12 +19,19 @@ def load_env(path):
             key, val = split
             os.putenv(key, val)
 
+def path_to_file():
+    mfile = Path(inspect.stack()[1].filename)
+    return mfile
+
+
 def discover():
     mfile = Path(inspect.stack()[1].filename)
+    cwd = Path(".").resolve()
     hierarchy = list(mfile.parents)
     for parent in hierarchy:
         if ".env" in os.listdir(parent):
-            return load_env(parent / ".env")
+            load_env(parent / ".env")
+            break
     os.putenv("ENVTEST","1")
 
 LOAD_ENVIRONMENT_VARIABLES = discover
