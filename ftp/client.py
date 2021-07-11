@@ -10,31 +10,40 @@ class Client:
      FTP Client Implementation
     """
 
-    def __init__(self,host=None,port=None,user=None,
-                    passwd=None,source=None,encoding="utf-8"):
+    def __init__(self, host=None, port=None, user=None, passwd=None):
         self._host = host
         self._port = port
         self._user = user
         self._passwd = passwd
-        self._source = source
-        self._encoding = encoding
         self._mode = "bin"
-        self._remote = "."
+        self._local_path = "."
+        self._remote_path = "."
 
     def open(self,host,port=21):
         self._host = host
         self._port = port
 
-    def set_local_path(self,path):
-        self._source = path
+    def set_local_path(self, path):
+        self._local_path = path
 
-    def cd(self,path=None):
-        if path is None:
-            self.ls()
-        if path[0] == "/":
-            self._remote = path
+    def cd(self, path=None):
+        if not path:
+            return
+
+        if path.startswith(".."):
+            self.cdup()
+            if len(path) == 2:
+                return
+            path = path[3:]
+
+        if path[0] == "/" or path[0] == "\\":
+            self._remote_path = path
+
         else:
-            self._remote += "/" + path
+            self._remote_path += "/" + path
+
+    def cdup(self):
+        self._remote_path = os.path.split(self._remote_path)[0]
 
     def append(self,txt,local):
         with open(local,"ta") as fp:
@@ -47,6 +56,14 @@ class Client:
     def set_binary(self):
         self._mode = "bin"
 
+    def set_mode(self, mode):
+        text_mode = ["t", "a", "ascii", "text"]
+        bin_mode = ["b", "bin", "bytes", "binary"]
+        if mode in text_mode:
+            self.set_ascii()
+        elif mode in bin_mode:
+            self.set_binary()
+
     def ls(self,path=None):
         if not path:
             path = self._remote
@@ -55,6 +72,8 @@ class Client:
         lst = ftp.nlst(path)
         ftp.close()
         return lst
+
+    lst = ls
 
     def get_client(self):
         if not self._port:
@@ -67,8 +86,13 @@ class Client:
         ftp.cwd(self._remote)
         return ftp
 
+    def close(self):
+        print("Connection Closed Successfully")
+        return
+
+
     def disconnect(self):
-        """Not Implemented"""
+        return self.close()
 
     def bye(self):
         return self.disconnect()
