@@ -17,12 +17,11 @@ def load_env(path):
         split = line.split("=")
         if len(split) == 2:
             key, val = split
-            os.putenv(key, val)
+            os.environ[key] = val
 
 def path_to_file():
-    mfile = Path(inspect.stack()[1].filename)
+    mfile = inspect.stack()[1].filename
     return mfile
-
 
 def discover():
     mfile = Path(inspect.stack()[1].filename)
