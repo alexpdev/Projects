@@ -2,7 +2,7 @@ import sys
 import os
 from os.path import abspath, dirname
 sys.path.insert(0,dirname(dirname(abspath(__file__))))
-from dotenv import LOAD_ENVIRONMENT_VARIABLES
+from ftp.dotenv import LOAD_ENVIRONMENT_VARIABLES
 LOAD_ENVIRONMENT_VARIABLES()
 from ftp.client import Client
 

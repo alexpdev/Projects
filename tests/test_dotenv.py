@@ -3,20 +3,10 @@ import os
 from os.path import abspath, dirname
 sys.path.insert(0,dirname(dirname(abspath(__file__))))
 
-import dotenv
+from ftp import dotenv
 
-try:
-    from tests._env import user, passwd, host
-except ImportError:
-    user = "user"
-    passwd = "pass"
-    host = "host"
 
 class TestDotenv:
-
-    user = user
-    passwd = passwd
-    host = host
 
     def test_get_caller_path(self):
         path = dotenv.path_to_file()
