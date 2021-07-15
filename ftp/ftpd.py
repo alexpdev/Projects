@@ -7,13 +7,13 @@ from pyftpdlib.authorizers import DummyAuthorizer
 from pyftpdlib.handlers import FTPHandler
 from pyftpdlib.servers import FTPServer
 
-def runserver(user,passwd):
-    ftp_root = "/ftp_root"
-    user_dir = os.path.join(ftp_root,user)
-    if not os.path.exists(user_dir):
-        os.mkdir(user_dir)
+def runserver(user, passwd, home):
+    # ftp_root = "/ftp_root"
+    # user_dir = os.path.join(ftp_root,user)
+    # if not os.path.exists(user_dir):
+    #     os.mkdir(user_dir)
     auth = DummyAuthorizer()
-    auth.add_user(user, passwd, user_dir, perm="elradfmwMT")
+    auth.add_user(user, passwd, home,perm="elradfmwMT")
     handler = FTPHandler
     handler.authorizer = auth
     handler.banner = "BOO!"
