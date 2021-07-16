@@ -24,7 +24,7 @@ def runserver(user, passwd, home):
 
     # Specify a masquerade address and the range of ports to use for
     # passive connections.  Decomment in case you're behind a NAT.
-    #handler.masquerade_address = '151.25.42.11'
-    #handler.passive_ports = range(60000, 65535)
+    handler.masquerade_address = '151.25.42.11'
+    handler.passive_ports = range(60000, 65535)
 
     server.serve_forever()
