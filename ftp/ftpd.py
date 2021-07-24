@@ -1,30 +1,27 @@
-import pyftpdlib
-# documentation @ https://pyftpdlib.readthedocs.io/en/latest/
-
 import os
+import socket
+import time
 
-from pyftpdlib.authorizers import DummyAuthorizer
-from pyftpdlib.handlers import FTPHandler
-from pyftpdlib.servers import FTPServer
 
-def runserver(user, passwd, home):
-    # ftp_root = "/ftp_root"
-    # user_dir = os.path.join(ftp_root,user)
-    # if not os.path.exists(user_dir):
-    #     os.mkdir(user_dir)
-    auth = DummyAuthorizer()
-    auth.add_user(user, passwd, home,perm="elradfmwMT")
-    handler = FTPHandler
-    handler.authorizer = auth
-    handler.banner = "BOO!"
-    handler.passive_ports = range(2000,2250)
-    server = FTPServer(("",20),handler)
-    server.max_cons = 256
-    server.max_cons_per_ip = 5
 
-    # Specify a masquerade address and the range of ports to use for
-    # passive connections.  Decomment in case you're behind a NAT.
-    handler.masquerade_address = '151.25.42.11'
-    handler.passive_ports = range(60000, 65535)
 
-    server.serve_forever()
+PORT = 21
+
+
+class Server:
+
+    def __init__(self,host=None,port=None):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        port = 21 if not port else port
+        if not host:
+            self.addr = (socket.gethostbyname(socket.gethosname()), port)
+        else:
+            self.addr = (socket.gethostbyname(host),port)
+        self.sock.bind(0)
+
+
+class Connection:
+
+    def __init__(self,port=21):
+        self.port = port
+        self.connected = False
