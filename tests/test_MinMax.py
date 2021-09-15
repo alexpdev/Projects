@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 #############################################################################
-# MinMaxObj  extends builtin min and max functions.
+# MinMax+  extends builtin minp and maxp functions.
 # Copyright (C) 2021 alexpdev
 #
 # This program is free software: you can redistribute it and/or modify
@@ -18,212 +18,109 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ############################################################################
-import os
-import sys
-
-BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, BASE)
-import random
-from time import time
 
 import pytest
-
-from MinMax import (EmptySequenceError, InputError, Max, Min, MinMax, max_get, min_get,
-                    minmax_get)
+from minmaxplus import minp, maxp, minmax
 
 
-def timer(func):
-    """Decorate functions to calculate the time taken to run and return."""
+@pytest.fixture
+def tupleseq():
+    return (1, 2, 3, 4, 5, 6, 7)
 
-    def wrapper(*args, **kwargs):
-        print(func.__name__)
-        then = time()
-        result = func(*args, **kwargs)
-        now = time()
+@pytest.fixture
+def listseq():
+    return [1, 2, 3, 4, 5, 6, 7]
 
-        print(f"completed in {now - then} seconds")
-        return result
+@pytest.fixture
+def dictseq():
+    return {1: "1", 2: "2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7"}
 
-    return wrapper
-
-
-def array_gen():
-    for size in range(100, 20000, 100):
-        seq = []
-        while size > 0:
-            sm, lg = random.randint(-1000, 0), random.randint(0, 7000)
-            elem = random.randint(sm, lg)
-            seq.append(elem)
-            size -= 1
-        yield seq
+@pytest.fixture
+def setseq():
+    return set([1, 2, 3, 4, 5, 6, 7])
 
 
-@timer
-def test_min_speed():
-    mins = []
-    for arr in array_gen():
-        m = min(arr)
-        i = arr.index(m)
-        assert arr[i] == m
-        mins.append([m, i])
-    return True
+@pytest.fixture
+def reverseseq():
+    return [7, 6, 5, 4, 3, 2, 1]
+
+@pytest.fixture
+def shuffleseq():
+    return [5, 1, 4, 3, 7, 6, 2]
+
+@pytest.fixture
+def emptyseq():
+    return []
+
+@pytest.fixture
+def singleitemseq():
+    return [7]
+
+def test_tuple_maxp(tupleseq):
+    assert maxp(tupleseq) == (7, 6)
+
+def test_list_maxp(listseq):
+    assert maxp(listseq) == (7, 6)
+
+def test_dict_maxp(dictseq):
+    try:
+        assert maxp(dictseq) == (7, 6)
+    except:
+        assert True
+
+def test_set_maxp(setseq):
+    try:
+        assert maxp(setseq) == (7, 6)
+    except TypeError:
+        assert True
+
+def test_reverse_maxp(reverseseq):
+    assert maxp(reverseseq) == (7, 0)
+
+def test_shuffle_maxp(shuffleseq):
+    assert maxp(shuffleseq) == (7, 4)
 
 
-@timer
-def test_min_get_speed():
-    mins = []
-    for arr in array_gen():
-        m, i = struc = min_get(arr)
-        assert arr[i] == m
-        mins.append(struc)
-    return True
+def test_empty_maxp(emptyseq):
+    try:
+        assert maxp(emptyseq) == False
+    except:
+        assert True
 
+def test_singleitems_maxp(singleitemseq):
+    assert maxp(singleitemseq) == (7,0)
 
-class TestMinMaxFunctions:
-    @timer
-    def test_max_get(self):
-        for seq in [[], ""]:
-            assert pytest.raises(EmptySequenceError, max_get, seq)
-        for var in [None, 7, True, False, 0]:
-            assert pytest.raises(InputError, max_get, var)
-        for seq in array_gen():
-            max_val, max_ind = max_get(seq)
-            assert max_val == max(seq)
-            assert seq[max_ind] == max_val
-        for seq in [[3], (3,)]:
-            max_val, max_ind = max_get(seq)
-            assert max_val == max(seq)
-            assert max_val == 3
-            assert seq[max_ind] == max_val
-            assert seq[max_ind] == 3
-            assert max_ind == 0
-        return True
+def test_tuple_minp(tupleseq):
+    assert minp(tupleseq) == (1,0)
 
-    @timer
-    def test_min_get(self):
-        for seq in [{}, [], set()]:
-            assert pytest.raises(EmptySequenceError, min_get, seq)
-        for var in [None, 7, True, False, 0]:
-            assert pytest.raises(InputError, min_get, var)
-        for seq in array_gen():
-            min_val, min_ind = min_get(seq)
-            assert min_val == min(seq)
-            assert seq[min_ind] == min_val
-        for seq in [[3], (3,)]:
-            min_val, min_ind = min_get(seq)
-            assert min_val == min(seq)
-            assert min_val == 3
-            assert seq[min_ind] == min_val
-            assert seq[min_ind] == 3
-            assert min_ind == 0
-        return True
+def test_list_minp(listseq):
+    assert minp(listseq) == (1,0)
 
-    @timer
-    def test_minmax_get(self):
-        for seq in [{}, [], set()]:
-            assert pytest.raises(EmptySequenceError, minmax_get, seq)
-        for var in [None, 7, True, False, 0]:
-            assert pytest.raises(InputError, minmax_get, var)
-        for seq in array_gen():
-            (minval, minind), (maxval, maxind) = minmax_get(seq)
-            assert maxval == max(seq)
-            assert minval == min(seq)
-            assert seq[maxind] == maxval
-            assert seq[minind] == minval
-        for seq in [[3], (3,)]:
-            (minval, minind), (maxval, maxind) = minmax_get(seq)
-            assert maxval == max(seq)
-            assert maxval == 3
-            assert minval == min(seq)
-            assert minval == 3
-            assert seq[maxind] == maxval
-            assert seq[maxind] == 3
-            assert seq[minind] == minval
-            assert seq[minind] == 3
-        return True
+def test_dict_minp(dictseq):
+    try:
+        assert minp(dictseq) == (1,0)
+    except:
+        assert True
 
+def test_set_minp(setseq):
+    try:
+        assert minp(setseq) == (1,0)
+    except:
+        assert True
 
-class TestMinMaxClasses:
-    @timer
-    def test_Min(self):
-        for seq in [{}, [], set()]:
-            assert pytest.raises(EmptySequenceError, Min, seq)
-        for var in [None, 7, True, False, 0]:
-            assert pytest.raises(InputError, Min, var)
-        for seq in array_gen():
-            min_ = Min(seq)
-            assert min_.value == min(seq)
-            assert seq[min_.index] == min_.value
-        for seq in [[3], (3,)]:
-            min_ = Min(seq)
-            assert min_.value == min(seq)
-            assert min_.value == 3
-            assert seq[min_.index] == min_.value
-            assert seq[min_.index] == 3
-            assert min_.index == 0
-        return True
+def test_reverse_minp(reverseseq):
+    assert minp(reverseseq) == (1,6)
 
-    @timer
-    def test_Max(self):
-        for seq in [{}, [], set()]:
-            assert pytest.raises(EmptySequenceError, Max, seq)
-        for var in [None, 7, True, False, 0]:
-            assert pytest.raises(InputError, Max, var)
-        for seq in array_gen():
-            max_ = Max(seq)
-            assert max_.value == max(seq)
-            assert seq[max_.index] == max_.value
-        for seq in [[3], (3,)]:
-            max_ = Max(seq)
-            assert max_.value == max(seq)
-            assert max_.value == 3
-            assert seq[max_.index] == max_.value
-            assert seq[max_.index] == 3
-            assert max_.index == 0
-        return True
+def test_shuffle_minp(shuffleseq):
+    assert minp(shuffleseq) == (1,1)
 
-    @timer
-    def test_MinMax(self):
-        for seq in [{}, [], set()]:
-            assert pytest.raises(EmptySequenceError, MinMax, seq)
-        for var in [None, 7, True, False, 0]:
-            assert pytest.raises(InputError, MinMax, var)
-        for seq in array_gen():
-            minmax = MinMax(seq)
-            assert minmax.min_value == min(seq)
-            assert seq[minmax.min_index] == minmax.min_value
-            assert minmax.max_value == max(seq)
-            assert seq[minmax.max_index] == minmax.max_value
-        for seq in [[3], (3,)]:
-            minmax = MinMax(seq)
-            assert minmax.min_value == min(seq)
-            assert minmax.min_value == 3
-            assert seq[minmax.min_index] == minmax.min_value
-            assert seq[minmax.min_index] == 3
-            assert minmax.max_value == max(seq)
-            assert minmax.max_value == 3
-            assert seq[minmax.max_index] == minmax.max_value
-            assert seq[minmax.max_index] == 3
-            assert minmax.max_index == 0
-            assert minmax.min_index == 0
-        return True
+def test_empty_minp(emptyseq):
+    try:
+        minp(emptyseq)
+        assert False
+    except:
+        assert True
 
+def test_singleitems_minp(singleitemseq):
+    assert minp(singleitemseq) == (7,0)
 
-def conf(func):
-    assert func() == True
-
-
-if __name__ == "__main__":
-    classes = TestMinMaxClasses()
-    funcs = TestMinMaxFunctions()
-    tests = [
-        funcs.test_max_get,
-        funcs.test_min_get,
-        funcs.test_minmax_get,
-        classes.test_Max,
-        classes.test_Min,
-        classes.test_MinMax,
-        test_min_speed,
-        test_min_get_speed,
-    ]
-    map(lambda x: conf(x), tests)
