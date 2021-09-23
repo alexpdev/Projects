@@ -20,7 +20,7 @@
 ############################################################################
 
 import pytest
-from minmaxplus import minp, maxp, minmax
+from minmaxplus import minp, maxp
 
 
 @pytest.fixture
@@ -123,4 +123,3 @@ def test_empty_minp(emptyseq):
 
 def test_singleitems_minp(singleitemseq):
     assert minp(singleitemseq) == (7,0)
-

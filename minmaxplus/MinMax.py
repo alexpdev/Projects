@@ -18,7 +18,6 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ############################################################################
-
 """
 Functions that provide a more robust way obtain min and max.
 
@@ -45,7 +44,8 @@ class EmptySequenceError(Exception):
         super().__init__(message)
 
 def maxp(seq):
-    """Get array element and index with maximum value.
+    """
+    Get array element and index with maximum value.
 
     Args:
         seq list/tuple: any indexed iterable sequence
@@ -76,7 +76,8 @@ def maxp(seq):
 
 
 def minp(seq):
-    """Get array element and index with maximum value.
+    """
+    Get array element and index with maximum value.
 
     Args:
         list/tuple: any indexed iterable sequence.
@@ -107,7 +108,8 @@ def minp(seq):
 
 
 def minmax(seq):
-    """Get value and index of maximum element and minimum elements in array.
+    """
+    Get value and index of maximum element and minimum elements in array.
 
     Args:
         arr ([list/tuple]): Any indexed iterable

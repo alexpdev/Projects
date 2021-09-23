@@ -5,6 +5,7 @@ Activate.ps1
 __pycache__/
 *.py[cod]
 *$py.class
+codacy.sh
 
 # C extensions
 *.so
