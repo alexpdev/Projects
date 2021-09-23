@@ -30,6 +30,7 @@ import sys
 
 
 class InputError(Exception):
+    
     """Input Type is not an iterable sequence."""
 
     def __init__(self, value):
@@ -37,6 +38,7 @@ class InputError(Exception):
         super().__init__(message)
 
 class EmptySequenceError(Exception):
+
     """Input iterable is empty."""
 
     def __init__(self, value):

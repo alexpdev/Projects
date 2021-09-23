@@ -57,6 +57,7 @@ test-all: ## run tests on every Python version with tox
 	tox
 
 coverage: ## check code coverage quickly with the default Python
+	pytest tests
 	coverage run -m pytest tests
 	coverage xml -o corbertura.xml
 
