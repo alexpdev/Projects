@@ -388,10 +388,9 @@ class TorrentFileV2(MetaFile):
 
         file_tree = {}
         if os.path.isdir(path):
-
-            for base, full in utils.sortfiles(path):
-                file_tree[base] = self._traverse(full)
-
+            flist = map(lambda x: os.path.join(path, x), os.listdir(path))
+            for item in sorted(list(flist)):
+                file_tree[os.path.basename(path)] = self._traverse(item)
         return file_tree
 
 
@@ -467,8 +466,7 @@ class TorrentFileHybrid(MetaFile):
 
         tree = {}
         if os.path.isdir(path):
-
-            for base, full in utils.sortfiles(path):
-                tree[base] = self._traverse(full)
-
+            flist = map(lambda x: os.path.join(path, x), os.listdir(path))
+            for item in sorted(list(flist)):
+                tree[os.path.basename(path)] = self._traverse(item)
         return tree

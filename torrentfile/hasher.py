@@ -14,6 +14,7 @@
 """Piece/File Hashers for Bittorrent meta file contents."""
 
 import logging
+import os
 import math
 from hashlib import sha1, sha256  # nosec
 
@@ -40,6 +41,7 @@ class Hasher:
         """Generate hashes of piece length data from filelist contents."""
         self.piece_length = piece_length
         self.paths = paths
+        self.total = sum([os.path.getsize(i) for i in self.paths])
         self.index = 0
         self.current = open(self.paths[0], "rb")
         logging.debug(
@@ -91,7 +93,7 @@ class Hasher:
             size = self.current.readinto(piece)
             if size == 0:
                 if not self.next_file():
-                    break
+                    raise StopIteration
             elif size < self.piece_length:
                 return self._handle_partial(piece[:size])
             else:
