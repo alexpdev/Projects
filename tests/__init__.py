@@ -19,7 +19,7 @@ def tempfile(path=None, exp=18):
         path = ROOT / path
     temp = path
     parts = []
-    for i in range(len(path.parts)):
+    for _ in range(len(path.parts)):
         if os.path.exists(temp):
             break
         parts.append(temp.name)
