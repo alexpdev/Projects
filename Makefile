@@ -57,7 +57,9 @@ clean-build: ## remove build artifacts
 	rm -f *.spec
 
 test: ## run tests quickly with the default Python
-	pytest tests --maxfail=15
+	pytest tests --maxfail=2 --cov=torrentfile --cov=tests
+	coverage report
+	coverage xml -o coverage.xml
 
 
 docs: ## Regenerate docs from changes

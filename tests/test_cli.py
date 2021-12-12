@@ -6,7 +6,7 @@ import pytest
 import pyben
 
 from tests import dir1, rmpath
-from torrentfile.cli import main_script as main
+from torrentfile.cli import main
 
 
 def test_cli_v1(dir1):
@@ -104,6 +104,19 @@ def test_cli_comment(dir1, piece_length, version):
 
 @pytest.mark.parametrize("piece_length", [2**exp for exp in range(14, 21)])
 @pytest.mark.parametrize("version", ["1", "2", "3"])
+def test_cli_outfile(dir1, piece_length, version):
+    outfile = str(dir1) + "test.torrent"
+    args = ["torrentfile", str(dir1), "--piece-length",
+            str(piece_length), "--meta-version", version,
+            "-o", outfile]
+    sys.argv = args
+    main()
+    assert os.path.exists(outfile)
+    rmpath(outfile)
+
+
+@pytest.mark.parametrize("piece_length", [2**exp for exp in range(14, 21)])
+@pytest.mark.parametrize("version", ["1", "2", "3"])
 def test_cli_creation_date(dir1, piece_length, version):
     args = ["torrentfile", str(dir1), "--piece-length",
             str(piece_length), "--meta-version", version,
@@ -129,3 +142,24 @@ def test_cli_created_by(dir1, piece_length, version):
     meta = pyben.load(str(dir1) + ".torrent")
     assert "TorrentFile" in meta["created by"]
     rmpath(str(dir1) + ".torrent")
+
+
+@pytest.mark.parametrize("piece_length", [2**exp for exp in range(14, 21)])
+@pytest.mark.parametrize("version", ["1", "2", "3"])
+def test_cli_with_debug(dir1, piece_length, version):
+    args = ["torrentfile", str(dir1), "--piece-length",
+            str(piece_length), "--meta-version", version,
+            "--comment", "this is a comment", "-d"]
+    sys.argv = args
+    main()
+    assert os.path.exists(str(dir1) + ".torrent")
+    rmpath(str(dir1) + ".torrent")
+
+
+def test_cli_help():
+    args = ["-h"]
+    sys.argv = args
+    try:
+        main()
+    except:
+        assert True

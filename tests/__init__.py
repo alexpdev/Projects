@@ -2,11 +2,13 @@ import os
 import shutil
 from datetime import datetime
 from pathlib import Path
+import string
 import atexit
 
 import pytest
 
 def tempfile(path=None, exp=18):
+    seq = (string.printable + string.whitespace).encode("utf-8")
     root = Path(__file__).parent / "TESTDIR"
     if not os.path.exists(root):
         os.mkdir(root)
@@ -15,18 +17,26 @@ def tempfile(path=None, exp=18):
     parts = Path(path).parts
     partial = root
     for i, part in enumerate(parts):
+        partial = partial / part
         if i == len(parts) - 1:
-            with open(partial / part, "wb") as binfile:
-                binfile.write(bytes(2**exp))
+            with open(partial, "wb") as binfile:
+                size = 2**exp
+                while size > 0:
+                    if len(seq) < size:
+                        binfile.write(seq)
+                        size -= len(seq)
+                        seq += seq
+                    else:
+                        binfile.write(seq[:size])
+                        size -= size
         else:
-            partial = partial / part
             if not os.path.exists(partial):
                 os.mkdir(partial)
     return partial
 
 
 def rmpath(*args):
-    if isinstance(args, str):
+    if isinstance(args, (str, os.PathLike)):
         args = [args]
     for arg in args:
         if not os.path.exists(arg):
@@ -43,12 +53,12 @@ def rmpath(*args):
                 pass
 
 
-def tempdir1():
+def tempdir(ext="1"):
     files = [
-        "dir1/file1.png",
-        "dir1/file2.mp4",
-        "dir1/file3.mp3",
-        "dir1/file4.zip"
+        f"dir{ext}/file1.png",
+        f"dir{ext}/file2.mp4",
+        f"dir{ext}/file3.mp3",
+        f"dir{ext}/file4.zip"
         ]
     paths = []
     for path in files:
@@ -66,6 +76,12 @@ def teardown():
 
 @pytest.fixture(scope="package")
 def dir1():
-    root = tempdir1()
+    root = tempdir()
+    yield root
+    rmpath(root)
+
+@pytest.fixture
+def dir2():
+    root = tempdir(ext="2")
     yield root
     rmpath(root)

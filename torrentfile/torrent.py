@@ -264,7 +264,7 @@ class MetaFile:
             self.outfile = outfile
 
         if self.outfile is None:
-            self.outfile = self.path + ".torrent"
+            self.outfile = str(self.path) + ".torrent"
 
         self.meta = self.sort_meta()
         pyben.dump(self.meta, self.outfile)
@@ -388,9 +388,8 @@ class TorrentFileV2(MetaFile):
 
         file_tree = {}
         if os.path.isdir(path):
-            flist = map(lambda x: os.path.join(path, x), os.listdir(path))
-            for item in sorted(list(flist)):
-                file_tree[os.path.basename(path)] = self._traverse(item)
+            for name in sorted(os.listdir(path)):
+                file_tree[name] = self._traverse(os.path.join(path, name))
         return file_tree
 
 
@@ -466,7 +465,6 @@ class TorrentFileHybrid(MetaFile):
 
         tree = {}
         if os.path.isdir(path):
-            flist = map(lambda x: os.path.join(path, x), os.listdir(path))
-            for item in sorted(list(flist)):
-                tree[os.path.basename(path)] = self._traverse(item)
+            for name in sorted(os.listdir(path)):
+                tree[name] = self._traverse(os.path.join(path, name))
         return tree

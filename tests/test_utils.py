@@ -107,3 +107,9 @@ def test_missingpatherror():
                                             (1_100_000_000, "1 GiB")])
 def test_humanize_bytes(amount, result):
     assert utils.humanize_bytes(amount) == result
+
+
+@pytest.mark.parametrize("amount, result", [(14, 2**14), (str(2**17), 2**17),
+                                            (2**18, 2**18), (str(2**21), 2**21)])
+def test_normalize_piece_length(amount, result):
+    assert utils.normalize_piece_length(amount) == result
