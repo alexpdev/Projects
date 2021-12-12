@@ -508,7 +508,7 @@ class HashChecker:
         Yields:
             results (`tuple`): The size of the file and result of match.
         """
-        for path in tqdm(self.paths):
+        for path in self.paths:
             info = self.fileinfo[path]
             length = info["length"]
             logging.debug("%s length: %s", path, str(length))

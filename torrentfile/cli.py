@@ -148,8 +148,8 @@ def main_script(args=None):
     )
 
     parser.add_argument(
-        "-a",
-        "--announce",
+        "-t",
+        "--tracker",
         action="store",
         dest="announce",
         metavar="<url>",

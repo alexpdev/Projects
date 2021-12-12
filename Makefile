@@ -56,28 +56,11 @@ clean-build: ## remove build artifacts
 	rm -fr .pytest_cache
 	rm -f *.spec
 
-lint: ## Check for styling errors
-	@echo Linting
-	autopep8 --recursive torrentfile tests
-	isort torrentfile tests
-	pydocstyle torrentfile tests
-	pycodestyle torrentfile tests
-	pylint torrentfile tests
-	pyroma .
-	prospector torrentfile
-	prospector tests
-
-test: lint ## run tests quickly with the default Python
-	@echo Testing
-	pytest --cov=torrentfile --cov=tests --pylint tests
+test: ## run tests quickly with the default Python
+	pytest tests --maxfail=2 --cov=torrentfile --cov=tests
+	coverage report
 	coverage xml -o coverage.xml
 
-push: clean lint test docs ## push to remote repo
-	@echo pushing to remote
-	git add .
-	git commit -m "$m"
-	git push
-	bash codacy.sh report -r coverage.xml
 
 docs: ## Regenerate docs from changes
 	rm -rf docs/*
@@ -100,15 +83,3 @@ build: clean install
 		--specpath ../runner/ ../runner/exe
 	cp -rfv ../runner/dist/* ./dist/
 	python -c "$$FIX_BIN_VERSION_FILES"
-
-install: ## Install Locally
-	pip install --upgrade -rrequirements.txt --no-cache-dir --pre
-	pip install -e .
-
-branch: clean ## Switch git branches after changes have been made
-	git checkout master
-	git pull
-	git branch -d dev
-	git branch dev
-	git checkout dev
-	git push -u origin dev
