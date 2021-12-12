@@ -1,65 +1,71 @@
-
 import os
-import string
-from time import time
-from pathlib import Path
 import shutil
+from datetime import datetime
+from pathlib import Path
 import atexit
 
-ROOT = Path(__file__).parent / "TESTDIR"
-os.mkdir(ROOT)
-SEQ = (string.printable + string.whitespace).encode("utf-8")
-
+import pytest
 
 def tempfile(path=None, exp=18):
-    size = 2 ** exp
+    root = Path(__file__).parent / "TESTDIR"
+    if not os.path.exists(root):
+        os.mkdir(root)
     if not path:
-        path = ROOT / ("tfile" + str(time()))
-    else:
-        path = ROOT / path
-    temp = path
-    parts = []
-    for _ in range(len(path.parts)):
-        if os.path.exists(temp):
-            break
-        parts.append(temp.name)
-        temp = temp.parent
-    for part in parts[-1]:
-        os.mkdir(temp / part)
-        temp = temp / part
-    seq = SEQ
-    with open(path, "wb") as binfile:
-        while size > 0:
-            if len(seq) < size:
-                binfile.write(seq)
-                size -= len(seq)
-                seq += seq
-            else:
-                binfile.write(seq[:size])
-                size -= size
-    return path
+        path = root / (str(datetime.timestamp(datetime.now()))  + ".file")
+    parts = Path(path).parts
+    partial = root
+    for i, part in enumerate(parts):
+        if i == len(parts) - 1:
+            with open(partial / part, "wb") as binfile:
+                binfile.write(bytes(2**exp))
+        else:
+            partial = partial / part
+            if not os.path.exists(partial):
+                os.mkdir(partial)
+    return partial
 
 
 def rmpath(*args):
-    if isinstance(args, (str, os.PathLike)):
+    if isinstance(args, str):
         args = [args]
     for arg in args:
-        if os.path.exists(arg):
-            if os.path.isfile(arg):
-                try:
-                    os.remove(arg)
-                except PermissionError:
-                    pass
-            else:
-                try:
-                    shutil.rmtree(arg)
-                except PermissionError:
-                    pass
+        if not os.path.exists(arg):
+            continue
+        if os.path.isdir(arg):
+            try:
+                shutil.rmtree(arg)
+            except PermissionError:
+                pass
+        elif os.path.isfile(arg):
+            try:
+                os.remove(arg)
+            except PermissionError:
+                pass
+
+
+def tempdir1():
+    files = [
+        "dir1/file1.png",
+        "dir1/file2.mp4",
+        "dir1/file3.mp3",
+        "dir1/file4.zip"
+        ]
+    paths = []
+    for path in files:
+        temps = tempfile(path=path, exp=18)
+        paths.append(temps)
+    return os.path.commonpath(paths)
 
 
 @atexit.register
 def teardown():
-    try:
-        shutil.rmdir(ROOT)
-    except PermissionError:
-        pass
+    root = Path(__file__).parent / "TESTDIR"
+    if os.path.exists(root):
+        rmpath(root)
+
+
+@pytest.fixture(scope="package")
+def dir1():
+    root = tempdir1()
+    yield root
+    rmpath(root)
