@@ -60,17 +60,21 @@ def main_script(args=None):
     if not args:
         args = sys.argv[1:]
 
-    desc = ("Create and/or ReCheck Bittorrent V1, V2, and Hybrid meta files.")
+    desc = "Create and/or ReCheck Bittorrent V1, V2, and Hybrid meta files."
 
-    parser = ArgumentParser("TorrentFile", description=desc,
-                            prefix_chars="-", formatter_class=HelpFormat)
+    parser = ArgumentParser(
+        "TorrentFile",
+        description=desc,
+        prefix_chars="-",
+        formatter_class=HelpFormat,
+    )
 
     parser.add_argument(
         "-v",
         "--version",
         action="version",
         version=f"torrentfile v{torrentfile.__version__}",
-        help="show program version and exit"
+        help="show program version and exit",
     )
 
     parser.add_argument(
@@ -78,7 +82,7 @@ def main_script(args=None):
         "--debug",
         action="store_true",
         dest="debug",
-        help="output debug information"
+        help="output debug information",
     )
 
     parser.add_argument(
@@ -95,7 +99,7 @@ def main_script(args=None):
         action="store",
         dest="source",
         metavar="<source>",
-        help="specify source tracker"
+        help="specify source tracker",
     )
 
     parser.add_argument(
@@ -158,7 +162,7 @@ def main_script(args=None):
         help="""
         one or more Bittorrent tracker announce url(s)
         Examples:: [-a url1 url2 url3]  [--anounce url1]
-        """
+        """,
     )
 
     parser.add_argument(
@@ -172,14 +176,14 @@ def main_script(args=None):
         Check <content> data integrity with <.torrent> file.
         If this is active, all other options are ignored
         (except --debug)
-        """
+        """,
     )
 
     parser.add_argument(
         "content",
         action="store",
         metavar="<content>",
-        help="path to content file or directory"
+        help="path to content file or directory",
     )
 
     if not args:
@@ -193,8 +197,8 @@ def main_script(args=None):
 
     logging.basicConfig(
         level=level,
-        format='%(prog)s %(asctime)s %(message)s',
-        datefmt='%m-%d-%Y %H:%M:%S'
+        format="%(prog)s %(asctime)s %(message)s",
+        datefmt="%m-%d-%Y %H:%M:%S",
     )
 
     if flags.checker:

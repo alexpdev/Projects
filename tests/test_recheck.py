@@ -19,10 +19,16 @@ from pathlib import Path
 
 import pytest
 
-from tests import rmpath, tempfile, dir1, dir2
+from tests import dir1, dir2, rmpath, tempfile
 from torrentfile import TorrentFile, TorrentFileHybrid, TorrentFileV2
 from torrentfile.cli import main_script as main
 from torrentfile.recheck import Checker
+
+
+def test_fixtures():
+    """Test fixtures exist."""
+    assert dir1  # nosec
+    assert dir2  # nosec
 
 
 def mktorrent(args, v=None):
@@ -38,6 +44,25 @@ def mktorrent(args, v=None):
     return outfile
 
 
+@pytest.fixture
+def dir3():
+    """Test fixture for directory structure."""
+    files = [
+        "dir3/subdir1/file1.png",
+        "dir3/subdir1/file2.mp4",
+        "dir3/subdir2/file3.mp3",
+        "dir3/subdir2/file4.zip",
+        "dir3/file4.jpg",
+    ]
+    paths = []
+    for i, path in enumerate(files):
+        temps = tempfile(path=path, exp=15 + i)
+        paths.append(temps)
+    path = os.path.commonpath(paths)
+    yield path
+    rmpath(path)
+
+
 @pytest.mark.parametrize("version", [1, 2, 3])
 def test_checker_class(dir1, version):
     """Test Checker Class against meta files."""
@@ -46,6 +71,22 @@ def test_checker_class(dir1, version):
     checker = Checker(outfile, dir1)
     assert checker.result == "100"  # nosec
     rmpath(outfile)
+
+
+@pytest.mark.parametrize("version", [1, 2, 3])
+@pytest.mark.parametrize("piece_length", [2 ** i for i in range(14, 18)])
+def test_checker_class_alt(dir3, version, piece_length):
+    """Test Checker Class against meta files."""
+    args = {
+        "path": str(dir3),
+        "announce": "https://announce.com/announce",
+        "piece_length": piece_length,
+    }
+    outfile = mktorrent(args, v=version)
+    checker = Checker(outfile, dir3)
+    assert checker.result == "100"  # nosec
+    rmpath(outfile)
+
 
 @pytest.mark.parametrize("version", [1, 2, 3])
 def test_checker_first_piece(dir2, version):
@@ -58,8 +99,39 @@ def test_checker_first_piece(dir2, version):
         """Change some bytes in file."""
         if os.path.isfile(path):
             data = open(path, "rb").read()
-            new = b'some_different_bytes_to_swap'
-            data = new + data[len(new):]
+            new = b"some_different_bytes_to_swap"
+            new_len = len(new)
+            data = new + data[new_len:]
+            open(path, "wb").write(data)
+        elif os.path.isdir(path):
+            for item in os.listdir(path):
+                change(os.path.join(path, item))
+
+    change(path)
+    checker = Checker(outfile, path)
+    assert int(checker.result) != 100  # nosec
+    rmpath(outfile)
+
+
+@pytest.mark.parametrize("version", [1, 2, 3])
+@pytest.mark.parametrize("piece_length", [2 ** i for i in range(14, 18)])
+def test_checker_first_piece_alt(dir3, version, piece_length):
+    """Test Checker Class when first piece is slightly alterred."""
+    path = str(dir3)
+    args = {
+        "path": path,
+        "announce": "https://announce.com/announce",
+        "piece_length": piece_length,
+    }
+    outfile = mktorrent(args, v=version)
+
+    def change(path):
+        """Change some bytes in file."""
+        if os.path.isfile(path):
+            data = open(path, "rb").read()
+            new = b"some_different_bytes_to_swap"
+            new_len = len(new)
+            data = new + data[new_len:]
             open(path, "wb").write(data)
         elif os.path.isdir(path):
             for item in os.listdir(path):
@@ -83,6 +155,23 @@ def test_metafile_checker(dir1, version):
 
 
 @pytest.mark.parametrize("version", [1, 2, 3])
+@pytest.mark.parametrize("piece_length", [2 ** i for i in range(14, 18)])
+def test_metafile_checker_alt(dir3, version, piece_length):
+    """Test metadata checker class."""
+    path = str(dir3)
+    args = {
+        "announce": "announce",
+        "path": path,
+        "private": 1,
+        "piece_length": piece_length,
+    }
+    outfile = mktorrent(args, v=version)
+    checker = Checker(outfile, path)
+    assert checker.result == "100"  # nosec
+    rmpath(outfile)
+
+
+@pytest.mark.parametrize("version", [1, 2, 3])
 def test_partial_metafiles(dir2, version):
     """Test Checker with data that is expected to be incomplete."""
     path = str(dir2)
@@ -94,7 +183,7 @@ def test_partial_metafiles(dir2, version):
         with open(path, "rb") as bfile:
             data = bfile.read()
         with open(path, "wb") as bfile:
-            bfile.write(data[:-2**10])
+            bfile.write(data[: -(2 ** 10)])
 
     for item in os.listdir(path):
         full = os.path.join(path, item)
@@ -115,7 +204,25 @@ def test_checker_no_content(dir1, version):
     outfile = mktorrent(args, v=version)
     Checker.register_callback(lambda *x: print(x))
     checker = Checker(outfile, path)
-    assert checker.result == "100"   # nosec
+    assert checker.result == "100"  # nosec
+    rmpath(outfile)
+
+
+@pytest.mark.parametrize("version", [1, 2, 3])
+@pytest.mark.parametrize("piece_length", [2 ** i for i in range(14, 18)])
+def test_checker_no_content_alt(dir3, version, piece_length):
+    """Test Checker class with directory that points to nothing."""
+    path = str(dir3)
+    args = {
+        "announce": "announce",
+        "path": path,
+        "private": 1,
+        "piece_length": piece_length,
+    }
+    outfile = mktorrent(args, v=version)
+    Checker.register_callback(lambda *x: print(x))
+    checker = Checker(outfile, path)
+    assert checker.result == "100"  # nosec
     rmpath(outfile)
 
 
@@ -127,7 +234,7 @@ def test_checker_cli_args(dir1, version):
     outfile = mktorrent(args, v=version)
     sys.argv[1:] = ["--recheck", outfile, path]
     output = main()
-    assert output == "100"   # nosec
+    assert output == "100"  # nosec
     rmpath(outfile)
 
 
@@ -159,7 +266,7 @@ def test_checker_no_meta_file():
     try:
         Checker("peaches", "$")
     except FileNotFoundError:
-        assert True   # nosec
+        assert True  # nosec
 
 
 def test_checker_no_root_dir(dir1):
@@ -170,7 +277,7 @@ def test_checker_no_root_dir(dir1):
     try:
         Checker(outfile, "peaches")
     except FileNotFoundError:
-        assert True   # nosec
+        assert True  # nosec
     rmpath(outfile)
 
 
@@ -186,32 +293,39 @@ def test_checker_wrong_root_dir(dir2):
     try:
         Checker(outfile, str(newpath))
     except FileNotFoundError:
-        assert True   # nosec
+        assert True  # nosec
     rmpath(outfile, newpath)
 
 
-
 @pytest.mark.parametrize("version", [1, 2, 3])
-def test_checker_class_missing(version, dir2):
+def test_checker_missing(version, dir2):
     """Test Checker class when files are missing from contents."""
     path = str(dir2)
-    args = {"announce": "announce", "path": path,
-            "private": 1, "piece_length": 2**16}
+    args = {
+        "announce": "announce",
+        "path": path,
+        "private": 1,
+        "piece_length": 2 ** 16,
+    }
     outfile = mktorrent(args, v=version)
     count = 0
     for fd in Path(path).iterdir():
         if fd.is_file() and count < 2:
             rmpath(fd)
     checker = Checker(outfile, path)
-    assert int(checker.result) < 100   # nosec
+    assert int(checker.result) < 100  # nosec
 
 
 @pytest.mark.parametrize("version", [1, 2, 3])
 def test_checker_class_allfiles(version, dir2):
     """Test Checker class when all files are missing from contents."""
     path = Path(str(dir2))
-    args = {"announce": "announce", "path": path,
-            "private": 1, "piece_length": 2**16}
+    args = {
+        "announce": "announce",
+        "path": path,
+        "private": 1,
+        "piece_length": 2 ** 16,
+    }
     outfile = mktorrent(args, v=version)
 
     def traverse(path):
@@ -224,7 +338,7 @@ def test_checker_class_allfiles(version, dir2):
 
     traverse(path)
     checker = Checker(outfile, path)
-    assert int(checker.result) < 100   # nosec
+    assert int(checker.result) < 100  # nosec
     rmpath(outfile)
 
 
@@ -232,23 +346,33 @@ def test_checker_class_allfiles(version, dir2):
 def test_checker_class_allpaths(version, dir2):
     """Test Checker class when all files are missing from contents."""
     path = Path(str(dir2))
-    args = {"announce": "announce", "path": path,
-            "private": 1, "piece_length": 2**16}
+    args = {
+        "announce": "announce",
+        "path": path,
+        "private": 1,
+        "piece_length": 2 ** 16,
+    }
     outfile = mktorrent(args, v=version)
     for item in path.iterdir():
         rmpath(item)
     checker = Checker(outfile, path)
-    assert int(checker.result) < 100   # nosec
+    assert int(checker.result) < 100  # nosec
 
 
 @pytest.mark.parametrize("version", [1, 2, 3])
-def test_checker_class_half_file(version):
+@pytest.mark.parametrize("piece_length", [2 ** i for i in range(14, 19)])
+@pytest.mark.parametrize("size", list(range(16, 22)))
+def test_checker_class_half_file(version, piece_length, size):
     """Test Checker class with half size single file."""
-    path = tempfile(exp=25)
-    args = {"announce": "announce", "path": path,
-            "private": 1, "piece_length": 2**15}
+    path = tempfile(exp=size)
+    args = {
+        "announce": "announce",
+        "path": path,
+        "private": 1,
+        "piece_length": piece_length,
+    }
     outfile = mktorrent(args, v=version)
-    half = int((2**25) / 2)
+    half = int((2 ** size) / 2)
     barr = bytearray(half)
     with open(path, "rb") as content:
         content.readinto(barr)
@@ -259,13 +383,37 @@ def test_checker_class_half_file(version):
 
 
 @pytest.mark.parametrize("version", [1, 2, 3])
+@pytest.mark.parametrize("piece_length", [2 ** i for i in range(14, 21)])
+def test_checker_missing_singles(version, piece_length, dir3):
+    """Test Checker class with half size single file."""
+    path = str(dir3)
+    args = {
+        "announce": "announce",
+        "path": path,
+        "private": 1,
+        "piece_length": piece_length,
+    }
+    outfile = mktorrent(args, v=version)
+    for item in Path(path).iterdir():
+        rmpath(item)
+        if item.is_dir():
+            break
+    checker = Checker(outfile, path)
+    assert int(checker.result) < 100  # nosec
+
+
+@pytest.mark.parametrize("version", [1, 2, 3])
 def test_checker_result_property(version):
     """Test Checker class with half size single file."""
     path = tempfile(exp=20)
-    args = {"announce": "announce", "path": path,
-            "private": 1, "piece_length": 2**14}
+    args = {
+        "announce": "announce",
+        "path": path,
+        "private": 1,
+        "piece_length": 2 ** 14,
+    }
     outfile = mktorrent(args, v=version)
     checker = Checker(outfile, path)
     result = checker.result
-    assert checker.result == result   # nosec
+    assert checker.result == result  # nosec
     rmpath(outfile)

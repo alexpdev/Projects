@@ -1,26 +1,58 @@
+#! /usr/bin/python3
+# -*- coding: utf-8 -*-
+
+#####################################################################
+# THE SOFTWARE IS PROVIDED AS IS WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+#####################################################################
+"""Unittest package init module."""
+
+import atexit
 import os
 import shutil
+import string
 from datetime import datetime
 from pathlib import Path
-import string
-import atexit
 
 import pytest
 
+
 def tempfile(path=None, exp=18):
+    """Create temporary file.
+
+    Creates a temporary file for unittesting purposes.py
+
+    Parameters
+    ----------
+    path : str, optional
+        relative path to temporary files, by default None
+    exp : int, optional
+        Exponent used to determine size of file., by default 18
+
+    Returns
+    -------
+    str
+        absolute path to file.
+    """
     seq = (string.printable + string.whitespace).encode("utf-8")
     root = Path(__file__).parent / "TESTDIR"
     if not os.path.exists(root):
         os.mkdir(root)
     if not path:
-        path = root / (str(datetime.timestamp(datetime.now()))  + ".file")
+        path = root / (str(datetime.timestamp(datetime.now())) + ".file")
     parts = Path(path).parts
     partial = root
     for i, part in enumerate(parts):
         partial = partial / part
         if i == len(parts) - 1:
             with open(partial, "wb") as binfile:
-                size = 2**exp
+                size = 2 ** exp
                 while size > 0:
                     if len(seq) < size:
                         binfile.write(seq)
@@ -36,8 +68,13 @@ def tempfile(path=None, exp=18):
 
 
 def rmpath(*args):
-    if isinstance(args, (str, os.PathLike)):
-        args = [args]
+    """Remove file or directory path.
+
+    Parameters
+    ----------
+    args : list[str]
+        Filesystem locations for removing.
+    """
     for arg in args:
         if not os.path.exists(arg):
             continue
@@ -49,17 +86,29 @@ def rmpath(*args):
         elif os.path.isfile(arg):
             try:
                 os.remove(arg)
-            except PermissionError:
+            except PermissionError:  # pragma: nocover
                 pass
 
 
 def tempdir(ext="1"):
+    """Create temporary directory.
+
+    Parameters
+    ----------
+    ext : str, optional
+        extension to file names, by default "1"
+
+    Returns
+    -------
+    str
+        path to common root for directory.
+    """
     files = [
         f"dir{ext}/file1.png",
         f"dir{ext}/file2.mp4",
         f"dir{ext}/file3.mp3",
-        f"dir{ext}/file4.zip"
-        ]
+        f"dir{ext}/file4.zip",
+    ]
     paths = []
     for path in files:
         temps = tempfile(path=path, exp=18)
@@ -68,7 +117,8 @@ def tempdir(ext="1"):
 
 
 @atexit.register
-def teardown():
+def teardown():  # pragma: nocover
+    """Remove all temporary directories and files."""
     root = Path(__file__).parent / "TESTDIR"
     if os.path.exists(root):
         rmpath(root)
@@ -76,12 +126,27 @@ def teardown():
 
 @pytest.fixture(scope="package")
 def dir1():
+    """Create a specific temporary structured directory.
+
+    Yields
+    ------
+    str
+        path to root of temporary directory
+    """
     root = tempdir()
     yield root
     rmpath(root)
 
+
 @pytest.fixture
 def dir2():
+    """Create a specific temporary structured directory.
+
+    Yields
+    ------
+    str
+        path to root of temporary directory
+    """
     root = tempdir(ext="2")
     yield root
     rmpath(root)
