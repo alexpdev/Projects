@@ -1,0 +1,24 @@
+{
+  "name": "torrentfile",
+  "displayName": "TorrentFile",
+  "version": "0.0.1",
+  "url": "https://github.com/alexpdev",
+  "description": "Create Bittorent v1, v2 and hybrid meta files.",
+  "directories": {
+    "doc": "docs",
+    "test": "tests",
+    "torrentfile": "torrentfile"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexpdev/TorrentFile.git"
+  },
+  "keywords": ["torrent", "Bittorrent"],
+  "author": "alexpdev",
+  "email": "alexpdev@protonmail.com",
+  "license": "GNU LGPLv3",
+  "bugs": {
+    "url": "https://github.com/alexpdev/TorrentFile/issues"
+  },
+  "homepage": "https://github.com/alexpdev/TorrentFile#readme"
+}

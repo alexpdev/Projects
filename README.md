@@ -49,7 +49,7 @@ Or download the latest release from the Release page on github.
 ```bash:
 usage: TorrentFile [-h] [-v] [-d] [-p] [-s <source>] [-c <comment>]
                    [-o <path>] [--meta-version <int>] [-l <int>]
-                   [-a <url> [<url> ...]] [-r <.torrent>]
+                   [-t <url> [<url> ...]] [-r <.torrent>]
                    <content>
 
 Create and/or ReCheck Bittorrent V1, V2, and Hybrid meta files.
@@ -77,7 +77,7 @@ optional arguments:
                                         power of two integer between 16Kib and 16MiB (inclusive).
                                         Examples:: [--piece-length 14] [-l 20] [-l 16777216]
 
-  -a <url> [<url> ...], --announce <url> [<url> ...]
+  -t <url> [<url> ...], --tracker <url> [<url> ...]
                                         one or more Bittorrent tracker announce url(s)
                                         Examples: [-a url1 url2 url3]  [--anounce url1]
 
