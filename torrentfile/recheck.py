@@ -103,11 +103,11 @@ class Checker:
             return self._result
         total = self.total
         for _, _, _, size in tqdm(
-                iterable=self.iter_hashes(),
-                desc="hash pieces",
-                total=iterations,
-                unit="piece hash",
-                colour="blue",
+            iterable=self.iter_hashes(),
+            desc="hash pieces",
+            total=iterations,
+            unit="piece hash",
+            colour="blue",
         ):
             total -= size
         self.log_msg("%s%% of torrent content available.", self._result)

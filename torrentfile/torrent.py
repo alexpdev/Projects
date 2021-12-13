@@ -316,12 +316,13 @@ class TorrentFile(MetaFile):
         if os.path.isfile(self.path):
             info["length"] = size
         else:
-            info["files"] = [{
-                "length":
-                os.path.getsize(path),
-                "path":
-                os.path.relpath(path, self.path).split(os.sep),
-            } for path in filelist]
+            info["files"] = [
+                {
+                    "length": os.path.getsize(path),
+                    "path": os.path.relpath(path, self.path).split(os.sep),
+                }
+                for path in filelist
+            ]
 
         pieces = bytearray()
         feeder = Hasher(filelist, self.piece_length)
@@ -447,12 +448,12 @@ class TorrentFileHybrid(MetaFile):
         if os.path.isfile(path):
             fsize = os.path.getsize(path)
 
-            self.files.append({
-                "length":
-                fsize,
-                "path":
-                os.path.relpath(path, self.path).split(os.sep),
-            })
+            self.files.append(
+                {
+                    "length": fsize,
+                    "path": os.path.relpath(path, self.path).split(os.sep),
+                }
+            )
 
             if fsize == 0:
                 return {"": {"length": fsize}}

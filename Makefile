@@ -70,6 +70,11 @@ docs: ## Regenerate docs from changes
 	mkdocs -q build
 	touch site/.nojekyll
 
+push: clean lint test docs ## Push to github
+	git add .
+	git commit -m "$m"
+	git push
+
 build: clean install
 	python setup.py sdist bdist_wheel bdist_egg
 	rm -rfv ../runner
