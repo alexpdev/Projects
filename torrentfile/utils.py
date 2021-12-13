@@ -109,12 +109,12 @@ def normalize_piece_length(piece_length):
             raise PieceLengthValueError(piece_length)
 
     if 13 < piece_length < 26:
-        return 2 ** piece_length
+        return 2**piece_length
     if piece_length <= 13:
         raise PieceLengthValueError(piece_length)
 
     log = int(math.log2(piece_length))
-    if 2 ** log == piece_length:
+    if 2**log == piece_length:
         return piece_length
     raise PieceLengthValueError
 
@@ -133,9 +133,9 @@ def get_piece_length(size):
         Ideal peace length size arguement.
     """
     exp = 14
-    while size / (2 ** exp) > 200 and exp < 25:
+    while size / (2**exp) > 200 and exp < 25:
         exp += 1
-    return 2 ** exp
+    return 2**exp
 
 
 def filelist_total(pathstring):

@@ -20,6 +20,7 @@
 """Setup for Torrentfile package."""
 
 import json
+
 from setuptools import find_packages, setup
 
 
