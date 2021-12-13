@@ -66,9 +66,9 @@ lint:
 	prospector tests
 
 docs: ## Regenerate docs from changes
-	rm -rf site/*
+	rm -rf docs/*
 	mkdocs -q build
-	touch site/.nojekyll
+	touch docs/.nojekyll
 
 push: clean lint test docs ## Push to github
 	git add .
