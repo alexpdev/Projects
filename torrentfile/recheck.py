@@ -374,7 +374,10 @@ class FeedChecker:
 
     def __next__(self):
         """Yield back result of comparison."""
-        partial = next(self.itor)
+        try:
+            partial = next(self.itor)
+        except StopIteration as excp:
+            raise StopIteration from excp
         chunck = sha1(partial).digest()  # nosec
         try:
             piece = self.pieces[self.piece_count]
@@ -444,16 +447,17 @@ class FeedChecker:
                 partial = bytearray(0)
 
         while length - size > 0:
+            amount = length - size
             left = self.piece_length - len(partial)
-            if length - size > left:
+            if amount > left:
                 padding = bytearray(left)
                 size += left
                 partial.extend(padding)
                 yield partial
                 partial = bytearray(0)
             else:
-                partial.extend(bytearray(length - size))
-                size += length - size
+                partial.extend(bytearray(amount))
+                size += amount
                 yield partial
 
     def _gen_blanks(self, partial):
