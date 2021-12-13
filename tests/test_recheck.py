@@ -98,11 +98,12 @@ def test_checker_first_piece(dir2, version):
     def change(path):
         """Change some bytes in file."""
         if os.path.isfile(path):
-            data = open(path, "rb").read()
+            with open(path, "rb") as bfile:
+                data = bfile.read()
             new = b"some_different_bytes_to_swap"
             new_len = len(new)
-            data = new + data[new_len:]
-            open(path, "wb").write(data)
+            with open(path, "wb") as doc:
+                doc.write(new + data[new_len:])
         elif os.path.isdir(path):
             for item in os.listdir(path):
                 change(os.path.join(path, item))
@@ -128,11 +129,12 @@ def test_checker_first_piece_alt(dir3, version, piece_length):
     def change(path):
         """Change some bytes in file."""
         if os.path.isfile(path):
-            data = open(path, "rb").read()
-            new = b"some_different_bytes_to_swap"
+            with open(path, "rb") as bfile:
+                data = bfile.read()
+            new = b"some_other_bytes_to_use"
             new_len = len(new)
-            data = new + data[new_len:]
-            open(path, "wb").write(data)
+            with open(path, "wb") as wfile:
+                wfile.write(new + data[new_len:])
         elif os.path.isdir(path):
             for item in os.listdir(path):
                 change(os.path.join(path, item))
