@@ -21,10 +21,15 @@ jobs:
       - name: Run tests and collect coverage
         run: |
           pytest --cov=torrentfile --cov=tests --pylint
-          coverage xml -o coverage.xml
+          coverage xml -o ./coverage.xml
+          ls -al
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v2.1.0
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          verbose: true
 
       - name: Codacy Coverage Reporter
         uses: codacy/codacy-coverage-reporter-action@v1.1.0
