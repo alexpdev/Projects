@@ -10,12 +10,13 @@ theme:
   favicon: favicon.png
 
 nav:
-  - index.md
-  - cli.md
-  - hasher.md
-  - torrent.md
-  - utils.md
-  - recheck.md
+  - home : index.md
+  - CLI : cli.md
+  - Hasher : hasher.md
+  - Torrent : torrent.md
+  - Utils : utils.md
+  - Recheck : recheck.md
+  - license : LGPLv3.md
 
 
 plugins:
@@ -23,5 +24,5 @@ plugins:
   - mkdocstrings
   - mkapi
 
-docs_dir: docs/
-site_dir: site/
+docs_dir: site/
+site_dir: docs/
