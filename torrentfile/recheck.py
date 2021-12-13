@@ -28,7 +28,7 @@ from hashlib import sha1  # nosec
 import pyben
 from tqdm import tqdm
 
-from .hasher import HasherV2, HasherHybrid
+from .hasher import HasherHybrid, HasherV2
 from .utils import humanize_bytes
 
 SHA1 = 20
@@ -103,11 +103,12 @@ class Checker:
             return self._result
         total = self.total
         for _, _, _, size in tqdm(
-                iterable=self.iter_hashes(),
-                desc="hash pieces",
-                total=iterations,
-                unit="piece hash",
-                colour="blue"):
+            iterable=self.iter_hashes(),
+            desc="hash pieces",
+            total=iterations,
+            unit="piece hash",
+            colour="blue",
+        ):
             total -= size
         self.log_msg("%s%% of torrent content available.", self._result)
         return self._result
@@ -155,9 +156,9 @@ class Checker:
         """
         message = args[0]
         if len(args) >= 3:
-            message = (message % tuple(args[1:]))
+            message = message % tuple(args[1:])
         elif len(args) == 2:
-            message = (message % args[1])
+            message = message % args[1]
 
         # Repeat log messages should be ignored.
         if message != self.last_log:
@@ -267,7 +268,7 @@ class Checker:
                 self.log_msg(
                     "Including: path - %s, length - %s",
                     path,
-                    humanize_bytes(size)
+                    humanize_bytes(size),
                 )
 
             else:
@@ -302,15 +303,25 @@ class Checker:
             yield chunk, piece, path, size
             total_consumed = str(int(consumed / self.total * 100))
             percent_matched = str(int(matched / consumed * 100))
-            self.log_msg("Processed: %s%%, Matched: %s%%",
-                         total_consumed, percent_matched)
+            self.log_msg(
+                "Processed: %s%%, Matched: %s%%",
+                total_consumed,
+                percent_matched,
+            )
         if consumed:
-            self.log_msg("Re-Check Complete:\n %s%% of %s found at %s",
-                         percent_matched, self.metafile, self.root)
+            self.log_msg(
+                "Re-Check Complete:\n %s%% of %s found at %s",
+                percent_matched,
+                self.metafile,
+                self.root,
+            )
             self._result = percent_matched
         else:  # pragma: no cover
-            self.log_msg("Re-Check Complete:\n 0%% of %s found at %s",
-                         self.metafile, self.root)
+            self.log_msg(
+                "Re-Check Complete:\n 0%% of %s found at %s",
+                self.metafile,
+                self.root,
+            )
             self._result = "0"
 
 
@@ -326,7 +337,8 @@ def split_pieces(pieces, hash_size):
     lst = []
     start = 0
     while start < len(pieces):
-        lst.append(pieces[start: start + hash_size])
+        end = start + hash_size
+        lst.append(pieces[start:end])
         start += hash_size
     return lst
 
@@ -441,7 +453,7 @@ class FeedChecker:
                 partial = bytearray(0)
             else:
                 partial.extend(bytearray(length - size))
-                size += (length - size)
+                size += length - size
                 yield partial
 
     def _gen_blanks(self, partial):
@@ -483,7 +495,7 @@ class HashChecker:
         self.itor = None
         logging.debug(
             "Starting Hash Checker. piece length: %s",
-            humanize_bytes(self.piece_length)
+            humanize_bytes(self.piece_length),
         )
 
     def __iter__(self):
@@ -527,8 +539,13 @@ class HashChecker:
                         size = self.piece_length
                     else:
                         size = length - ((len(pieces) - 1) * self.piece_length)
-                    logging.debug("Yielding: %s %s %s %s", str(bytes(SHA256)),
-                                  str(piece), path, str(size))
+                    logging.debug(
+                        "Yielding: %s %s %s %s",
+                        str(bytes(SHA256)),
+                        str(piece),
+                        path,
+                        str(size),
+                    )
                     yield bytes(SHA256), piece, path, size
                 continue
 
@@ -548,7 +565,12 @@ class HashChecker:
             for chunk, piece in zip(hash_pieces, info_pieces):
                 if num_pieces == 1:
                     size = length - ((len(hash_pieces) - 1) * size)
-                logging.debug("Yielding: %s, %s, %s, %s", str(chunk),
-                              str(piece), str(path), str(size))
+                logging.debug(
+                    "Yielding: %s, %s, %s, %s",
+                    str(chunk),
+                    str(piece),
+                    str(path),
+                    str(size),
+                )
                 yield chunk, piece, path, size
                 num_pieces -= 1

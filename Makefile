@@ -57,15 +57,18 @@ clean-build: ## remove build artifacts
 	rm -f *.spec
 
 test: ## run tests quickly with the default Python
-	pytest tests --maxfail=2 --cov=torrentfile --cov=tests
-	coverage report
-	coverage xml -o coverage.xml
+	pytest tests --maxfail=2 --cov=torrentfile --cov=tests --pylint
 
+lint:
+	black torrentfile tests
+	isort torrentfile tests
+	prospector torrentfile
+	prospector tests
 
 docs: ## Regenerate docs from changes
-	rm -rf docs/*
+	rm -rf site/*
 	mkdocs -q build
-	touch docs/.nojekyll
+	touch site/.nojekyll
 
 build: clean install
 	python setup.py sdist bdist_wheel bdist_egg

@@ -14,8 +14,8 @@
 """Piece/File Hashers for Bittorrent meta file contents."""
 
 import logging
-import os
 import math
+import os
 from hashlib import sha1, sha256  # nosec
 
 from .utils import humanize_bytes
@@ -47,7 +47,7 @@ class Hasher:
         logging.debug(
             "Hashing v1 torrent file. Size: %s Piece Length: %s",
             humanize_bytes(self.total),
-            humanize_bytes(self.piece_length)
+            humanize_bytes(self.piece_length),
         )
 
     def __iter__(self):

@@ -166,7 +166,7 @@ from datetime import datetime
 import pyben
 
 from . import utils
-from .hasher import Hasher, HasherV2, HasherHybrid
+from .hasher import Hasher, HasherHybrid, HasherV2
 from .version import __version__ as version
 
 
@@ -183,8 +183,16 @@ class MetaFile:
         source (`str`): Private tracker source.
     """
 
-    def __init__(self, path=None, announce=None, private=False,
-                 source=None, piece_length=None, comment=None, outfile=None):
+    def __init__(
+        self,
+        path=None,
+        announce=None,
+        private=False,
+        source=None,
+        piece_length=None,
+        comment=None,
+        outfile=None,
+    ):
         """Construct MetaFile superclass and assign local attributes."""
         if not path:
             raise utils.MissingPathError
@@ -224,7 +232,7 @@ class MetaFile:
             "announce list": self.announce_list,
             "created by": f"TorrentFile:v{version}",
             "creation date": int(datetime.timestamp(datetime.now())),
-            "info": {}
+            "info": {},
         }
         if self.comment:
             self.meta["info"]["comment"] = self.comment
