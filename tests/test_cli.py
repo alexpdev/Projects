@@ -62,7 +62,7 @@ def test_cli_private(dir1):
     rmpath(str(dir1) + ".torrent")
 
 
-@pytest.mark.parametrize("piece_length", [2 ** exp for exp in range(14, 21)])
+@pytest.mark.parametrize("piece_length", [2**exp for exp in range(14, 21)])
 @pytest.mark.parametrize("version", ["1", "2", "3"])
 def test_cli_piece_length(dir1, piece_length, version):
     """Test piece length cli flag."""
@@ -81,7 +81,7 @@ def test_cli_piece_length(dir1, piece_length, version):
     rmpath(str(dir1) + ".torrent")
 
 
-@pytest.mark.parametrize("piece_length", [2 ** exp for exp in range(14, 21)])
+@pytest.mark.parametrize("piece_length", [2**exp for exp in range(14, 21)])
 @pytest.mark.parametrize("version", ["1", "2", "3"])
 def test_cli_announce(dir1, piece_length, version):
     """Test announce cli flag."""
@@ -125,7 +125,7 @@ def test_cli_announce_list(dir1, version):
     rmpath(str(dir1) + ".torrent")
 
 
-@pytest.mark.parametrize("piece_length", [2 ** exp for exp in range(14, 21)])
+@pytest.mark.parametrize("piece_length", [2**exp for exp in range(14, 21)])
 @pytest.mark.parametrize("version", ["1", "2", "3"])
 def test_cli_comment(dir1, piece_length, version):
     """Test comment cli flag."""
@@ -146,7 +146,7 @@ def test_cli_comment(dir1, piece_length, version):
     rmpath(str(dir1) + ".torrent")
 
 
-@pytest.mark.parametrize("piece_length", [2 ** exp for exp in range(14, 21)])
+@pytest.mark.parametrize("piece_length", [2**exp for exp in range(14, 21)])
 @pytest.mark.parametrize("version", ["1", "2", "3"])
 def test_cli_outfile(dir1, piece_length, version):
     """Test outfile cli flag."""
@@ -167,7 +167,7 @@ def test_cli_outfile(dir1, piece_length, version):
     rmpath(outfile)
 
 
-@pytest.mark.parametrize("piece_length", [2 ** exp for exp in range(14, 21)])
+@pytest.mark.parametrize("piece_length", [2**exp for exp in range(14, 21)])
 @pytest.mark.parametrize("version", ["1", "2", "3"])
 def test_cli_creation_date(dir1, piece_length, version):
     """Test if torrents created get an accurate timestamp."""
@@ -193,7 +193,7 @@ def test_cli_creation_date(dir1, piece_length, version):
     rmpath(str(dir1) + ".torrent")
 
 
-@pytest.mark.parametrize("piece_length", [2 ** exp for exp in range(14, 21)])
+@pytest.mark.parametrize("piece_length", [2**exp for exp in range(14, 21)])
 @pytest.mark.parametrize("version", ["1", "2", "3"])
 def test_cli_created_by(dir1, piece_length, version):
     """Test if created torrents recieve a created by field in meta info."""
@@ -214,7 +214,7 @@ def test_cli_created_by(dir1, piece_length, version):
     rmpath(str(dir1) + ".torrent")
 
 
-@pytest.mark.parametrize("piece_length", [2 ** exp for exp in range(14, 21)])
+@pytest.mark.parametrize("piece_length", [2**exp for exp in range(14, 21)])
 @pytest.mark.parametrize("version", ["1", "2", "3"])
 def test_cli_with_debug(dir1, piece_length, version):
     """Test debug mode cli flag."""
@@ -235,7 +235,7 @@ def test_cli_with_debug(dir1, piece_length, version):
     rmpath(str(dir1) + ".torrent")
 
 
-@pytest.mark.parametrize("piece_length", [2 ** exp for exp in range(14, 21)])
+@pytest.mark.parametrize("piece_length", [2**exp for exp in range(14, 21)])
 @pytest.mark.parametrize("version", ["1", "2", "3"])
 def test_cli_with_source(dir1, piece_length, version):
     """Test source cli flag."""

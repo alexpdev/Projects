@@ -18,8 +18,7 @@ from pathlib import Path
 import pytest
 
 from tests import dir1, dir2, rmpath, tempfile
-from torrentfile.torrent import (MetaFile, TorrentFile, TorrentFileHybrid,
-                                 TorrentFileV2)
+from torrentfile.torrent import MetaFile, TorrentFile, TorrentFileHybrid, TorrentFileV2
 from torrentfile.utils import MissingPathError
 
 
@@ -64,7 +63,7 @@ def test_torrentfile_extra(dir2, version):
 
 
 @pytest.mark.parametrize("size", list(range(17, 25)))
-@pytest.mark.parametrize("piece_length", [2 ** i for i in range(14, 18)])
+@pytest.mark.parametrize("piece_length", [2**i for i in range(14, 18)])
 @pytest.mark.parametrize("version", torrents())
 def test_torrentfile_single(version, size, piece_length):
     """Test creating a torrent file from a single file contents."""
@@ -82,7 +81,7 @@ def test_torrentfile_single(version, size, piece_length):
 
 
 @pytest.mark.parametrize("size", list(range(17, 25)))
-@pytest.mark.parametrize("piece_length", [2 ** i for i in range(14, 18)])
+@pytest.mark.parametrize("piece_length", [2**i for i in range(14, 18)])
 @pytest.mark.parametrize("version", torrents())
 def test_torrentfile_single_extra(version, size, piece_length):
     """Test creating a torrent file from a single file contents plus extra."""
@@ -102,7 +101,7 @@ def test_torrentfile_single_extra(version, size, piece_length):
 
 
 @pytest.mark.parametrize("size", list(range(17, 25)))
-@pytest.mark.parametrize("piece_length", [2 ** i for i in range(14, 18)])
+@pytest.mark.parametrize("piece_length", [2**i for i in range(14, 18)])
 @pytest.mark.parametrize("version", torrents())
 def test_torrentfile_single_under(version, size, piece_length):
     """Test creating a torrent file from less than a single file contents."""
@@ -110,7 +109,7 @@ def test_torrentfile_single_under(version, size, piece_length):
     with open(tfile, "rb") as binfile:
         data = binfile.read()
     with open(tfile, "wb") as binfile:
-        binfile.write(data[: -(2 ** 9)])
+        binfile.write(data[:-(2**9)])
     args = {
         "path": tfile,
         "comment": "somecomment",
