@@ -1,4 +1,5 @@
-#! /usr/bin/python3
+#! : usr/
+#   /python3
 # -*- coding: utf-8 -*-
 
 #####################################################################
@@ -16,14 +17,21 @@
 This module `metafile2` contains classes and functions related
 to constructing .torrent files using Bittorrent v2 Protocol
 
-Classes:
-    `TorrentFile`: construct .torrent file.
-    `TorrentFileV2`: construct .torrent v2 files using provided data.
-    `MetaFile` base class for all MetaFile classes.
+Classes
+-------
+`TorrentFile`
+    construct .torrent file.
+`TorrentFileV2`
+    construct .torrent v2 files using provided data.
+`MetaFile`
+    base class for all MetaFile classes.
 
-Constants:
-    BLOCK_SIZE (`int`): size of leaf hashes for merkle tree.
-    HASH_SIZE (`int`): Length of a sha256 hash.
+Constants
+---------
+BLOCK_SIZE : `int`
+    size of leaf hashes for merkle tree.
+HASH_SIZE : `int`
+    Length of a sha256 hash.
 
 Notes
 -----
@@ -173,26 +181,26 @@ from .version import __version__ as version
 class MetaFile:
     """Base Class for all TorrentFile classes.
 
-    Args:
-        path (`str`): target path to torrent content.
-        announce (`str`): One or more tracker URL's.
-        comment (`str`): A comment.
-        piece_length (`int`): Size of torrent pieces.
-        private (`bool`): For private trackers?
-        outfile (`str`): target path to write .torrent file.
-        source (`str`): Private tracker source.
+    Parameters
+    ----------
+    path : `str`
+        target path to torrent content.
+    announce : `str`
+        One or more tracker URL's.
+    comment : `str`
+        A comment.
+    piece_length : `int`
+        Size of torrent pieces.
+    private : `bool`
+        For private trackers?
+    outfile : `str`
+        target path to write .torrent file.
+    source : `str`
+        Private tracker source.
     """
 
-    def __init__(
-        self,
-        path=None,
-        announce=None,
-        private=False,
-        source=None,
-        piece_length=None,
-        comment=None,
-        outfile=None,
-    ):
+    def __init__(self, path=None, announce=None, private=False, source=None,
+                 piece_length=None, comment=None, outfile=None):
         """Construct MetaFile superclass and assign local attributes."""
         if not path:
             raise utils.MissingPathError
@@ -246,8 +254,10 @@ class MetaFile:
     def assemble(self):
         """Overload in subclasses.
 
-        Raises:
-            NotImplementedError (`Exception`)
+        Raises
+        ------
+        `Exception`
+            NotImplementedError
         """
         raise NotImplementedError
 
@@ -261,12 +271,17 @@ class MetaFile:
     def write(self, outfile=None):
         """Write meta information to .torrent file.
 
-        Args:
-            outfile (`str`, default=None): Destination path for .torrent file.
+        Parameters
+        ----------
+        outfile : `str`
+            Destination path for .torrent file. default=None
 
-        Returns:
-            outfile (`str`): Where the .torrent file was writen.
-            meta (`dict`): .torrent meta information.
+        Returns
+        -------
+        outfile : `str`
+            Where the .torrent file was writen.
+        meta : `dict`
+            .torrent meta information.
         """
         if outfile is not None:
             self.outfile = outfile
@@ -284,21 +299,31 @@ class TorrentFile(MetaFile):
 
     Construct *Torrentfile* class instance object.
 
-    Args:
-        path(`str`): Path to torrent file or directory.
-        piece_length(`int`): Size of each piece of torrent data.
-        announce(`str` or `list`): One or more tracker URL's.
-        private(`int`): 1 if private torrent else 0.
-        source(`str`): Source tracker.
-        comment(`str`): Comment string.
-        outfile(`str`): Path to write metfile to.
+    Parameters
+    ----------
+    path : `str`
+        Path to torrent file or directory.
+    piece_length : `int`
+        Size of each piece of torrent data.
+    announce : `str` or `list`
+        One or more tracker URL's.
+    private : `int`
+        1 if private torrent else 0.
+    source : `str`
+        Source tracker.
+    comment : `str`
+        Comment string.
+    outfile : `str`
+        Path to write metfile to.
     """
 
     def __init__(self, **kwargs):
         """Construct TorrentFile instance with given keyword args.
 
-        Args:
-            kwargs (`dict`): dictionary of keyword args passed to superclass.
+        Parameters
+        ----------
+        kwargs : `dict`
+            dictionary of keyword args passed to superclass.
         """
         super().__init__(**kwargs)
         logging.debug("Making Bittorrent V1 meta file.")
@@ -307,8 +332,10 @@ class TorrentFile(MetaFile):
     def assemble(self):
         """Assemble components of torrent metafile.
 
-        Returns:
-          `dict`: metadata dictionary for torrent file
+        Returns
+        -------
+        `dict`
+            metadata dictionary for torrent file
         """
         info = self.meta["info"]
         size, filelist = utils.filelist_total(self.path)
@@ -335,21 +362,31 @@ class TorrentFile(MetaFile):
 class TorrentFileV2(MetaFile):
     """Class for creating Bittorrent meta v2 files.
 
-    Args:
-        path (`str`): Path to torrent file or directory.
-        piece_length (`int`): Size of each piece of torrent data.
-        announce (`str` or `list`): one or more tracker URL's.
-        private (`int`): 1 if private torrent else 0.
-        source (`str`): Source tracker.
-        comment (`str`): Comment string.
-        outfile (`str`): Path to write metfile to.
+    Parameters
+    ----------
+    path : `str`
+        Path to torrent file or directory.
+    piece_length : `int`
+        Size of each piece of torrent data.
+    announce : `str` or `list`
+        one or more tracker URL's.
+    private : `int`
+        1 if private torrent else 0.
+    source : `str`
+        Source tracker.
+    comment : `str`
+        Comment string.
+    outfile : `str`
+        Path to write metfile to.
     """
 
     def __init__(self, **kwargs):
         """Construct `TorrentFileV2` Class instance from given parameters.
 
-        Args:
-            kwargs (`dict`): keywword arguments to pass to superclass.
+        Parameters
+        ----------
+        kwargs : `dict`
+            keywword arguments to pass to superclass.
         """
         super().__init__(**kwargs)
         logging.debug("Create .torrent v2 file.")
@@ -360,8 +397,10 @@ class TorrentFileV2(MetaFile):
     def assemble(self):
         """Assemble then return the meta dictionary for encoding.
 
-        Returns:
-          meta (`dict`): Metainformation about the torrent.
+        Returns
+        -------
+        meta : `dict`
+            Metainformation about the torrent.
         """
         info = self.meta["info"]
 
@@ -377,8 +416,10 @@ class TorrentFileV2(MetaFile):
     def _traverse(self, path):
         """Walk directory tree.
 
-        Args:
-            path (`str`): Path to file or directory.
+        Parameters
+        ----------
+        path : `str`
+            Path to file or directory.
         """
         if os.path.isfile(path):
             # Calculate Size and hashes for each file.
@@ -404,14 +445,22 @@ class TorrentFileV2(MetaFile):
 class TorrentFileHybrid(MetaFile):
     """Construct the Hybrid torrent meta file with provided parameters.
 
-    Args:
-        path (`str`): path to torrentfile target.
-        announce (`str` or `list`): one or more tracker URL's.
-        comment (`str`): Some comment.
-        source (`str`): Used for private trackers.
-        outfile (`str`): target path to write output.
-        private (`bool`): Used for private trackers.
-        piece_length (`int`): torrentfile data piece length.
+    Parameters
+    ----------
+    path : `str`
+        path to torrentfile target.
+    announce : `str` or `list`
+        one or more tracker URL's.
+    comment : `str`
+        Some comment.
+    source : `str`
+        Used for private trackers.
+    outfile : `str`
+        target path to write output.
+    private : `bool`
+        Used for private trackers.
+    piece_length : `int`
+        torrentfile data piece length.
     """
 
     def __init__(self, **kwargs):
@@ -442,8 +491,10 @@ class TorrentFileHybrid(MetaFile):
     def _traverse(self, path):
         """Build meta dictionary while walking directory.
 
-        Args:
-            path (`str`): Path to target file.
+        Parameters
+        ----------
+        path : `str`
+            Path to target file.
         """
         if os.path.isfile(path):
             fsize = os.path.getsize(path)

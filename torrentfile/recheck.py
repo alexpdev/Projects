@@ -28,7 +28,7 @@ from hashlib import sha1  # nosec
 import pyben
 from tqdm import tqdm
 
-from .hasher import HasherHybrid, HasherV2
+from .hasher import HasherV2, HasherHybrid
 from .utils import humanize_bytes
 
 SHA1 = 20
@@ -40,11 +40,13 @@ class Checker:
 
     Public constructor for Checker class instance.
 
-    Args:
+    Parameters
+    ----------
       metafile (`str`): Path to ".torrent" file.
       location (`str`): Path where the content is located in filesystem.
 
-    Example:
+    Example
+    -------
         >> metafile = "/path/to/torrentfile/content_file_or_dir.torrent"
         >> location = "/path/to/location"
         >> os.path.exists("/path/to/location/content_file_or_dir")
@@ -57,7 +59,8 @@ class Checker:
     def __init__(self, metafile, path):
         """Validate data against hashes contained in .torrent file.
 
-        Args:
+        Parameters
+        ----------
             metafile (`str`): path to .torrent file
             path (`str`): path to content or contents parent directory.
         """
@@ -79,7 +82,8 @@ class Checker:
     def register_callback(cls, hook):
         """Register hooks from 3rd party programs to access generated info.
 
-        Args:
+        Parameters
+        ----------
             hook (`function`): callback function for the logging feature.
         """
         cls._hook = hook
@@ -103,12 +107,11 @@ class Checker:
             return self._result
         total = self.total
         for _, _, _, size in tqdm(
-            iterable=self.iter_hashes(),
-            desc="hash pieces",
-            total=iterations,
-            unit="piece hash",
-            colour="blue",
-        ):
+                iterable=self.iter_hashes(),
+                desc="hash pieces",
+                total=iterations,
+                unit="piece hash",
+                colour="blue"):
             total -= size
         self.log_msg("%s%% of torrent content available.", self._result)
         return self._result
@@ -116,11 +119,12 @@ class Checker:
     def parse_metafile(self):
         """Flatten Meta dictionary of torrent file.
 
-        Returns:
+        Returns
+        -------
             `dict`: flattened meta dictionary.
         """
         if not os.path.exists(self.metafile):
-            self.log_msg("File %s could not be found.", self.metafile)
+
             raise FileNotFoundError(self.metafile)
 
         info = {}
@@ -150,15 +154,16 @@ class Checker:
     def log_msg(self, *args, level=logging.INFO):
         """Log message `msg` to logger and send `msg` to callback hook.
 
-        Args:
+        Parameters
+        ----------
             `*args` (`Iterable`[`str`]): formatting args for log message
             level (`int`, default=`logging.INFO`) : Log level for this message
         """
         message = args[0]
         if len(args) >= 3:
-            message = message % tuple(args[1:])
+            message = (message % tuple(args[1:]))
         elif len(args) == 2:
-            message = message % args[1]
+            message = (message % args[1])
 
         # Repeat log messages should be ignored.
         if message != self.last_log:
@@ -178,7 +183,8 @@ class Checker:
         The returned value will be the absolute path that matches the torrent's
         name.
 
-        Returns:
+        Returns
+        -------
             `str`: root path to content
         """
         if not os.path.exists(path):
@@ -244,7 +250,8 @@ class Checker:
         Extract full pathnames, length, root hash, and layer hashes
         for each file included in the .torrent's file tree.
 
-        Args:
+        Parameters
+        ----------
             tree (`dict`): File Tree dict extracted from torrent file.
             partials (`list`): list of intermediate pathnames.
         """
@@ -268,7 +275,7 @@ class Checker:
                 self.log_msg(
                     "Including: path - %s, length - %s",
                     path,
-                    humanize_bytes(size),
+                    humanize_bytes(size)
                 )
 
             else:
@@ -277,11 +284,16 @@ class Checker:
     def iter_hashes(self):
         """Produce results of comparing torrent contents piece by piece.
 
-        Returns:
-            chunck (`bytes`): hash of data found on disk
-            piece (`bytes`): hash of data when complete and correct
-            path (`str`): path to file being hashed
-            size (`int`): length of bytes hashed for piece
+        Yields
+        ------
+        chunck : `bytes`
+            hash of data found on disk
+        piece : `bytes`
+            hash of data when complete and correct
+        path : `str`
+            path to file being hashed
+        size : `int`
+            length of bytes hashed for piece
         """
         matched = consumed = 0
         if self.meta_version == 1:
@@ -303,42 +315,35 @@ class Checker:
             yield chunk, piece, path, size
             total_consumed = str(int(consumed / self.total * 100))
             percent_matched = str(int(matched / consumed * 100))
-            self.log_msg(
-                "Processed: %s%%, Matched: %s%%",
-                total_consumed,
-                percent_matched,
-            )
+            self.log_msg("Processed: %s%%, Matched: %s%%",
+                         total_consumed, percent_matched)
         if consumed:
-            self.log_msg(
-                "Re-Check Complete:\n %s%% of %s found at %s",
-                percent_matched,
-                self.metafile,
-                self.root,
-            )
+            self.log_msg("Re-Check Complete:\n %s%% of %s found at %s",
+                         percent_matched, self.metafile, self.root)
             self._result = percent_matched
         else:  # pragma: no cover
-            self.log_msg(
-                "Re-Check Complete:\n 0%% of %s found at %s",
-                self.metafile,
-                self.root,
-            )
+            self.log_msg("Re-Check Complete:\n 0%% of %s found at %s",
+                         self.metafile, self.root)
             self._result = "0"
 
 
 def split_pieces(pieces, hash_size):
     """Split bytes into 20 piece chuncks for sha1 digest.
 
-    Args:
-        pieces (`bytes`): Initial data.
+    Parameters
+    ----------
+    pieces : `bytes`
+        Initial data.
 
-    Returns:
-        lst (`list`): Pieces broken into groups of 20 bytes.
+    Returns
+    -------
+    lst : `list`
+        Pieces broken into groups of 20 bytes.
     """
     lst = []
     start = 0
     while start < len(pieces):
-        end = start + hash_size
-        lst.append(pieces[start:end])
+        lst.append(pieces[start: start + hash_size])
         start += hash_size
     return lst
 
@@ -349,11 +354,16 @@ class FeedChecker:
     Seemlesly validate torrent file contents by comparing hashes in
     metafile against data on disk.
 
-    Args:
-      paths (`list`): List of stirngs indicating file paths.
-      piece_length (`int`): Size of data blocks to split the data into.
-      total (`int`): Sum total in bytes of all files in file list.
-      fileinfo (`dict`): Info and meta dictionary from .torrent file.
+    Parameters
+    ----------
+    paths : `list`
+        List of stirngs indicating file paths.
+    piece_length : `int`
+        Size of data blocks to split the data into.
+    total : `int`
+        Sum total in bytes of all files in file list.
+    fileinfo : `dict`
+        Info and meta dictionary from .torrent file.
     """
 
     def __init__(self, paths, piece_length, fileinfo, pieces):
@@ -365,19 +375,16 @@ class FeedChecker:
         self.piece_map = {}
         self.index = 0
         self.piece_count = 0
-        self.itor = None
+        self.it = None
 
     def __iter__(self):
         """Assign iterator and return self."""
-        self.itor = self.iter_pieces()
+        self.it = self.iter_pieces()
         return self
 
     def __next__(self):
         """Yield back result of comparison."""
-        try:
-            partial = next(self.itor)
-        except StopIteration as excp:
-            raise StopIteration from excp
+        partial = next(self.it)
         chunck = sha1(partial).digest()  # nosec
         try:
             piece = self.pieces[self.piece_count]
@@ -395,8 +402,10 @@ class FeedChecker:
     def iter_pieces(self):
         """Iterate through, and hash pieces of torrent contents.
 
-        Yields:
-            piece (`bytes`): hash digest for block of torrent data.
+        Yields
+        ------
+        piece : `bytes`
+            hash digest for block of torrent data.
         """
         partial = bytearray()
         for i, path in enumerate(self.paths):
@@ -422,12 +431,17 @@ class FeedChecker:
     def extract(self, path, partial):
         """Split file paths contents into blocks of data for hash pieces.
 
-        Args:
-            path (`str`): path to content.
-            partial (`bytes`): any remaining content from last file.
+        Parameters
+        ----------
+        path : `str`
+            path to content.
+        partial : `bytes`
+            any remaining content from last file.
 
-        Yields:
-            partial (`bytes`): Hash digest for block of .torrent contents.
+        Yields
+        ------
+        partial : `bytes`
+            Hash digest for block of .torrent contents.
         """
         read = 0
         size = os.path.getsize(path)
@@ -447,24 +461,25 @@ class FeedChecker:
                 partial = bytearray(0)
 
         while length - size > 0:
-            amount = length - size
             left = self.piece_length - len(partial)
-            if amount > left:
+            if length - size > left:
                 padding = bytearray(left)
                 size += left
                 partial.extend(padding)
                 yield partial
                 partial = bytearray(0)
             else:
-                partial.extend(bytearray(amount))
-                size += amount
+                partial.extend(bytearray(length - size))
+                size += (length - size)
                 yield partial
 
     def _gen_blanks(self, partial):
-        """Create pieces filled with 0's where file sizes do not match.
+        """Create padded pieces where file sizes do not match.
 
-        Args:
-            partial (`bytes`): any remaining data from last file processed.
+        Parameters
+        ----------
+        partial : `bytes`
+            any remaining data from last file processed.
         """
         left = self.current_length - len(partial)
         while left > self.piece_length - len(partial):
@@ -480,14 +495,16 @@ class FeedChecker:
 
 
 class HashChecker:
-    """Construct the HybridChecker.
+    """Verify that root hashes of content files match the .torrent files.
 
-    Verify that root hashes of content files match the .torrent files.
-
-    Args:
-      paths (`list`): List of files.
-      piece_length (`int`): Size of chuncks to split the data into.
-      fileinfo (`dict`): Info from .torrent file being checked.
+    Parameters
+    ----------
+    paths : `list`
+        List of files.
+    piece_length : `int`
+        Size of chuncks to split the data into.
+    fileinfo : `dict`
+        Info from .torrent file being checked.
     """
 
     def __init__(self, paths, piece_length, fileinfo, hasher):
@@ -496,21 +513,21 @@ class HashChecker:
         self.hasher = hasher
         self.piece_length = piece_length
         self.fileinfo = fileinfo
-        self.itor = None
+        self.it = None
         logging.debug(
             "Starting Hash Checker. piece length: %s",
-            humanize_bytes(self.piece_length),
+            humanize_bytes(self.piece_length)
         )
 
     def __iter__(self):
         """Assign iterator and return self."""
-        self.itor = self.iter_paths()
+        self.it = self.iter_paths()
         return self
 
     def __next__(self):
         """Provide the result of comparison."""
         try:
-            value = next(self.itor)
+            value = next(self.it)
             return value
         except StopIteration as stopiter:
             raise StopIteration() from stopiter
@@ -518,11 +535,15 @@ class HashChecker:
     def iter_paths(self):
         """Iterate through and compare root file hashes to .torrent file.
 
-        Args:
-            hasher (class): The class user to caluclate root hash.
+        Parameters
+        ----------
+        hasher : class
+            The class user to caluclate root hash.
 
-        Yields:
-            results (`tuple`): The size of the file and result of match.
+        Yields
+        ------
+        results : `tuple`
+            The size of the file and result of match.
         """
         for path in self.paths:
             info = self.fileinfo[path]
@@ -543,13 +564,8 @@ class HashChecker:
                         size = self.piece_length
                     else:
                         size = length - ((len(pieces) - 1) * self.piece_length)
-                    logging.debug(
-                        "Yielding: %s %s %s %s",
-                        str(bytes(SHA256)),
-                        str(piece),
-                        path,
-                        str(size),
-                    )
+                    logging.debug("Yielding: %s %s %s %s", str(bytes(SHA256)),
+                                  str(piece), path, str(size))
                     yield bytes(SHA256), piece, path, size
                 continue
 
@@ -569,12 +585,7 @@ class HashChecker:
             for chunk, piece in zip(hash_pieces, info_pieces):
                 if num_pieces == 1:
                     size = length - ((len(hash_pieces) - 1) * size)
-                logging.debug(
-                    "Yielding: %s, %s, %s, %s",
-                    str(chunk),
-                    str(piece),
-                    str(path),
-                    str(size),
-                )
+                logging.debug("Yielding: %s, %s, %s, %s", str(chunk),
+                              str(piece), str(path), str(size))
                 yield chunk, piece, path, size
                 num_pieces -= 1
