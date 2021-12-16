@@ -384,6 +384,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#torrentfile.recheck.Checker.find_root--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#torrentfile.recheck.Checker.find_root--returns" class="md-nav__link">
     Returns
   </a>
@@ -658,13 +665,6 @@
   
     <nav class="md-nav" aria-label="iter_paths()">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#torrentfile.recheck.HashChecker.iter_paths--parameters" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#torrentfile.recheck.HashChecker.iter_paths--yields" class="md-nav__link">
@@ -797,6 +797,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#torrentfile.recheck.Checker.find_root--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#torrentfile.recheck.Checker.find_root--returns" class="md-nav__link">
     Returns
   </a>
@@ -1071,13 +1078,6 @@
   
     <nav class="md-nav" aria-label="iter_paths()">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#torrentfile.recheck.HashChecker.iter_paths--parameters" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#torrentfile.recheck.HashChecker.iter_paths--yields" class="md-nav__link">
@@ -1359,6 +1359,9 @@ to a directory.  The directory will be checked to see if it matches
 the torrent's name, if not the directories contents will be searched.
 The returned value will be the absolute path that matches the torrent's
 name.</p>
+<h5 id="torrentfile.recheck.Checker.find_root--parameters">Parameters</h5>
+<p>path : <code>str</code>
+    root path to torrent content</p>
 <h5 id="torrentfile.recheck.Checker.find_root--returns">Returns</h5>
 <pre><code>`str`: root path to content
 </code></pre>
@@ -1375,6 +1378,11 @@ name.</p>
 <span class="sd">    the torrent&#39;s name, if not the directories contents will be searched.</span>
 <span class="sd">    The returned value will be the absolute path that matches the torrent&#39;s</span>
 <span class="sd">    name.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    path : `str`</span>
+<span class="sd">        root path to torrent content</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1777,14 +1785,10 @@ FeedChecker        </code>
 <p>Seemlesly validate torrent file contents by comparing hashes in
 metafile against data on disk.</p>
 <h4 id="torrentfile.recheck.FeedChecker--parameters">Parameters</h4>
-<p>paths : <code>list</code>
-    List of stirngs indicating file paths.
-piece_length : <code>int</code>
-    Size of data blocks to split the data into.
-total : <code>int</code>
-    Sum total in bytes of all files in file list.
-fileinfo : <code>dict</code>
-    Info and meta dictionary from .torrent file.</p>
+<p>checker : <code>object</code>
+    the checker class instance.
+hasher : <code>Any</code>
+    hashing class for calculating piece hashes. default=None</p>
 
 
 
@@ -2056,12 +2060,10 @@ HashChecker        </code>
 
       <p>Verify that root hashes of content files match the .torrent files.</p>
 <h4 id="torrentfile.recheck.HashChecker--parameters">Parameters</h4>
-<p>paths : <code>list</code>
-    List of files.
-piece_length : <code>int</code>
-    Size of chuncks to split the data into.
-fileinfo : <code>dict</code>
-    Info from .torrent file being checked.</p>
+<p>checker : <code>Object</code>
+    the checker instance that maintains variables.
+hasher : <code>Object</code>
+    the version specific hashing class for torrent content.</p>
 
 
 
@@ -2195,9 +2197,6 @@ fileinfo : <code>dict</code>
     <div class="doc doc-contents ">
 
       <p>Iterate through and compare root file hashes to .torrent file.</p>
-<h5 id="torrentfile.recheck.HashChecker.iter_paths--parameters">Parameters</h5>
-<p>hasher : class
-    The class user to caluclate root hash.</p>
 <h5 id="torrentfile.recheck.HashChecker.iter_paths--yields">Yields</h5>
 <p>results : <code>tuple</code>
     The size of the file and result of match.</p>
@@ -2206,11 +2205,6 @@ fileinfo : <code>dict</code>
           <summary>Source code in <code>torrentfile\recheck.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">iter_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Iterate through and compare root file hashes to .torrent file.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    hasher : class</span>
-<span class="sd">        The class user to caluclate root hash.</span>
 
 <span class="sd">    Yields</span>
 <span class="sd">    ------</span>

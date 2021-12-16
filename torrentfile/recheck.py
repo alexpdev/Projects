@@ -177,6 +177,11 @@ class Checker:
         The returned value will be the absolute path that matches the torrent's
         name.
 
+        Parameters
+        ----------
+        path : `str`
+            root path to torrent content
+
         Returns
         -------
             `str`: root path to content
@@ -312,14 +317,10 @@ class FeedChecker:
 
     Parameters
     ----------
-    paths : `list`
-        List of stirngs indicating file paths.
-    piece_length : `int`
-        Size of data blocks to split the data into.
-    total : `int`
-        Sum total in bytes of all files in file list.
-    fileinfo : `dict`
-        Info and meta dictionary from .torrent file.
+    checker : `object`
+        the checker class instance.
+    hasher : `Any`
+        hashing class for calculating piece hashes. default=None
     """
 
     def __init__(self, checker, hasher=None):
@@ -454,12 +455,10 @@ class HashChecker:
 
     Parameters
     ----------
-    paths : `list`
-        List of files.
-    piece_length : `int`
-        Size of chuncks to split the data into.
-    fileinfo : `dict`
-        Info from .torrent file being checked.
+    checker : `Object`
+        the checker instance that maintains variables.
+    hasher : `Object`
+        the version specific hashing class for torrent content.
     """
 
     def __init__(self, checker, hasher=None):
@@ -492,11 +491,6 @@ class HashChecker:
 
     def iter_paths(self):
         """Iterate through and compare root file hashes to .torrent file.
-
-        Parameters
-        ----------
-        hasher : class
-            The class user to caluclate root hash.
 
         Yields
         ------
