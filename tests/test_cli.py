@@ -216,6 +216,29 @@ def test_cli_created_by(dir1, piece_length, version):
 
 @pytest.mark.parametrize("piece_length", [2 ** exp for exp in range(14, 21)])
 @pytest.mark.parametrize("version", ["1", "2", "3"])
+def test_cli_web_seeds(dir1, piece_length, version):
+    """Test if created torrents recieve a created by field in meta info."""
+    args = [
+        "torrentfile",
+        str(dir1),
+        "--piece-length",
+        str(piece_length),
+        "--meta-version",
+        version,
+        "-w",
+        "https://webseed.url/1",
+        "https://webseed.url/2",
+        "https://webseed.url/3",
+    ]
+    sys.argv = args
+    main()
+    meta = pyben.load(str(dir1) + ".torrent")
+    assert "https://webseed.url/1" in meta["url-list"]  # nosec
+    rmpath(str(dir1) + ".torrent")
+
+
+@pytest.mark.parametrize("piece_length", [2 ** exp for exp in range(14, 21)])
+@pytest.mark.parametrize("version", ["1", "2", "3"])
 def test_cli_with_debug(dir1, piece_length, version):
     """Test debug mode cli flag."""
     args = [

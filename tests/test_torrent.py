@@ -30,8 +30,7 @@ def torrents():
 
 def test_fixtures():
     """Test pytest fixtures."""
-    assert dir1  # nosec
-    assert dir2  # nosec
+    assert dir1 and dir2  # nosec
 
 
 @pytest.mark.parametrize("version", torrents())

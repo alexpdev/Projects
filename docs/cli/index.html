@@ -818,8 +818,22 @@ max_help_positions : <code>int</code>
         <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">        one or more Bittorrent tracker announce url(s)</span>
+<span class="s2">        One or more Bittorrent tracker announce url(s).</span>
 <span class="s2">        Examples:: [-a url1 url2 url3]  [--anounce url1]</span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-w&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--web-seed&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;url_list&quot;</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;&lt;url&gt;&quot;</span><span class="p">,</span>
+        <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        One or more url(s) linking to a http server hosting</span>
+<span class="s2">        the torrent contents.  This is useful if the torrent</span>
+<span class="s2">        tracker is ever unreachable. Example:: [-w url1 [url2 [url3]]]</span>
 <span class="s2">        &quot;&quot;&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
@@ -869,6 +883,7 @@ max_help_positions : <code>int</code>
         <span class="k">return</span> <span class="n">result</span>
 
     <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;url_list&quot;</span><span class="p">:</span> <span class="n">flags</span><span class="o">.</span><span class="n">url_list</span><span class="p">,</span>
         <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">flags</span><span class="o">.</span><span class="n">content</span><span class="p">,</span>
         <span class="s2">&quot;announce&quot;</span><span class="p">:</span> <span class="n">flags</span><span class="o">.</span><span class="n">announce</span><span class="p">,</span>
         <span class="s2">&quot;piece_length&quot;</span><span class="p">:</span> <span class="n">flags</span><span class="o">.</span><span class="n">piece_length</span><span class="p">,</span>

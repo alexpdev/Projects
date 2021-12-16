@@ -166,8 +166,22 @@ def main_script(args=None):
         nargs="+",
         default="",
         help="""
-        one or more Bittorrent tracker announce url(s)
+        One or more Bittorrent tracker announce url(s).
         Examples:: [-a url1 url2 url3]  [--anounce url1]
+        """,
+    )
+
+    parser.add_argument(
+        "-w",
+        "--web-seed",
+        action="store",
+        dest="url_list",
+        metavar="<url>",
+        nargs="+",
+        help="""
+        One or more url(s) linking to a http server hosting
+        the torrent contents.  This is useful if the torrent
+        tracker is ever unreachable. Example:: [-w url1 [url2 [url3]]]
         """,
     )
 
@@ -217,6 +231,7 @@ def main_script(args=None):
         return result
 
     kwargs = {
+        "url_list": flags.url_list,
         "path": flags.content,
         "announce": flags.announce,
         "piece_length": flags.piece_length,

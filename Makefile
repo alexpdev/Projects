@@ -75,7 +75,14 @@ push: clean lint test docs ## Push to github
 	git commit -m "$m"
 	git push
 
-build: clean install
+setup: clean ## setup and build repo
+	pip install --pre --upgrade --force-reinstall --no-cache -rrequirements.txt
+	python setup.py sdist bdist_wheel bdist_egg
+	pip install -e .
+	twine upload dist/*
+
+
+winbuild: clean install
 	python setup.py sdist bdist_wheel bdist_egg
 	rm -rfv ../runner
 	mkdir ../runner
