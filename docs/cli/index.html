@@ -718,7 +718,11 @@ max_help_positions : <code>int</code>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 
-    <span class="n">desc</span> <span class="o">=</span> <span class="s2">&quot;Create and/or ReCheck Bittorrent V1, V2, and Hybrid meta files.&quot;</span>
+    <span class="n">desc</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;Terminal based tool for creating, checking, or editing &quot;</span>
+        <span class="s2">&quot;Bittorrent meta(.torrent) files. TorrentFile supports &quot;</span>
+        <span class="s2">&quot;all meta file versions including hybrid files.&quot;</span>
+    <span class="p">)</span>
 
     <span class="n">parser</span> <span class="o">=</span> <span class="n">ArgumentParser</span><span class="p">(</span>
         <span class="s2">&quot;TorrentFile&quot;</span><span class="p">,</span>
@@ -844,10 +848,11 @@ max_help_positions : <code>int</code>
         <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;checker&quot;</span><span class="p">,</span>
         <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;&lt;.torrent&gt;&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">        &lt;.torrent&gt; is the path to a .torrent meta file.</span>
+<span class="s2">        Activates the torrent checker mode.</span>
+<span class="s2">        &lt;.torrent&gt; is the path to a torrent meta file.</span>
 <span class="s2">        Check &lt;content&gt; data integrity with &lt;.torrent&gt; file.</span>
-<span class="s2">        If this is active, all other options are ignored</span>
-<span class="s2">        (except --debug)</span>
+<span class="s2">        If this is active, all other options are ignored (except --debug)</span>
+<span class="s2">        Ex:: :~$ torrentfile -r path/to/file.torrent path/to/contents</span>
 <span class="s2">        &quot;&quot;&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
