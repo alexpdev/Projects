@@ -49,10 +49,13 @@ Or download the latest release from the Release page on github.
 ```bash:
 usage: TorrentFile [-h] [-v] [-d] [-p] [-s <source>] [-c <comment>]
                    [-o <path>] [--meta-version <int>] [-l <int>]
-                   [-t <url> [<url> ...]] [-r <.torrent>]
+                   [-t <url> [<url> ...]] [-w <url> [<url> ...]]
+                   [-r <.torrent>]
                    <content>
 
-Create and/or ReCheck Bittorrent V1, V2, and Hybrid meta files.
+Terminal based tool for creating, checking, or editing Bittorrent
+meta(.torrent) files. TorrentFile supports all meta file versions including
+hybrid files.
 
 positional arguments:
   <content>                             path to content file or directory
@@ -65,7 +68,7 @@ optional arguments:
   -s <source>, --source <source>        specify source tracker
   -c <comment>, --comment <comment>     include a comment in file metadata
   -o <path>, --out <path>               output path for created .torrent file
-  --meta-version <int>                  torrent file version.
+  --meta-version <int>                  Bittorrent metafile version.
                                         Options = 1, 2 or 3.
                                         (1) = Bittorrent v1 (Default)
                                         (2) = Bittorrent v2
@@ -78,14 +81,20 @@ optional arguments:
                                         Examples:: [--piece-length 14] [-l 20] [-l 16777216]
 
   -t <url> [<url> ...], --tracker <url> [<url> ...]
-                                        one or more Bittorrent tracker announce url(s)
-                                        Examples: [-a url1 url2 url3]  [--anounce url1]
+                                        One or more Bittorrent tracker announce url(s).
+                                        Examples:: [-a url1 url2 url3]  [--anounce url1]
+
+  -w <url> [<url> ...], --web-seed <url> [<url> ...]
+                                        One or more url(s) linking to a http server hosting
+                                        the torrent contents.  This is useful if the torrent
+                                        tracker is ever unreachable. Example:: [-w url1 [url2 [url3]]]
 
   -r <.torrent>, --check <.torrent>, --recheck <.torrent>
-                                        <.torrent> is the path to a .torrent meta file.
+                                        Activates the torrent checker mode.
+                                        <.torrent> is the path to a torrent meta file.
                                         Check <content> data integrity with <.torrent> file.
-                                        If this is active, all other options are ignored
-                                        (except --debug)
+                                        If this is active, all other options are ignored (except --debug)
+                                        Ex:: :~$ torrentfile -r path/to/file.torrent path/to/contents
 ```
 
 ## License

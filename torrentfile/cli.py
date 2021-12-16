@@ -66,7 +66,11 @@ def main_script(args=None):
     if not args:
         args = sys.argv[1:]
 
-    desc = "Create and/or ReCheck Bittorrent V1, V2, and Hybrid meta files."
+    desc = (
+        "Terminal based tool for creating, checking, or editing "
+        "Bittorrent meta(.torrent) files. TorrentFile supports "
+        "all meta file versions including hybrid files."
+    )
 
     parser = ArgumentParser(
         "TorrentFile",
@@ -192,10 +196,11 @@ def main_script(args=None):
         dest="checker",
         metavar="<.torrent>",
         help="""
-        <.torrent> is the path to a .torrent meta file.
+        Activates the torrent checker mode.
+        <.torrent> is the path to a torrent meta file.
         Check <content> data integrity with <.torrent> file.
-        If this is active, all other options are ignored
-        (except --debug)
+        If this is active, all other options are ignored (except --debug)
+        Ex:: :~$ torrentfile -r path/to/file.torrent path/to/contents
         """,
     )
 
