@@ -21,14 +21,14 @@ at the end for the torrentfile as a whole.
 """
 
 import logging
-import math
 import os
-from hashlib import sha1  # nosec
+from hashlib import sha1, sha256  # nosec
+from pathlib import Path
 
 import pyben
 from tqdm import tqdm
 
-from .hasher import HasherV2, HasherHybrid
+from .hasher import HasherHybrid, HasherV2
 from .utils import humanize_bytes
 
 SHA1 = 20
@@ -61,21 +61,32 @@ class Checker:
 
         Parameters
         ----------
-            metafile (`str`): path to .torrent file
-            path (`str`): path to content or contents parent directory.
+        metafile : `str`
+            path to .torrent file
+        path : `str`
+            path to content or contents parent directory.
         """
-        self._result = None
-        self.meta_version = None
         self.metafile = metafile
-        self.last_log = None
-        self.log_msg("Checking: %s, %s", metafile, path)
-        self.info = self.parse_metafile()
-        self.name = self.info["name"]
-        self.piece_length = self.info["piece length"]
-        self.root = self.find_root(path)
+        self.meta_version = None
         self.total = 0
         self.paths = []
         self.fileinfo = {}
+        self.last_log = None
+        if not os.path.exists(metafile):
+            raise FileNotFoundError
+        self.meta = pyben.load(metafile)
+        self.info = self.meta["info"]
+        self.name = self.info["name"]
+        self.piece_length = self.info["piece length"]
+        if "meta version" in self.info:
+            if "pieces" in self.info:
+                self.meta_version = 3
+            else:
+                self.meta_version = 2
+        else:
+            self.meta_version = 1
+        self.root = self.find_root(path)
+        self.log_msg("Checking: %s, %s", metafile, path)
         self.check_paths()
 
     @classmethod
@@ -84,86 +95,69 @@ class Checker:
 
         Parameters
         ----------
-            hook (`function`): callback function for the logging feature.
+        hook : `function`
+            callback function for the logging feature.
         """
         cls._hook = hook
 
-    @property
-    def result(self):
-        """Generate result percentage and store for future calls."""
-        iterations = None
-        self.log_msg("Calulating completion percent.")
-        if self.meta_version == 1:
-            iterations = math.ceil(self.total / self.piece_length)
-        else:
-            for _, info in self.fileinfo.items():
-                length = info["length"]
-                if iterations is None:
-                    iterations = 0
-                iterations += length // self.piece_length
-                if length % self.piece_length != 0:
-                    iterations += 1
-        if self._result:
-            return self._result
-        total = self.total
-        for _, _, _, size in tqdm(
-                iterable=self.iter_hashes(),
-                desc="hash pieces",
-                total=iterations,
-                unit="piece hash",
-                colour="blue"):
-            total -= size
-        self.log_msg("%s%% of torrent content available.", self._result)
-        return self._result
-
-    def parse_metafile(self):
-        """Flatten Meta dictionary of torrent file.
+    def hasher(self):
+        """Return the hasher class related to torrents meta version.
 
         Returns
         -------
-            `dict`: flattened meta dictionary.
+        `Class[Hasher]`
+            the hashing implementation for specific torrent meta version.
         """
-        if not os.path.exists(self.metafile):
+        if self.meta_version == 2:
+            return HasherV2
+        if self.meta_version == 3:
+            return HasherHybrid
+        return None
 
-            raise FileNotFoundError(self.metafile)
+    def piece_checker(self):
+        """Check individual pieces of the torrent.
 
-        info = {}
-        has_pieces = has_meta_version = False
+        Returns
+        -------
+        `Obj`
+            Individual piece hasher.
+        """ ""
+        if self.meta_version == 1:
+            return FeedChecker
+        return HashChecker
 
-        for k, v in pyben.load(self.metafile).items():
-            if k == "info":
-                for key, val in v.items():
-                    info[key] = val
-                    if key == "pieces":
-                        has_pieces = True
-                    if key == "meta version":
-                        has_meta_version = True
-            else:
-                info[k] = v
-
-        if has_meta_version and has_pieces:
-            self.meta_version = 3
-        elif has_meta_version:
-            self.meta_version = 2
+    def results(self):
+        """Generate result percentage and store for future calls."""
+        if self.meta_version == 1:
+            iterations = len(self.info["pieces"]) // SHA1
         else:
-            self.meta_version = 1
-
-        self.log_msg("Detected Meta Version %s.", str(self.meta_version))
-        return info
+            iterations = (self.total // self.piece_length) + 1
+        responses = []
+        for response in tqdm(
+            iterable=self.iter_hashes(),
+            desc="Calculating",
+            total=iterations,
+            unit="piece",
+        ):
+            responses.append(response)
+        print(responses)
+        return self._result
 
     def log_msg(self, *args, level=logging.INFO):
         """Log message `msg` to logger and send `msg` to callback hook.
 
         Parameters
         ----------
-            `*args` (`Iterable`[`str`]): formatting args for log message
-            level (`int`, default=`logging.INFO`) : Log level for this message
+        *args : `Iterable`[`str`]
+            formatting args for log message
+        level : `int`
+            Log level for this message; default=`logging.INFO`
         """
         message = args[0]
         if len(args) >= 3:
-            message = (message % tuple(args[1:]))
+            message = message % tuple(args[1:])
         elif len(args) == 2:
-            message = (message % args[1])
+            message = message % args[1]
 
         # Repeat log messages should be ignored.
         if message != self.last_log:
@@ -191,57 +185,46 @@ class Checker:
             self.log_msg("Could not locate torrent content %s.", path)
             raise FileNotFoundError(path)
 
-        root = os.path.abspath(path)
-        base = os.path.basename(root)
-
-        if base == self.name:
-            self.log_msg("Content found: %s.", root)
+        root = Path(path)
+        if root.name == self.name:
+            self.log_msg("Content found: %s.", str(root))
             return root
 
-        self.log_msg("Searching for torrent root in %s", root)
-        for name in os.listdir(root):
-            if name == self.name:
-                root = os.path.join(root, name)
-                self.log_msg("Content Found: %s", root)
-                return root
+        if self.name in os.listdir(root):
+            return root / self.name
 
-        self.log_msg("Could not locate torrent content in: %s", root)
+        self.log_msg("Could not locate torrent content in: %s", str(root))
         raise FileNotFoundError(root)
 
     def check_paths(self):
         """Gather all file paths described in the torrent file."""
-        if os.path.isfile(self.root):
+        finfo = self.fileinfo
+        if "length" in self.info:
             self.log_msg("%s points to a single file", self.root)
-            self.paths.append(self.root)
-            if self.meta_version == 1:
-                self.fileinfo[self.root] = {"length": self.info["length"]}
-                self.total = self.info["length"]
-                self.pieces = split_pieces(self.info["pieces"], SHA1)
-            else:
-                info = self.info["file tree"][self.name][""]
-                info["partial"] = self.name
-                self.total = info["length"]
-                if self.total > self.piece_length:
-                    layers = self.info["piece layers"][info["pieces root"]]
-                    info["layer hashes"] = split_pieces(layers, SHA256)
-                self.fileinfo[self.root] = info
+            self.total = self.info["length"]
+            self.paths.append(str(self.root))
+            finfo[0] = {
+                "path": self.root,
+                "length": self.info["length"],
+            }
+            if self.meta_version > 1:
+                root = self.info["file tree"][self.name][""]["pieces root"]
+                finfo[0]["pieces root"] = root
             return
 
         # Otherwise Content is more than 1 file.
         self.log_msg("%s points to a directory", self.root)
         if self.meta_version == 1:
-            for path in self.info["files"]:
-                self.total += path["length"]
-                rlpath = os.path.join(*path["path"])
-                full = os.path.join(self.root, rlpath)
-                self.log_msg("Including file path: %s", rlpath)
-                self.fileinfo[full] = {"length": path["length"]}
-                self.paths.append(full)
-
-            # Split pieces into individual hash digests.
-            self.pieces = split_pieces(self.info["pieces"], SHA1)
+            for i, item in enumerate(self.info["files"]):
+                self.total += item["length"]
+                base = os.path.join(*item["path"])
+                self.fileinfo[i] = {
+                    "path": str(self.root / base),
+                    "length": item["length"],
+                }
+                self.paths.append(str(self.root / base))
+                self.log_msg("Including file path: %s", str(self.root / base))
             return
-
         self.walk_file_tree(self.info["file tree"], [])
 
     def walk_file_tree(self, tree, partials):
@@ -252,30 +235,31 @@ class Checker:
 
         Parameters
         ----------
-            tree (`dict`): File Tree dict extracted from torrent file.
-            partials (`list`): list of intermediate pathnames.
+        tree : `dict`
+            File Tree dict extracted from torrent file.
+        partials : `list`
+            list of intermediate pathnames.
         """
         for key, val in tree.items():
 
             # Empty string means the tree's leaf is value
             if "" in val:
-                path = os.path.join(self.root, *partials, key)
-                info = self.fileinfo[path] = val[""]
-                info["partial"] = key
-                size = val[""]["length"]
 
-                # get layer hashes for this file
-                if size > self.piece_length:
-                    root = val[""]["pieces root"]
-                    layer_hashes = self.info["piece layers"][root]
-                    info["layer hashes"] = split_pieces(layer_hashes, SHA256)
-
-                self.paths.append(path)
-                self.total += size
+                base = os.path.join(*partials, key)
+                roothash = val[""]["pieces root"]
+                length = val[""]["length"]
+                full = str(self.root / base)
+                self.fileinfo[len(self.paths)] = {
+                    "path": full,
+                    "length": length,
+                    "pieces root": roothash,
+                }
+                self.paths.append(full)
+                self.total += length
                 self.log_msg(
                     "Including: path - %s, length - %s",
-                    path,
-                    humanize_bytes(size)
+                    full,
+                    humanize_bytes(length),
                 )
 
             else:
@@ -296,56 +280,28 @@ class Checker:
             length of bytes hashed for piece
         """
         matched = consumed = 0
-        if self.meta_version == 1:
-            checker = FeedChecker
-            args = (self.paths, self.piece_length, self.fileinfo, self.pieces)
-        else:
-            checker = HashChecker
-            hasher = HasherV2 if self.meta_version == 2 else HasherHybrid
-            args = (self.paths, self.piece_length, self.fileinfo, hasher)
-        for chunk, piece, path, size in checker(*args):
+        checker = self.piece_checker()
+        hasher = self.hasher()
+        for chunk, piece, path, size in checker(self, hasher):
             consumed += size
             msg = "Match %s: %s %s"
             humansize = humanize_bytes(size)
+            matching = 0
             if chunk == piece:
+                matching += size
                 matched += size
                 logging.debug(msg, "Success", path, humansize)
             else:
                 logging.debug(msg, "Fail", path, humansize)
-            yield chunk, piece, path, size
+            yield humansize, matching, consumed, matched
             total_consumed = str(int(consumed / self.total * 100))
             percent_matched = str(int(matched / consumed * 100))
-            self.log_msg("Processed: %s%%, Matched: %s%%",
-                         total_consumed, percent_matched)
-        if consumed:
-            self.log_msg("Re-Check Complete:\n %s%% of %s found at %s",
-                         percent_matched, self.metafile, self.root)
-            self._result = percent_matched
-        else:  # pragma: no cover
-            self.log_msg("Re-Check Complete:\n 0%% of %s found at %s",
-                         self.metafile, self.root)
-            self._result = "0"
-
-
-def split_pieces(pieces, hash_size):
-    """Split bytes into 20 piece chuncks for sha1 digest.
-
-    Parameters
-    ----------
-    pieces : `bytes`
-        Initial data.
-
-    Returns
-    -------
-    lst : `list`
-        Pieces broken into groups of 20 bytes.
-    """
-    lst = []
-    start = 0
-    while start < len(pieces):
-        lst.append(pieces[start: start + hash_size])
-        start += hash_size
-    return lst
+            self.log_msg(
+                "Processed: %s%%, Matched: %s%%",
+                total_consumed,
+                percent_matched,
+            )
+        self._result = (matched / consumed) * 100 if consumed > 0 else 0
 
 
 class FeedChecker:
@@ -366,12 +322,13 @@ class FeedChecker:
         Info and meta dictionary from .torrent file.
     """
 
-    def __init__(self, paths, piece_length, fileinfo, pieces):
+    def __init__(self, checker, hasher=None):
         """Generate hashes of piece length data from filelist contents."""
-        self.piece_length = piece_length
-        self.paths = paths
-        self.pieces = pieces
-        self.fileinfo = fileinfo
+        self.piece_length = checker.piece_length
+        self.paths = checker.paths
+        self.pieces = checker.info["pieces"]
+        self.fileinfo = checker.fileinfo
+        self.hasher = hasher
         self.piece_map = {}
         self.index = 0
         self.piece_count = 0
@@ -384,20 +341,19 @@ class FeedChecker:
 
     def __next__(self):
         """Yield back result of comparison."""
-        partial = next(self.it)
-        chunck = sha1(partial).digest()  # nosec
         try:
-            piece = self.pieces[self.piece_count]
-        except IndexError:
-            raise StopIteration  # pragma: no cover
-        path = self.paths[self.index]
+            partial = next(self.it)
+        except StopIteration as itererror:
+            raise StopIteration from itererror
+        chunck = sha1(partial).digest()  # nosec
+        start = self.piece_count * SHA1
+        end = start + SHA1
+        piece = self.pieces[start:end]
         self.piece_count += 1
+        # except IndexError:  # pragma: no cover
+        #     raise StopIteration
+        path = self.paths[self.index]
         return chunck, piece, path, len(partial)
-
-    @property
-    def current_length(self):
-        """Length of current file contents in bytes."""
-        return self.fileinfo[self.paths[self.index]]["length"]
 
     def iter_pieces(self):
         """Iterate through, and hash pieces of torrent contents.
@@ -410,23 +366,22 @@ class FeedChecker:
         partial = bytearray()
         for i, path in enumerate(self.paths):
             self.index = i
-
             if os.path.exists(path):
                 for piece in self.extract(path, partial):
                     if len(piece) == self.piece_length:
                         yield piece
-                        partial = bytearray()
                     elif i + 1 == len(self.paths):
                         yield piece
                     else:
                         partial = piece
+
             else:
-                for blank in self._gen_blanks(partial):
-                    if len(blank) == self.piece_length:
-                        yield blank
-                        partial = bytearray()
+                length = self.fileinfo[i]["length"]
+                for pad in self._gen_padding(partial, length):
+                    if len(pad) == self.piece_length:
+                        yield pad
                     else:
-                        partial = blank
+                        partial = pad
 
     def extract(self, path, partial):
         """Split file paths contents into blocks of data for hash pieces.
@@ -444,8 +399,8 @@ class FeedChecker:
             Hash digest for block of .torrent contents.
         """
         read = 0
-        size = os.path.getsize(path)
-        length = self.fileinfo[path]["length"]
+        length = self.fileinfo[self.index]["length"]
+        partial = bytearray() if len(partial) == self.piece_length else partial
         with open(path, "rb") as current:
             while True:
                 bitlength = self.piece_length - len(partial)
@@ -454,44 +409,44 @@ class FeedChecker:
                 read += amount
                 partial.extend(part[:amount])
                 if amount < bitlength:
-                    if size == read == length:
+                    if amount > 0 and read == length:
                         yield partial
                     break
                 yield partial
                 partial = bytearray(0)
+        if length != read:
+            for pad in self._gen_padding(partial, length, read):
+                yield pad
 
-        while length - size > 0:
-            left = self.piece_length - len(partial)
-            if length - size > left:
-                padding = bytearray(left)
-                size += left
-                partial.extend(padding)
-                yield partial
-                partial = bytearray(0)
-            else:
-                partial.extend(bytearray(length - size))
-                size += (length - size)
-                yield partial
-
-    def _gen_blanks(self, partial):
+    def _gen_padding(self, partial, length, read=0):
         """Create padded pieces where file sizes do not match.
 
         Parameters
         ----------
         partial : `bytes`
             any remaining data from last file processed.
+        length : `int`
+            size of space that needs padding
+        read : `int`
+            portion of length already padded
+
+        Yields
+        ------
+        `bytes`
+            A piece length sized block of zeros.
         """
-        left = self.current_length - len(partial)
-        while left > self.piece_length - len(partial):
-            arrlen = self.piece_length - len(partial)
-            arr = bytearray(arrlen)
-            partial.extend(arr)
-            left -= arrlen
-            yield partial
-            partial = bytearray(0)
-        if left > 0:
-            partial.extend(bytearray(left))
-        yield partial
+        while read < length:
+            left = self.piece_length - len(partial)
+            if length - read > left:
+                padding = bytearray(left)
+                partial.extend(padding)
+                yield partial
+                read += left
+                partial = bytearray(0)
+            else:
+                partial.extend(bytearray(length - read))
+                read = length
+                yield partial
 
 
 class HashChecker:
@@ -507,16 +462,19 @@ class HashChecker:
         Info from .torrent file being checked.
     """
 
-    def __init__(self, paths, piece_length, fileinfo, hasher):
+    def __init__(self, checker, hasher=None):
         """Construct a HybridChecker instance."""
-        self.paths = paths
+        self.checker = checker
+        self.paths = checker.paths
         self.hasher = hasher
-        self.piece_length = piece_length
-        self.fileinfo = fileinfo
+        self.piece_length = checker.piece_length
+        self.fileinfo = checker.fileinfo
+        self.piece_layers = checker.meta["piece layers"]
+        self.piece_count = 0
         self.it = None
         logging.debug(
             "Starting Hash Checker. piece length: %s",
-            humanize_bytes(self.piece_length)
+            humanize_bytes(self.piece_length),
         )
 
     def __iter__(self):
@@ -545,47 +503,61 @@ class HashChecker:
         results : `tuple`
             The size of the file and result of match.
         """
-        for path in self.paths:
-            info = self.fileinfo[path]
-            length = info["length"]
+        for i, path in enumerate(self.paths):
+            info = self.fileinfo[i]
+            length, plength = info["length"], self.piece_length
             logging.debug("%s length: %s", path, str(length))
             roothash = info["pieces root"]
             logging.debug("%s root hash %s", path, str(roothash))
+            if roothash in self.piece_layers:
+                pieces = self.piece_layers[roothash]
+            else:
+                pieces = roothash
+            amount = len(pieces) // SHA256
 
             if not os.path.exists(path):
-                if "layer hashes" in info and info["layer hashes"]:
-                    pieces = info["layer hashes"]
-                else:
-                    pieces = [roothash]
-                for i, piece in enumerate(pieces):
-                    if len(pieces) == 1:
-                        size = length
-                    elif i < len(pieces) - 1:
-                        size = self.piece_length
+                for i in range(amount):
+                    start = i * SHA256
+                    end = start + SHA256
+                    piece = pieces[start:end]
+                    if length > plength:
+                        size = plength
                     else:
-                        size = length - ((len(pieces) - 1) * self.piece_length)
-                    logging.debug("Yielding: %s %s %s %s", str(bytes(SHA256)),
-                                  str(piece), path, str(size))
-                    yield bytes(SHA256), piece, path, size
-                continue
+                        size = length
+                    length -= size
+                    block = sha256(bytearray(size)).digest()
+                    logging.debug(
+                        "Yielding: %s %s %s %s",
+                        str(block),
+                        str(piece),
+                        path,
+                        str(size),
+                    )
+                    yield block, piece, path, size
 
-            hashed = self.hasher(path, self.piece_length)
-            if "layer hashes" in info:
-                hash_pieces = split_pieces(hashed.piece_layer, SHA256)
-                info_pieces = info["layer hashes"]
             else:
-                hash_pieces = [hashed.root]
-                info_pieces = [info["pieces root"]]
-
-            diff = len(info_pieces) - len(hash_pieces)
-            if diff > 0:
-                hash_pieces += [bytes(SHA256)] * diff
-            num_pieces = len(hash_pieces)
-            size = self.piece_length
-            for chunk, piece in zip(hash_pieces, info_pieces):
-                if num_pieces == 1:
-                    size = length - ((len(hash_pieces) - 1) * size)
-                logging.debug("Yielding: %s, %s, %s, %s", str(chunk),
-                              str(piece), str(path), str(size))
-                yield chunk, piece, path, size
-                num_pieces -= 1
+                hashed = self.hasher(path, plength)
+                if len(hashed.layer_hashes) == 1:
+                    block = hashed.root
+                    piece = roothash
+                    size = length
+                    yield block, piece, path, size
+                else:
+                    for i in range(amount):
+                        start = i * SHA256
+                        end = start + SHA256
+                        piece = pieces[start:end]
+                        try:
+                            block = hashed.piece_layer[start:end]
+                        except IndexError:  # pragma: nocover
+                            block = sha256(bytearray(size)).digest()
+                        size = plength if plength < length else length
+                        length -= size
+                        logging.debug(
+                            "Yielding: %s, %s, %s, %s",
+                            str(block),
+                            str(piece),
+                            str(path),
+                            str(size),
+                        )
+                        yield block, piece, path, size

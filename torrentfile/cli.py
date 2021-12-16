@@ -211,7 +211,7 @@ def main_script(args=None):
         metafile = flags.checker
         content = flags.content
         checker = Checker(metafile, content)
-        result = checker.result
+        result = checker.results()
         sys.stdout.write(str(result))
         sys.stdout.flush()
         return result

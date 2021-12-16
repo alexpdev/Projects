@@ -199,8 +199,16 @@ class MetaFile:
         Private tracker source.
     """
 
-    def __init__(self, path=None, announce=None, private=False, source=None,
-                 piece_length=None, comment=None, outfile=None):
+    def __init__(
+        self,
+        path=None,
+        announce=None,
+        private=False,
+        source=None,
+        piece_length=None,
+        comment=None,
+        outfile=None,
+    ):
         """Construct MetaFile superclass and assign local attributes."""
         if not path:
             raise utils.MissingPathError

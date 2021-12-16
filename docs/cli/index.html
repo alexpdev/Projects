@@ -275,6 +275,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#torrentfile.cli.HelpFormat--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#torrentfile.cli.HelpFormat.__init__" class="md-nav__link">
     __init__()
   </a>
@@ -297,6 +304,19 @@
   <a href="#torrentfile.cli.main_script" class="md-nav__link">
     main_script()
   </a>
+  
+    <nav class="md-nav" aria-label="main_script()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#torrentfile.cli.main_script--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -425,6 +445,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#torrentfile.cli.HelpFormat--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#torrentfile.cli.HelpFormat.__init__" class="md-nav__link">
     __init__()
   </a>
@@ -448,6 +475,19 @@
     main_script()
   </a>
   
+    <nav class="md-nav" aria-label="main_script()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#torrentfile.cli.main_script--parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -468,6 +508,55 @@
 
 
 <h1 id="documentation-for-cli-module">Documentation for <code>CLI</code> Module</h1>
+<div class="mkapi-node" id="torrentfile.cli">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object module code top">
+    <div class="mkapi-object-kind module top">module</div>
+    <div class="mkapi-object-body module top"><code class="mkapi-object-prefix">torrentfile.</code><code class="mkapi-object-name">cli</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Command Line Interface for TorrentFile project.</p>
+<p>This module provides the primary command line argument parser for
+the torrentfile package. The main_script function is automatically
+invoked when called from command line, and parses accompanying arguments.</p>
+<p>Functions:
+    main_script: process command line arguments and run program.</p></div>
+    </div>
+  <div class="mkapi-section classes">
+      <div class="mkapi-section-name classes">
+          <span class="mkapi-section-name-body classes">Classes</span> 
+        </div>
+      <div class="mkapi-section-body classes"><ul class="mkapi-items">
+<li class="class"><code class="mkapi-item-name">HelpFormat</code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Formatting class for help tips provided by the CLI.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section functions">
+      <div class="mkapi-section-name functions">
+          <span class="mkapi-section-name-body functions">Functions</span> 
+        </div>
+      <div class="mkapi-section-body functions"><ul class="mkapi-items">
+<li class="function"><code class="mkapi-item-name">main</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-parenthesis">)</code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Initiate main function for CLI script.</span></li>
+
+<li class="function"><code class="mkapi-item-name">main_script</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">args</code><code class="mkapi-object-parenthesis">)</code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Initialize Command Line Interface for torrentfile.</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+</div>
+
 
 
   <div class="doc doc-object doc-module">
@@ -510,38 +599,14 @@ HelpFormat            (<span title="argparse.HelpFormatter">HelpFormatter</span>
     <div class="doc doc-contents ">
 
       <p>Formatting class for help tips provided by the CLI.</p>
+<h4 id="torrentfile.cli.HelpFormat--parameters">Parameters</h4>
+<p>prog : <code>str</code>
+    Name of the program.
+width : <code>int</code>
+    Max width of help message output.
+max_help_positions : <code>int</code>
+    max length until line wrap.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>prog</code></td>
-        <td><code>`str`</code></td>
-        <td><p>Name of the program.</p></td>
-        <td><em>required</em></td>
-      </tr>
-      <tr>
-        <td><code>width</code></td>
-        <td><code>`int`</code></td>
-        <td><p>Max width of help message output.</p></td>
-        <td><em>required</em></td>
-      </tr>
-      <tr>
-        <td><code>max_help_positions</code></td>
-        <td><code>`int`</code></td>
-        <td><p>max length until line wrap.</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
 
 
 
@@ -636,33 +701,19 @@ HelpFormat            (<span title="argparse.HelpFormatter">HelpFormatter</span>
     <div class="doc doc-contents ">
 
       <p>Initialize Command Line Interface for torrentfile.</p>
+<h4 id="torrentfile.cli.main_script--parameters">Parameters</h4>
+<p>args : <code>list</code>
+    Commandline arguments. default=None</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>args</code></td>
-        <td><code>`list`, default=None</code></td>
-        <td><p>Commandline arguments.</p></td>
-        <td><code>None</code></td>
-      </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>torrentfile\cli.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">main_script</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Initialize Command Line Interface for torrentfile.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        args (`list`, default=None): Commandline arguments.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    args : `list`</span>
+<span class="sd">        Commandline arguments. default=None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
@@ -812,7 +863,7 @@ HelpFormat            (<span title="argparse.HelpFormatter">HelpFormatter</span>
         <span class="n">metafile</span> <span class="o">=</span> <span class="n">flags</span><span class="o">.</span><span class="n">checker</span>
         <span class="n">content</span> <span class="o">=</span> <span class="n">flags</span><span class="o">.</span><span class="n">content</span>
         <span class="n">checker</span> <span class="o">=</span> <span class="n">Checker</span><span class="p">(</span><span class="n">metafile</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">checker</span><span class="o">.</span><span class="n">result</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">checker</span><span class="o">.</span><span class="n">results</span><span class="p">()</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">result</span>
@@ -855,55 +906,6 @@ HelpFormat            (<span title="argparse.HelpFormatter">HelpFormatter</span>
     </div>
 
   </div>
-
-<div class="mkapi-node" id="torrentfile.cli">
-<div class='mkapi-object-container'>
-  <div class="mkapi-object module code top">
-    <div class="mkapi-object-kind module top">module</div>
-    <div class="mkapi-object-body module top"><code class="mkapi-object-prefix">torrentfile.</code><code class="mkapi-object-name">cli</code></div>
-  </div>
-  
-</div>
-<div class="mkapi-docstring">
-<div class="mkapi-section">
-      <div class="mkapi-section-body"><p>Command Line Interface for TorrentFile project.</p>
-<p>This module provides the primary command line argument parser for
-the torrentfile package. The main_script function is automatically
-invoked when called from command line, and parses accompanying arguments.</p>
-<p>Functions:
-    main_script: process command line arguments and run program.</p></div>
-    </div>
-  <div class="mkapi-section classes">
-      <div class="mkapi-section-name classes">
-          <span class="mkapi-section-name-body classes">Classes</span> 
-        </div>
-      <div class="mkapi-section-body classes"><ul class="mkapi-items">
-<li class="class"><code class="mkapi-item-name">HelpFormat</code>
-
-<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Formatting class for help tips provided by the CLI.</span></li>
-
-
-</ul></div>
-    </div>
-  <div class="mkapi-section functions">
-      <div class="mkapi-section-name functions">
-          <span class="mkapi-section-name-body functions">Functions</span> 
-        </div>
-      <div class="mkapi-section-body functions"><ul class="mkapi-items">
-<li class="function"><code class="mkapi-item-name">main</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-parenthesis">)</code>
-
-<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Initiate main function for CLI script.</span></li>
-
-<li class="function"><code class="mkapi-item-name">main_script</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">args</code><code class="mkapi-object-parenthesis">)</code>
-
-<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Initialize Command Line Interface for torrentfile.</span></li>
-
-
-</ul></div>
-    </div>
-  </div>
-
-</div>
 
               
             </article>

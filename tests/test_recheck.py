@@ -69,7 +69,7 @@ def test_checker_class(dir1, version):
     args = {"path": str(dir1), "announce": "https://announce.com/announce"}
     outfile = mktorrent(args, v=version)
     checker = Checker(outfile, dir1)
-    assert checker.result == "100"  # nosec
+    assert checker.results() == 100  # nosec
     rmpath(outfile)
 
 
@@ -84,7 +84,7 @@ def test_checker_class_alt(dir3, version, piece_length):
     }
     outfile = mktorrent(args, v=version)
     checker = Checker(outfile, dir3)
-    assert checker.result == "100"  # nosec
+    assert checker.results() == 100  # nosec
     rmpath(outfile)
 
 
@@ -97,20 +97,20 @@ def test_checker_first_piece(dir2, version):
 
     def change(path):
         """Change some bytes in file."""
-        if os.path.isfile(path):
+        if path.is_file():
+            new = b"Something other than what was there before."
             with open(path, "rb") as bfile:
                 data = bfile.read()
-            new = b"some_different_bytes_to_swap"
-            new_len = len(new)
-            with open(path, "wb") as doc:
-                doc.write(new + data[new_len:])
-        elif os.path.isdir(path):
-            for item in os.listdir(path):
-                change(os.path.join(path, item))
+            content = b"".join([new, data[len(new) :]])
+            with open(path, "wb") as bdoc:
+                bdoc.write(content)
+        elif path.is_dir():
+            for item in path.iterdir():
+                change(item)
 
-    change(path)
+    change(Path(path))
     checker = Checker(outfile, path)
-    assert int(checker.result) != 100  # nosec
+    assert checker.results() != 100  # nosec
     rmpath(outfile)
 
 
@@ -141,7 +141,7 @@ def test_checker_first_piece_alt(dir3, version, piece_length):
 
     change(path)
     checker = Checker(outfile, path)
-    assert int(checker.result) != 100  # nosec
+    assert checker.results() != 100  # nosec
     rmpath(outfile)
 
 
@@ -152,7 +152,7 @@ def test_metafile_checker(dir1, version):
     args = {"announce": "announce", "path": path, "private": 1}
     outfile = mktorrent(args, v=version)
     checker = Checker(outfile, path)
-    assert checker.result == "100"  # nosec
+    assert checker.results() == 100  # nosec
     rmpath(outfile)
 
 
@@ -169,7 +169,7 @@ def test_metafile_checker_alt(dir3, version, piece_length):
     }
     outfile = mktorrent(args, v=version)
     checker = Checker(outfile, path)
-    assert checker.result == "100"  # nosec
+    assert checker.results() == 100  # nosec
     rmpath(outfile)
 
 
@@ -194,7 +194,7 @@ def test_partial_metafiles(dir2, version):
 
     testdir = os.path.dirname(path)
     checker = Checker(outfile, testdir)
-    assert checker.result != "100"  # nosec
+    assert checker.results() != 100  # nosec
     rmpath(outfile)
 
 
@@ -206,7 +206,7 @@ def test_checker_no_content(dir1, version):
     outfile = mktorrent(args, v=version)
     Checker.register_callback(lambda *x: print(x))
     checker = Checker(outfile, path)
-    assert checker.result == "100"  # nosec
+    assert checker.results() == 100  # nosec
     rmpath(outfile)
 
 
@@ -224,7 +224,7 @@ def test_checker_no_content_alt(dir3, version, piece_length):
     outfile = mktorrent(args, v=version)
     Checker.register_callback(lambda *x: print(x))
     checker = Checker(outfile, path)
-    assert checker.result == "100"  # nosec
+    assert checker.results() == 100  # nosec
     rmpath(outfile)
 
 
@@ -236,7 +236,7 @@ def test_checker_cli_args(dir1, version):
     outfile = mktorrent(args, v=version)
     sys.argv[1:] = ["--recheck", outfile, path]
     output = main()
-    assert output == "100"  # nosec
+    assert output == 100  # nosec
     rmpath(outfile)
 
 
@@ -247,7 +247,7 @@ def test_checker_parent_dir(dir1, version):
     args = {"announce": "announce", "path": path, "private": 1}
     outfile = mktorrent(args, v=version)
     checker = Checker(outfile, os.path.dirname(path))
-    assert checker.result == "100"  # nosec
+    assert checker.results() == 100  # nosec
     rmpath(outfile)
 
 
@@ -259,7 +259,7 @@ def test_checker_with_file(version, size):
     args = {"announce": "announce", "path": tfile, "private": 1}
     outfile = mktorrent(args, v=version)
     checker = Checker(outfile, tfile)
-    assert checker.result == "100"  # nosec
+    assert checker.results() == 100  # nosec
     rmpath(outfile)
 
 
@@ -315,7 +315,7 @@ def test_checker_missing(version, dir2):
         if fd.is_file() and count < 2:
             rmpath(fd)
     checker = Checker(outfile, path)
-    assert int(checker.result) < 100  # nosec
+    assert int(checker.results()) < 100  # nosec
 
 
 @pytest.mark.parametrize("version", [1, 2, 3])
@@ -340,7 +340,7 @@ def test_checker_class_allfiles(version, dir2):
 
     traverse(path)
     checker = Checker(outfile, path)
-    assert int(checker.result) < 100  # nosec
+    assert int(checker.results()) < 100  # nosec
     rmpath(outfile)
 
 
@@ -358,7 +358,7 @@ def test_checker_class_allpaths(version, dir2):
     for item in path.iterdir():
         rmpath(item)
     checker = Checker(outfile, path)
-    assert int(checker.result) < 100  # nosec
+    assert int(checker.results()) < 100  # nosec
 
 
 @pytest.mark.parametrize("version", [1, 2, 3])
@@ -381,7 +381,7 @@ def test_checker_class_half_file(version, piece_length, size):
     with open(path, "wb") as content:
         content.write(barr)
     checker = Checker(outfile, path)
-    assert int(checker.result) < 100  # nosec
+    assert int(checker.results()) < 100  # nosec
 
 
 @pytest.mark.parametrize("version", [1, 2, 3])
@@ -398,10 +398,9 @@ def test_checker_missing_singles(version, piece_length, dir3):
     outfile = mktorrent(args, v=version)
     for item in Path(path).iterdir():
         rmpath(item)
-        if item.is_dir():
-            break
+        break
     checker = Checker(outfile, path)
-    assert int(checker.result) < 100  # nosec
+    assert int(checker.results()) < 100  # nosec
 
 
 @pytest.mark.parametrize("version", [1, 2, 3])
@@ -416,6 +415,15 @@ def test_checker_result_property(version):
     }
     outfile = mktorrent(args, v=version)
     checker = Checker(outfile, path)
-    result = checker.result
-    assert checker.result == result  # nosec
+    result = checker.results()
+    assert checker.results() == result  # nosec
     rmpath(outfile)
+
+
+def test_checker_simplest():
+    """Test the simplest example."""
+    path = tempfile(exp=14)
+    args = {"path": path, "piece_length": 14}
+    outfile = mktorrent(args, v=1)
+    checker = Checker(outfile, path)
+    assert checker.results() == 100  # nosec
