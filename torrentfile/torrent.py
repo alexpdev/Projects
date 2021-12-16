@@ -208,6 +208,7 @@ class MetaFile:
         piece_length=None,
         comment=None,
         outfile=None,
+        url_list=None,
     ):
         """Construct MetaFile superclass and assign local attributes."""
         if not path:
@@ -238,11 +239,12 @@ class MetaFile:
         if private:
             self.private = 1
         else:
-            self.private = private
+            self.private = None
 
-        self.source = source
-        self.comment = comment
         self.outfile = outfile
+        self.comment = comment
+        self.url_list = url_list
+        self.source = source
         self.meta = {
             "announce": self.announce,
             "announce list": self.announce_list,
@@ -250,12 +252,14 @@ class MetaFile:
             "creation date": int(datetime.timestamp(datetime.now())),
             "info": {},
         }
-        if self.comment:
-            self.meta["info"]["comment"] = self.comment
-        if self.private:
-            self.meta["info"]["private"] = self.private
-        if self.source:
-            self.meta["info"]["source"] = self.source
+        if comment:
+            self.meta["info"]["comment"] = comment
+        if private:
+            self.meta["info"]["private"] = 1
+        if source:
+            self.meta["info"]["source"] = source
+        if url_list:
+            self.meta["url-list"] = url_list
         self.meta["info"]["name"] = os.path.basename(self.path)
         self.meta["info"]["piece length"] = self.piece_length
 
