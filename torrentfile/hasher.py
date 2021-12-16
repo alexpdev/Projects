@@ -31,10 +31,14 @@ class Hasher:
     for fixed size pieces of file data from each file
     seemlessly until the last piece which may be smaller than others.
 
-    Args:
-      paths (`list`): List of files.
-      piece_length (`int`): Size of chuncks to split the data into.
-      total (`int`): Sum of all files in file list.
+    Parameters
+    ----------
+    paths : `list`
+        List of files.
+    piece_length : `int`
+        Size of chuncks to split the data into.
+    total : `int`
+        Sum of all files in file list.
     """
 
     def __init__(self, paths, piece_length):
@@ -53,20 +57,27 @@ class Hasher:
     def __iter__(self):
         """Iterate through feed pieces.
 
-        Returns:
-          self (`iterator`): Iterator for leaves/hash pieces.
+        Returns
+        -------
+        self : `iterator`
+            Iterator for leaves/hash pieces.
         """
         return self
 
     def _handle_partial(self, arr):
         """Define the handling partial pieces that span 2 or more files.
 
-        Args:
-          arr (`bytearray`): Incomplete piece containing partial data
-          partial (`int`): Size of incomplete piece_length
+        Parameters
+        ----------
+        arr : `bytearray`
+            Incomplete piece containing partial data
+        partial : `int`
+            Size of incomplete piece_length
 
-        Returns:
-          digest (`bytes`): SHA1 digest of the complete piece.
+        Returns
+        -------
+        digest : `bytes`
+            SHA1 digest of the complete piece.
         """
         while len(arr) < self.piece_length and self.next_file():
             target = self.piece_length - len(arr)
@@ -115,9 +126,12 @@ class HasherV2:
     hashed data equals the piece-length.  Then continues the hash tree until
     root hash is calculated.
 
-    Args:
-      path (`str`): Path to file.
-      piece_length (`int`): Size of layer hashes pieces.
+    Parameters
+    ----------
+    path : `str`
+        Path to file.
+    piece_length : `int`
+        Size of layer hashes pieces.
     """
 
     def __init__(self, path, piece_length):
@@ -140,32 +154,43 @@ class HasherV2:
     def process_file(self, fd):
         """Calculate hashes over 16KiB chuncks of file content.
 
-        Args:
-            fd (`str`): Opened file in read mode.
+        Parameters
+        ----------
+        fd : `str`
+            Opened file in read mode.
         """
         while True:
             total = 0
             blocks = []
             leaf = bytearray(BLOCK_SIZE)
             # generate leaves of merkle tree
+
             for _ in range(self.num_blocks):
                 size = fd.readinto(leaf)
                 total += size
                 if not size:
                     break
                 blocks.append(sha256(leaf[:size]).digest())
+
             # blocks is empty mean eof
             if not blocks:
                 break
             if len(blocks) != self.num_blocks:
+                # when size of file doesn't fill the last block
                 if not self.layer_hashes:
+                    # when the there is only one block for file
+
                     next_pow_2 = 1 << int(math.log2(total) + 1)
                     remaining = ((next_pow_2 - total) // BLOCK_SIZE) + 1
+
                 else:
+                    # when the file contains multiple pieces
                     remaining = self.num_blocks - size
+                # pad the the rest with zeroes to fill remaining space.
                 padding = [bytes(HASH_SIZE) for _ in range(remaining)]
                 blocks.extend(padding)
-            # if the file is smaller than piece length
+            # calculate the root hash for the merkle tree up to piece-length
+
             layer_hash = merkle_root(blocks)
             self.layer_hashes.append(layer_hash)
         self._calculate_root()
@@ -188,9 +213,12 @@ class HasherHybrid:
     Uses sha1 and sha256 hashes for each version  # nosec
     of the Bittorrent protocols meta files respectively.
 
-    Args:
-        path (`str`): path to target file.
-        piece_length (`int`): piece length for data chunks.
+    Parameters
+    ----------
+    path : `str`
+        path to target file.
+    piece_length : `int`
+        piece length for data chunks.
     """
 
     def __init__(self, path, piece_length):
@@ -215,12 +243,17 @@ class HasherHybrid:
     def _pad_remaining(self, total, blocklen):
         """Generate Hash sized, 0 filled bytes for padding.
 
-        Args:
-            total (`int`): length of bytes processed.
-            blocklen (`int`): number of blocks processed.
+        Parameters
+        ----------
+        total : `int`
+            length of bytes processed.
+        blocklen : `int`
+            number of blocks processed.
 
-        Returns:
-            padding (`bytes`): Padding to fill remaining portion of tree.
+        Returns
+        -------
+        padding : `bytes`
+            Padding to fill remaining portion of tree.
         """
         if not self.layer_hashes:
             next_pow_2 = 1 << int(math.log2(total) + 1)
@@ -232,8 +265,10 @@ class HasherHybrid:
     def _process_file(self, data):
         """Calculate layer hashes for contents of file.
 
-        Args:
-            data (`BytesIO`): File opened in read mode.
+        Parameters
+        ----------
+        data : `BytesIO`
+            File opened in read mode.
         """
         while True:
             plength = self.piece_length

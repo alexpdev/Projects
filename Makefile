@@ -57,7 +57,7 @@ clean-build: ## remove build artifacts
 	rm -f *.spec
 
 test: ## run tests quickly with the default Python
-	pytest tests --maxfail=2 --cov=torrentfile --cov=tests --pylint
+	pytest tests --maxfail=10 --cov=torrentfile --cov=tests --pylint
 
 lint:
 	black torrentfile tests

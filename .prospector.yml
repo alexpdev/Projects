@@ -23,6 +23,7 @@ pep8:
   run: true
   disable:
     - E741
+    - E203
 
 pylint:
   run: true

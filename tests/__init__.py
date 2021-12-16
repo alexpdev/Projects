@@ -81,7 +81,7 @@ def rmpath(*args):
         if os.path.isdir(arg):
             try:
                 shutil.rmtree(arg)
-            except PermissionError:
+            except PermissionError:  # pragma: nocover
                 pass
         elif os.path.isfile(arg):
             try:

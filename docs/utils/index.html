@@ -968,6 +968,85 @@
 
 
 <h1 id="documentation-for-utils-module">Documentation for <code>Utils</code> Module</h1>
+<div class="mkapi-node" id="torrentfile.utils">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object module code top">
+    <div class="mkapi-object-kind module top">module</div>
+    <div class="mkapi-object-body module top"><code class="mkapi-object-prefix">torrentfile.</code><code class="mkapi-object-name">utils</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Utility functions and classes used throughout package.</p>
+<p>Functions:
+  get_piece_length: calculate ideal piece length for torrent file.
+  sortfiles: traverse directory in sorted order yielding paths encountered.
+  path_size: Sum the sizes of each file in path.
+  get_file_list: Return list of all files contained in directory.
+  path_stat: Get ideal piece length, total size, and file list for directory.
+  path_piece_length: Get ideal piece length based on size of directory.</p></div>
+    </div>
+  <div class="mkapi-section classes">
+      <div class="mkapi-section-name classes">
+          <span class="mkapi-section-name-body classes">Classes</span> 
+        </div>
+      <div class="mkapi-section-body classes"><ul class="mkapi-items">
+<li class="class"><code class="mkapi-item-name">MissingPathError</code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Path parameter is required to specify target content.</span></li>
+
+<li class="class"><code class="mkapi-item-name">PieceLengthValueError</code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Piece Length parameter must equal a perfect power of 2.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section functions">
+      <div class="mkapi-section-name functions">
+          <span class="mkapi-section-name-body functions">Functions</span> 
+        </div>
+      <div class="mkapi-section-body functions"><ul class="mkapi-items">
+<li class="function"><code class="mkapi-item-name">filelist_total</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">pathstring</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(`os.PathLike`)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Perform error checking and format conversion to os.PathLike.</span></li>
+
+<li class="function"><code class="mkapi-item-name">get_file_list</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">path</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(filelist : `list`)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Return a sorted list of file paths contained in directory.</span></li>
+
+<li class="function"><code class="mkapi-item-name">get_piece_length</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">size</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(piece_length : `int`)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Calculate the ideal piece length for bittorrent data.</span></li>
+
+<li class="function"><code class="mkapi-item-name">humanize_bytes</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">amount</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(`str` :)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Convert integer into human readable memory sized denomination.</span></li>
+
+<li class="function"><code class="mkapi-item-name">normalize_piece_length</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">piece_length</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(piece_length : `int`)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Verify input piece_length is valid and convert accordingly.</span></li>
+
+<li class="function"><code class="mkapi-item-name">path_piece_length</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">path</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(piece_length : `int`)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Calculate piece length for input path and contents.</span></li>
+
+<li class="function"><code class="mkapi-item-name">path_size</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">path</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(size : `int`)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Return the total size of all files in path recursively.</span></li>
+
+<li class="function"><code class="mkapi-item-name">path_stat</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">path</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(filelist : `list`)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Calculate directory statistics.</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+</div>
+
 
 
   <div class="doc doc-object doc-module">
@@ -1567,85 +1646,6 @@ piece_length : <code>int</code>
     </div>
 
   </div>
-
-<div class="mkapi-node" id="torrentfile.utils">
-<div class='mkapi-object-container'>
-  <div class="mkapi-object module code top">
-    <div class="mkapi-object-kind module top">module</div>
-    <div class="mkapi-object-body module top"><code class="mkapi-object-prefix">torrentfile.</code><code class="mkapi-object-name">utils</code></div>
-  </div>
-  
-</div>
-<div class="mkapi-docstring">
-<div class="mkapi-section">
-      <div class="mkapi-section-body"><p>Utility functions and classes used throughout package.</p>
-<p>Functions:
-  get_piece_length: calculate ideal piece length for torrent file.
-  sortfiles: traverse directory in sorted order yielding paths encountered.
-  path_size: Sum the sizes of each file in path.
-  get_file_list: Return list of all files contained in directory.
-  path_stat: Get ideal piece length, total size, and file list for directory.
-  path_piece_length: Get ideal piece length based on size of directory.</p></div>
-    </div>
-  <div class="mkapi-section classes">
-      <div class="mkapi-section-name classes">
-          <span class="mkapi-section-name-body classes">Classes</span> 
-        </div>
-      <div class="mkapi-section-body classes"><ul class="mkapi-items">
-<li class="class"><code class="mkapi-item-name">MissingPathError</code>
-
-<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Path parameter is required to specify target content.</span></li>
-
-<li class="class"><code class="mkapi-item-name">PieceLengthValueError</code>
-
-<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Piece Length parameter must equal a perfect power of 2.</span></li>
-
-
-</ul></div>
-    </div>
-  <div class="mkapi-section functions">
-      <div class="mkapi-section-name functions">
-          <span class="mkapi-section-name-body functions">Functions</span> 
-        </div>
-      <div class="mkapi-section-body functions"><ul class="mkapi-items">
-<li class="function"><code class="mkapi-item-name">filelist_total</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">pathstring</code><code class="mkapi-object-parenthesis">)</code>
-<span class="mkapi-item-type">(`os.PathLike`)</span>
-<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Perform error checking and format conversion to os.PathLike.</span></li>
-
-<li class="function"><code class="mkapi-item-name">get_file_list</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">path</code><code class="mkapi-object-parenthesis">)</code>
-<span class="mkapi-item-type">(filelist : `list`)</span>
-<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Return a sorted list of file paths contained in directory.</span></li>
-
-<li class="function"><code class="mkapi-item-name">get_piece_length</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">size</code><code class="mkapi-object-parenthesis">)</code>
-<span class="mkapi-item-type">(piece_length : `int`)</span>
-<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Calculate the ideal piece length for bittorrent data.</span></li>
-
-<li class="function"><code class="mkapi-item-name">humanize_bytes</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">amount</code><code class="mkapi-object-parenthesis">)</code>
-<span class="mkapi-item-type">(`str` :)</span>
-<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Convert integer into human readable memory sized denomination.</span></li>
-
-<li class="function"><code class="mkapi-item-name">normalize_piece_length</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">piece_length</code><code class="mkapi-object-parenthesis">)</code>
-<span class="mkapi-item-type">(piece_length : `int`)</span>
-<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Verify input piece_length is valid and convert accordingly.</span></li>
-
-<li class="function"><code class="mkapi-item-name">path_piece_length</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">path</code><code class="mkapi-object-parenthesis">)</code>
-<span class="mkapi-item-type">(piece_length : `int`)</span>
-<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Calculate piece length for input path and contents.</span></li>
-
-<li class="function"><code class="mkapi-item-name">path_size</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">path</code><code class="mkapi-object-parenthesis">)</code>
-<span class="mkapi-item-type">(size : `int`)</span>
-<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Return the total size of all files in path recursively.</span></li>
-
-<li class="function"><code class="mkapi-item-name">path_stat</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">path</code><code class="mkapi-object-parenthesis">)</code>
-<span class="mkapi-item-type">(filelist : `list`)</span>
-<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Calculate directory statistics.</span></li>
-
-
-</ul></div>
-    </div>
-  </div>
-
-</div>
 
               
             </article>

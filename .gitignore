@@ -12,6 +12,7 @@ repos/
 sites/
 tests/TESTDIR
 runtests.py
+coverage.xml
 
 # bite-code
 *.pyc
