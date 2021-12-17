@@ -66,14 +66,10 @@ def test_cli_private(dir1):
 @pytest.mark.parametrize("version", ["1", "2", "3"])
 def test_cli_piece_length(dir1, piece_length, version):
     """Test piece length cli flag."""
-    args = [
-        "torrentfile",
-        str(dir1),
-        "--piece-length",
-        str(piece_length),
-        "--meta-version",
-        version,
-    ]
+    # fmt: off
+    args = ["torrentfile", str(dir1), "--piece-length",
+            str(piece_length), "--meta-version", version]
+    # fmt: on
     sys.argv = args
     main()
     meta = pyben.load(str(dir1) + ".torrent")
@@ -85,16 +81,11 @@ def test_cli_piece_length(dir1, piece_length, version):
 @pytest.mark.parametrize("version", ["1", "2", "3"])
 def test_cli_announce(dir1, piece_length, version):
     """Test announce cli flag."""
-    args = [
-        "torrentfile",
-        str(dir1),
-        "--piece-length",
-        str(piece_length),
-        "--meta-version",
-        version,
-        "--tracker",
-        "https://announce.org/tracker",
-    ]
+    # fmt: off
+    args = ["torrentfile", str(dir1), "--piece-length",
+            str(piece_length), "--meta-version", version,
+            "--tracker", "https://announce.org/tracker"]
+    # fmt: on
     sys.argv = args
     main()
     meta = pyben.load(str(dir1) + ".torrent")
@@ -105,18 +96,16 @@ def test_cli_announce(dir1, piece_length, version):
 @pytest.mark.parametrize("version", ["1", "2", "3"])
 def test_cli_announce_list(dir1, version):
     """Test announce list cli flag."""
+    # fmt: off
     trackers = [
         "https://announce.org/tracker",
         "https://announce.net/tracker",
         "https://tracker.net/announce",
     ]
     args = [
-        "torrentfile",
-        str(dir1),
-        "--meta-version",
-        version,
-        "--tracker",
+        "torrentfile", str(dir1), "--meta-version", version, "--tracker"
     ] + trackers
+    # fmt: on
     sys.argv = args
     main()
     meta = pyben.load(str(dir1) + ".torrent")
@@ -218,18 +207,11 @@ def test_cli_created_by(dir1, piece_length, version):
 @pytest.mark.parametrize("version", ["1", "2", "3"])
 def test_cli_web_seeds(dir1, piece_length, version):
     """Test if created torrents recieve a created by field in meta info."""
-    args = [
-        "torrentfile",
-        str(dir1),
-        "--piece-length",
-        str(piece_length),
-        "--meta-version",
-        version,
-        "-w",
-        "https://webseed.url/1",
-        "https://webseed.url/2",
-        "https://webseed.url/3",
-    ]
+    # fmt: off
+    args = ["torrentfile", str(dir1), "--piece-length", str(piece_length),
+            "--meta-version", version, "-w", "https://webseed.url/1",
+            "https://webseed.url/2", "https://webseed.url/3"]
+    # fmt: on
     sys.argv = args
     main()
     meta = pyben.load(str(dir1) + ".torrent")
@@ -241,37 +223,24 @@ def test_cli_web_seeds(dir1, piece_length, version):
 @pytest.mark.parametrize("version", ["1", "2", "3"])
 def test_cli_with_debug(dir1, piece_length, version):
     """Test debug mode cli flag."""
-    args = [
-        "torrentfile",
-        str(dir1),
-        "--piece-length",
-        str(piece_length),
-        "--meta-version",
-        version,
-        "--comment",
-        "this is a comment",
-        "-d",
-    ]
+    # fmt: off
+    args = ["torrentfile", str(dir1), "--piece-length", str(piece_length),
+            "--meta-version", version, "--comment", "this is a comment", "-d"]
     sys.argv = args
     main()
     assert os.path.exists(str(dir1) + ".torrent")  # nosec
     rmpath(str(dir1) + ".torrent")
+    # fmt: on
 
 
 @pytest.mark.parametrize("piece_length", [2 ** exp for exp in range(14, 21)])
 @pytest.mark.parametrize("version", ["1", "2", "3"])
 def test_cli_with_source(dir1, piece_length, version):
     """Test source cli flag."""
-    args = [
-        "torrentfile",
-        str(dir1),
-        "--piece-length",
-        str(piece_length),
-        "--meta-version",
-        version,
-        "--source",
-        "somesource",
-    ]
+    # fmt: off
+    args = ["torrentfile", str(dir1), "--piece-length", str(piece_length),
+            "--meta-version", version, "--source", "somesource"]
+    # fmt: on
     sys.argv = args
     main()
     meta = pyben.load(str(dir1) + ".torrent")

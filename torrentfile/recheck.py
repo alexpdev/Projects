@@ -232,7 +232,7 @@ class Checker:
             return
         self.walk_file_tree(self.info["file tree"], [])
 
-    def walk_file_tree(self, tree, partials):
+    def walk_file_tree(self, tree: dict, partials: list):
         """Traverse File Tree dictionary to get file details.
 
         Extract full pathnames, length, root hash, and layer hashes
@@ -298,7 +298,7 @@ class Checker:
                 logging.debug(msg, "Success", path, humansize)
             else:
                 logging.debug(msg, "Fail", path, humansize)
-            yield humansize, matching, consumed, matched
+            yield chunk, piece, path, size
             total_consumed = str(int(consumed / self.total * 100))
             percent_matched = str(int(matched / consumed * 100))
             self.log_msg(
@@ -384,7 +384,7 @@ class FeedChecker:
                     else:
                         partial = pad
 
-    def extract(self, path, partial):
+    def extract(self, path: str, partial: bytearray) -> bytearray:
         """Split file paths contents into blocks of data for hash pieces.
 
         Parameters
@@ -394,8 +394,8 @@ class FeedChecker:
         partial : `bytes`
             any remaining content from last file.
 
-        Yields
-        ------
+        Returns
+        -------
         partial : `bytes`
             Hash digest for block of .torrent contents.
         """

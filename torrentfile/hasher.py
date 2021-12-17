@@ -208,10 +208,11 @@ class HasherV2:
 
 
 class HasherHybrid:
-    """Calculate hashes for Hybrid torrentfile.
+    """Calculate root and piece hashes for creating hybrid torrent file.
 
-    Uses sha1 and sha256 hashes for each version  # nosec
-    of the Bittorrent protocols meta files respectively.
+    Create merkle tree layers from sha256 hashed 16KiB blocks of contents.
+    With a branching factor of 2, merge layer hashes until blocks equal
+    piece_length bytes for the piece layer, and then the root hash.
 
     Parameters
     ----------
@@ -299,9 +300,9 @@ class HasherHybrid:
                 }
                 piece.update(bytes(plength))
             self.pieces.append(piece.digest())  # nosec
-        self.calculate_root()
+        self._calculate_root()
 
-    def calculate_root(self):
+    def _calculate_root(self):
         """Calculate the root hash for opened file."""
         self.piece_layer = b"".join(self.layer_hashes)
 

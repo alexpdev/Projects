@@ -11,6 +11,7 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/alexpdev/TorrentFile)
 ![GitHub License](https://img.shields.io/github/license/alexpdev/TorrentFile)
 [![CI](https://github.com/alexpdev/TorrentFile/actions/workflows/python_workflow.yml/badge.svg?branch=master&event=push)](https://github.com/alexpdev/TorrentFile/actions/workflows/python_workflow.yml)
+[![DeepSource](https://deepsource.io/gh/alexpdev/TorrentFile.svg/?label=active+issues&token=16Sl_dF7nTU8YgPilcqhvHm8)](https://deepsource.io/gh/alexpdev/TorrentFile/)
 
 _TorrentFile_ can create torrent files, Check content for accuracy and completeness with a
 .torrent file, and display detailed information contained in a .torrent file.

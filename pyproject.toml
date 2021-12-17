@@ -17,6 +17,7 @@ testpaths = [
     "tests",
     "torrentfile",
 ]
+addopts = "--maxfail=10 --cov=torrentfile --cov=tests"
 
 [build-system]
 requires = ["setuptools>=40.8.0", "wheel"]
