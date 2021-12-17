@@ -199,17 +199,10 @@ class MetaFile:
         Private tracker source.
     """
 
-    def __init__(
-        self,
-        path=None,
-        announce=None,
-        private=False,
-        source=None,
-        piece_length=None,
-        comment=None,
-        outfile=None,
-        url_list=None,
-    ):
+    # fmt: off
+    def __init__(self, path=None, announce=None, private=False,
+                 source=None, piece_length=None, comment=None,
+                 outfile=None, url_list=None):
         """Construct MetaFile superclass and assign local attributes."""
         if not path:
             raise utils.MissingPathError
@@ -262,6 +255,7 @@ class MetaFile:
             self.meta["url-list"] = url_list
         self.meta["info"]["name"] = os.path.basename(self.path)
         self.meta["info"]["piece length"] = self.piece_length
+    # fmt: on
 
     def assemble(self):
         """Overload in subclasses.

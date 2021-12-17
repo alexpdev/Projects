@@ -45,7 +45,7 @@ class HelpFormat(HelpFormatter):
         max length until line wrap.
     """
 
-    def __init__(self, prog, width=75, max_help_pos=40):
+    def __init__(self, prog: str, width=75, max_help_pos=40):
         """Construct HelpFormat class."""
         super().__init__(prog, width=width, max_help_position=max_help_pos)
 

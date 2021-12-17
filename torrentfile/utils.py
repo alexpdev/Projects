@@ -84,12 +84,12 @@ def humanize_bytes(amount):
     return f"{amount // 1073741824} GiB"
 
 
-def normalize_piece_length(piece_length):
+def normalize_piece_length(piece_length) -> int:
     """Verify input piece_length is valid and convert accordingly.
 
     Parameters
     ----------
-    piece_length : `int`
+    piece_length : `int` | `str`
         The piece length provided by user.
 
     Returns
@@ -119,7 +119,7 @@ def normalize_piece_length(piece_length):
     raise PieceLengthValueError
 
 
-def get_piece_length(size):
+def get_piece_length(size: int) -> int:
     """Calculate the ideal piece length for bittorrent data.
 
     Parameters
