@@ -10,6 +10,7 @@
 [![codecov](https://codecov.io/gh/alexpdev/TorrentFile/branch/master/graph/badge.svg?token=PXFsxXVAHW)](https://codecov.io/gh/alexpdev/TorrentFile)
 ![GitHub repo size](https://img.shields.io/github/repo-size/alexpdev/TorrentFile)
 ![GitHub License](https://img.shields.io/github/license/alexpdev/TorrentFile)
+![PyPI - Downloads](https://img.shields.io/pypi/dw/torrentfile)
 [![CI](https://github.com/alexpdev/TorrentFile/actions/workflows/python_workflow.yml/badge.svg?branch=master&event=push)](https://github.com/alexpdev/TorrentFile/actions/workflows/python_workflow.yml)
 [![DeepSource](https://deepsource.io/gh/alexpdev/TorrentFile.svg/?label=active+issues&token=16Sl_dF7nTU8YgPilcqhvHm8)](https://deepsource.io/gh/alexpdev/TorrentFile/)
 

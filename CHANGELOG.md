@@ -1,5 +1,17 @@
 # TorrentFile
 
+## Version 0.1.1
+
+### Fixed
+
+    - Recheck output bug
+
+### Updated
+
+    - Documentation improvements and fixes
+
+----------------
+
 ## Version 0.1.0
 
 ### Fixed

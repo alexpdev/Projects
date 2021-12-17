@@ -1,5 +1,10 @@
 version = 1
 
+test_patterns = [
+  "tests/**",
+  "tests/*.py",
+]
+
 [[analyzers]]
 name = "python"
 enabled = true
@@ -10,15 +15,3 @@ enabled = true
 [[analyzers]]
 name = "test-coverage"
 enabled = true
-
-[[transformers]]
-name = "black"
-enabled = true
-
-[[transformers]]
-name = "isort"
-enabled = true
-
-[[transformers]]
-name = "autopep8"
-enabled = false

@@ -8,8 +8,12 @@
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/2da47ec1b5904538a40230f049a02be4)](https://www.codacy.com/gh/alexpdev/torrentfile/dashboard?utm_source=github.com&utm_medium=referral&utm_content=alexpdev/torrentfile&utm_campaign=Badge_Grade)
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/2da47ec1b5904538a40230f049a02be4)](https://www.codacy.com/gh/alexpdev/torrentfile/dashboard?utm_source=github.com&utm_medium=referral&utm_content=alexpdev/torrentfile&utm_campaign=Badge_Coverage)
-![GitHub repo size](https://img.shields.io/github/repo-size/alexpdev/torrentfile?style=plastic)
-![GitHub](https://img.shields.io/github/license/alexpdev/torrentfile?style=plastic)
+[![codecov](https://codecov.io/gh/alexpdev/TorrentFile/branch/master/graph/badge.svg?token=PXFsxXVAHW)](https://codecov.io/gh/alexpdev/TorrentFile)
+![GitHub repo size](https://img.shields.io/github/repo-size/alexpdev/TorrentFile)
+![GitHub License](https://img.shields.io/github/license/alexpdev/TorrentFile)
+![PyPI - Downloads](https://img.shields.io/pypi/dw/torrentfile)
+[![CI](https://github.com/alexpdev/TorrentFile/actions/workflows/python_workflow.yml/badge.svg?branch=master&event=push)](https://github.com/alexpdev/TorrentFile/actions/workflows/python_workflow.yml)
+[![DeepSource](https://deepsource.io/gh/alexpdev/TorrentFile.svg/?label=active+issues&token=16Sl_dF7nTU8YgPilcqhvHm8)](https://deepsource.io/gh/alexpdev/TorrentFile/)
 
 _TorrentFile_ can create torrent files, Check content for accuracy and completeness with a
 .torrent file, and display detailed information contained in a .torrent file.
