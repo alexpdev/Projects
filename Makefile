@@ -88,7 +88,6 @@ setup: clean ## setup and build repo
 	pip install -e .
 	twine upload dist/*
 
-
 winbuild: clean
 	pip install pyinstaller
 	python setup.py sdist bdist_wheel bdist_egg

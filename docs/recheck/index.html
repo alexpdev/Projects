@@ -143,16 +143,11 @@ at the end for the torrentfile as a whole.</p></div>
 
     <div class="doc doc-contents first">
 
-      <p>Module container Checker Class.</p>
-<p>The CheckerClass takes a torrentfile and tha path to it's contents.
-It will then iterate through every file and directory contained
-and compare their data to values contained within the torrent file.
-Completion percentages will be printed to screen for each file and
-at the end for the torrentfile as a whole.</p>
 
 
 
   <div class="doc doc-children">
+
 
 
 
@@ -176,19 +171,6 @@ Checker        </code>
 
     <div class="doc doc-contents ">
 
-      <p>Check a given file or directory to see if it matches a torrentfile.</p>
-<p>Public constructor for Checker class instance.</p>
-
-<p><strong>Examples:</strong></p>
-    <blockquote>
-<blockquote>
-<p>metafile = "/path/to/torrentfile/content_file_or_dir.torrent"
-    &gt;&gt; location = "/path/to/location"
-    &gt;&gt; os.path.exists("/path/to/location/content_file_or_dir")
-    Out: True
-    &gt;&gt; checker = Checker(metafile, location)</p>
-</blockquote>
-</blockquote>
 
 
 
@@ -218,33 +200,7 @@ Checker        </code>
 
     <div class="doc doc-contents ">
 
-      <p>Validate data against hashes contained in .torrent file.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>metafile</code></td>
-        <td><code>`str`</code></td>
-        <td><p>path to .torrent file</p></td>
-        <td><em>required</em></td>
-      </tr>
-      <tr>
-        <td><code>path</code></td>
-        <td><code>`str`</code></td>
-        <td><p>path to content or contents parent directory.</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>torrentfile\recheck.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metafile</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
@@ -299,7 +255,6 @@ Checker        </code>
 
     <div class="doc doc-contents ">
 
-      <p>Gather all file paths described in the torrent file.</p>
 
         <details class="quote">
           <summary>Source code in <code>torrentfile\recheck.py</code></summary>
@@ -353,34 +308,7 @@ Checker        </code>
 
     <div class="doc doc-contents ">
 
-      <p>Check path for torrent content.</p>
-<p>The path can be a relative or absolute filesystem path.  In the case
-where the content is a single file, the path may point directly to the
-the file, or it may point to the parent directory.  If content points
-to a directory.  The directory will be checked to see if it matches
-the torrent's name, if not the directories contents will be searched.
-The returned value will be the absolute path that matches the torrent's
-name.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>path</code></td>
-        <td><code>`str`</code></td>
-        <td><p>root path to torrent content</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>torrentfile\recheck.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">find_root</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
@@ -437,23 +365,7 @@ name.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Return the hasher class related to torrents meta version.</p>
 
-<p><strong>Returns:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>`Class[Hasher]`</code></td>
-      <td><p>the hashing implementation for specific torrent meta version.</p></td>
-    </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>torrentfile\recheck.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">hasher</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -489,23 +401,7 @@ name.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Produce results of comparing torrent contents piece by piece.</p>
 
-<p><strong>Returns:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>`bytes`</code></td>
-      <td><p>hash of data found on disk</p></td>
-    </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>torrentfile\recheck.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">iter_hashes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -533,9 +429,9 @@ name.</p>
         <span class="k">if</span> <span class="n">chunk</span> <span class="o">==</span> <span class="n">piece</span><span class="p">:</span>
             <span class="n">matching</span> <span class="o">+=</span> <span class="n">size</span>
             <span class="n">matched</span> <span class="o">+=</span> <span class="n">size</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="s2">&quot;Success&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">humansize</span><span class="p">)</span>
+            <span class="n">checklog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="s2">&quot;Success&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">humansize</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="s2">&quot;Fail&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">humansize</span><span class="p">)</span>
+            <span class="n">checklog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="s2">&quot;Fail&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">humansize</span><span class="p">)</span>
         <span class="k">yield</span> <span class="n">chunk</span><span class="p">,</span> <span class="n">piece</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">size</span>
         <span class="n">total_consumed</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">consumed</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span>
         <span class="n">percent_matched</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">matched</span> <span class="o">/</span> <span class="n">consumed</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span>
@@ -565,33 +461,7 @@ name.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Log message <code>msg</code> to logger and send <code>msg</code> to callback hook.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>*args</code></td>
-        <td><code>`Iterable`[`str`]</code></td>
-        <td><p>formatting args for log message</p></td>
-        <td><code>()</code></td>
-      </tr>
-      <tr>
-        <td><code>level</code></td>
-        <td><code>`int`</code></td>
-        <td><p>Log level for this message; default=<code>logging.INFO</code></p></td>
-        <td><code>20</code></td>
-      </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>torrentfile\recheck.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">log_msg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">):</span>
@@ -613,7 +483,7 @@ name.</p>
     <span class="c1"># Repeat log messages should be ignored.</span>
     <span class="k">if</span> <span class="n">message</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_log</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_log</span> <span class="o">=</span> <span class="n">message</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+        <span class="n">checklog</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hook</span> <span class="ow">and</span> <span class="n">level</span> <span class="o">==</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_hook</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 </code></pre></div>
@@ -636,23 +506,7 @@ name.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Check individual pieces of the torrent.</p>
 
-<p><strong>Returns:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>`Obj`</code></td>
-      <td><p>Individual piece hasher.</p></td>
-    </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>torrentfile\recheck.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">piece_checker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -689,27 +543,7 @@ name.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Register hooks from 3rd party programs to access generated info.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>hook</code></td>
-        <td><code>`function`</code></td>
-        <td><p>callback function for the logging feature.</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>torrentfile\recheck.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="nd">@classmethod</span>
@@ -742,7 +576,6 @@ name.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Generate result percentage and store for future calls.</p>
 
         <details class="quote">
           <summary>Source code in <code>torrentfile\recheck.py</code></summary>
@@ -782,35 +615,7 @@ name.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Traverse File Tree dictionary to get file details.</p>
-<p>Extract full pathnames, length, root hash, and layer hashes
-for each file included in the .torrent's file tree.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>tree</code></td>
-        <td><code>dict</code></td>
-        <td><p>File Tree dict extracted from torrent file.</p></td>
-        <td><em>required</em></td>
-      </tr>
-      <tr>
-        <td><code>partials</code></td>
-        <td><code>list</code></td>
-        <td><p>list of intermediate pathnames.</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>torrentfile\recheck.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">walk_file_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tree</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">partials</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
@@ -882,35 +687,7 @@ FeedChecker        </code>
 
     <div class="doc doc-contents ">
 
-      <p>Validates torrent content.</p>
-<p>Seemlesly validate torrent file contents by comparing hashes in
-metafile against data on disk.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>checker</code></td>
-        <td><code>`object`</code></td>
-        <td><p>the checker class instance.</p></td>
-        <td><em>required</em></td>
-      </tr>
-      <tr>
-        <td><code>hasher</code></td>
-        <td><code>`Any`</code></td>
-        <td><p>hashing class for calculating piece hashes. default=None</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
 
 
 
@@ -939,7 +716,6 @@ metafile against data on disk.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Generate hashes of piece length data from filelist contents.</p>
 
         <details class="quote">
           <summary>Source code in <code>torrentfile\recheck.py</code></summary>
@@ -977,7 +753,6 @@ metafile against data on disk.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Assign iterator and return self.</p>
 
         <details class="quote">
           <summary>Source code in <code>torrentfile\recheck.py</code></summary>
@@ -1008,7 +783,6 @@ metafile against data on disk.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Yield back result of comparison.</p>
 
         <details class="quote">
           <summary>Source code in <code>torrentfile\recheck.py</code></summary>
@@ -1018,13 +792,12 @@ metafile against data on disk.</p>
         <span class="n">partial</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">it</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">StopIteration</span> <span class="k">as</span> <span class="n">itererror</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">StopIteration</span> <span class="kn">from</span> <span class="nn">itererror</span>
+
     <span class="n">chunck</span> <span class="o">=</span> <span class="n">sha1</span><span class="p">(</span><span class="n">partial</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>  <span class="c1"># nosec</span>
     <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">piece_count</span> <span class="o">*</span> <span class="n">SHA1</span>
     <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">SHA1</span>
     <span class="n">piece</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pieces</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">piece_count</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="c1"># except IndexError:  # pragma: no cover</span>
-    <span class="c1">#     raise StopIteration</span>
     <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">paths</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">chunck</span><span class="p">,</span> <span class="n">piece</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">partial</span><span class="p">)</span>
 </code></pre></div>
@@ -1047,48 +820,7 @@ metafile against data on disk.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Split file paths contents into blocks of data for hash pieces.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>path</code></td>
-        <td><code>str</code></td>
-        <td><p>path to content.</p></td>
-        <td><em>required</em></td>
-      </tr>
-      <tr>
-        <td><code>partial</code></td>
-        <td><code>bytearray</code></td>
-        <td><p>any remaining content from last file.</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
-<p><strong>Returns:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>bytearray</code></td>
-      <td><p>Hash digest for block of .torrent contents.</p></td>
-    </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>torrentfile\recheck.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">partial</span><span class="p">:</span> <span class="nb">bytearray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytearray</span><span class="p">:</span>
@@ -1145,23 +877,7 @@ metafile against data on disk.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Iterate through, and hash pieces of torrent contents.</p>
 
-<p><strong>Returns:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>`bytes`</code></td>
-      <td><p>hash digest for block of torrent data.</p></td>
-    </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>torrentfile\recheck.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">iter_pieces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1223,33 +939,7 @@ HashChecker        </code>
 
     <div class="doc doc-contents ">
 
-      <p>Verify that root hashes of content files match the .torrent files.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>checker</code></td>
-        <td><code>`Object`</code></td>
-        <td><p>the checker instance that maintains variables.</p></td>
-        <td><em>required</em></td>
-      </tr>
-      <tr>
-        <td><code>hasher</code></td>
-        <td><code>`Object`</code></td>
-        <td><p>the version specific hashing class for torrent content.</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
 
 
 
@@ -1278,7 +968,6 @@ HashChecker        </code>
 
     <div class="doc doc-contents ">
 
-      <p>Construct a HybridChecker instance.</p>
 
         <details class="quote">
           <summary>Source code in <code>torrentfile\recheck.py</code></summary>
@@ -1292,7 +981,7 @@ HashChecker        </code>
     <span class="bp">self</span><span class="o">.</span><span class="n">piece_layers</span> <span class="o">=</span> <span class="n">checker</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">&quot;piece layers&quot;</span><span class="p">]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">piece_count</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">it</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+    <span class="n">checklog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
         <span class="s2">&quot;Starting Hash Checker. piece length: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="n">humanize_bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">piece_length</span><span class="p">),</span>
     <span class="p">)</span>
@@ -1319,7 +1008,6 @@ HashChecker        </code>
 
     <div class="doc doc-contents ">
 
-      <p>Assign iterator and return self.</p>
 
         <details class="quote">
           <summary>Source code in <code>torrentfile\recheck.py</code></summary>
@@ -1350,7 +1038,6 @@ HashChecker        </code>
 
     <div class="doc doc-contents ">
 
-      <p>Provide the result of comparison.</p>
 
         <details class="quote">
           <summary>Source code in <code>torrentfile\recheck.py</code></summary>
@@ -1381,23 +1068,7 @@ HashChecker        </code>
 
     <div class="doc doc-contents ">
 
-      <p>Iterate through and compare root file hashes to .torrent file.</p>
 
-<p><strong>Returns:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>`tuple`</code></td>
-      <td><p>The size of the file and result of match.</p></td>
-    </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>torrentfile\recheck.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">iter_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1411,9 +1082,9 @@ HashChecker        </code>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">paths</span><span class="p">):</span>
         <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fileinfo</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="n">length</span><span class="p">,</span> <span class="n">plength</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">piece_length</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> length: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">length</span><span class="p">))</span>
+        <span class="n">checklog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> length: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">length</span><span class="p">))</span>
         <span class="n">roothash</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;pieces root&quot;</span><span class="p">]</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> root hash </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">roothash</span><span class="p">))</span>
+        <span class="n">checklog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> root hash </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">roothash</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">roothash</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">piece_layers</span><span class="p">:</span>
             <span class="n">pieces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">piece_layers</span><span class="p">[</span><span class="n">roothash</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1458,7 +1129,7 @@ HashChecker        </code>
                         <span class="n">block</span> <span class="o">=</span> <span class="n">sha256</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="n">size</span><span class="p">))</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
                     <span class="n">size</span> <span class="o">=</span> <span class="n">plength</span> <span class="k">if</span> <span class="n">plength</span> <span class="o">&lt;</span> <span class="n">length</span> <span class="k">else</span> <span class="n">length</span>
                     <span class="n">length</span> <span class="o">-=</span> <span class="n">size</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="n">checklog</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                         <span class="s2">&quot;Yielding: </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                         <span class="nb">str</span><span class="p">(</span><span class="n">block</span><span class="p">),</span>
                         <span class="nb">str</span><span class="p">(</span><span class="n">piece</span><span class="p">),</span>

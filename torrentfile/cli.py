@@ -220,17 +220,29 @@ def main_script(args=None):
     else:
         level = logging.WARNING
 
-    logging.basicConfig(
-        level=level,
-        format="%(prog)s %(asctime)s %(message)s",
+    tlogger = logging.getLogger("tlogger")
+    tlogger.setLevel(level)
+
+    formatter = logging.Formatter(
+        fmt="%(prog)s %(asctime)s %(message)s",
         datefmt="%m-%d-%Y %H:%M:%S",
+        style="%",
     )
 
+    handler = logging.StreamHandler()
+    handler.setLevel(level)
+    handler.setFormatter(formatter)
+    tlogger.addHandler(handler)
+
     if flags.checker:
+        tlogger.debug("Program as entered Recheck mode.")
         metafile = flags.checker
         content = flags.content
+        tlogger.debug("Checking %s against %s contents", metafile, content)
         checker = Checker(metafile, content)
+        tlogger.debug("Completed initialization of the Checker class")
         result = checker.results()
+        tlogger.info("Final result for %s recheck:  %s", metafile, result)
         sys.stdout.write(str(result))
         sys.stdout.flush()
         return result
@@ -246,17 +258,19 @@ def main_script(args=None):
         "comment": flags.comment,
     }
 
+    tlogger.debug("Program has entered torrent creation mode.")
     if flags.meta_version == "2":
         torrent = TorrentFileV2(**kwargs)
     elif flags.meta_version == "3":
         torrent = TorrentFileHybrid(**kwargs)
     else:
         torrent = TorrentFile(**kwargs)
-
+    tlogger.debug("Completed torrent files meta info assembly.")
     outfile, meta = torrent.write()
     parser.kwargs = kwargs
     parser.meta = meta
     parser.outfile = outfile
+    tlogger.debug("New torrent file (%s) has been created.", str(outfile))
     return parser
 
 

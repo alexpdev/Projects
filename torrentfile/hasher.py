@@ -23,6 +23,8 @@ from .utils import humanize_bytes
 BLOCK_SIZE = 2 ** 14  # 16KiB
 HASH_SIZE = 32
 
+hashlog = logging.getLogger("tlogger.hash")
+
 
 class Hasher:
     """Piece hasher for Bittorrent V1 files.
@@ -48,7 +50,7 @@ class Hasher:
         self.total = sum([os.path.getsize(i) for i in self.paths])
         self.index = 0
         self.current = open(self.paths[0], "rb")
-        logging.debug(
+        hashlog.debug(
             "Hashing v1 torrent file. Size: %s Piece Length: %s",
             humanize_bytes(self.total),
             humanize_bytes(self.piece_length),
@@ -142,7 +144,7 @@ class HasherV2:
         self.layer_hashes = []
         self.piece_length = piece_length
         self.num_blocks = piece_length // BLOCK_SIZE
-        logging.debug(
+        hashlog.debug(
             "Hashing partial v2 torrent file. Piece Length: %s Path: %s",
             humanize_bytes(self.piece_length),
             str(self.path),
@@ -233,7 +235,7 @@ class HasherHybrid:
         self.padding_piece = None
         self.padding_file = None
         self.amount = piece_length // BLOCK_SIZE
-        logging.debug(
+        hashlog.debug(
             "Hashing partial Hybrid torrent file. Piece Length: %s Path: %s",
             humanize_bytes(self.piece_length),
             str(self.path),

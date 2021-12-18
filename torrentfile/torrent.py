@@ -16,26 +16,32 @@
 
 Classes
 -------
+
     - `TorrentFile`
         construct .torrent file.
+
     - `TorrentFileV2`
         construct .torrent v2 files using provided data.
+
     - `MetaFile`
         base class for all MetaFile classes.
 
 Constants
 ---------
+
     - BLOCK_SIZE : `int`
         size of leaf hashes for merkle tree.
+
     - HASH_SIZE : `int`
         Length of a sha256 hash.
 
-Notes
------
+Bittorrent V2
+-------------
+
 **From Bittorrent.org Documentation pages.**
 *Implementation details for Bittorrent Protocol v2.*
 
-!!! note
+!!! attention
     All strings in a .torrent file that contains text
     must be UTF-8 encoded.
 
@@ -119,7 +125,8 @@ Notes
     i.e. it must not contain a zero-length key with a dictionary containing
     a length key.
 
---------
+Bittorrent V1
+-------------
 
 ### Version 1 meta-dictionary
 
@@ -192,19 +199,19 @@ class MetaFile:
     Parameters
     ----------
     path : `str`
-        target path to torrent content.
+        target path to torrent content.  Default: None
     announce : `str`
-        One or more tracker URL's.
+        One or more tracker URL's.  Default: None
     comment : `str`
-        A comment.
+        A comment.  Default: None
     piece_length : `int`
-        Size of torrent pieces.
+        Size of torrent pieces.  Default: None
     private : `bool`
-        For private trackers?
+        For private trackers.  Default: None
     outfile : `str`
-        target path to write .torrent file.
+        target path to write .torrent file. Default: None
     source : `str`
-        Private tracker source.
+        Private tracker source. Default: None
     """
 
     # fmt: off

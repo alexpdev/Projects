@@ -155,12 +155,6 @@ invoked when called from command line, and parses accompanying arguments.</p>
 
     <div class="doc doc-contents first">
 
-      <p>Command Line Interface for TorrentFile project.</p>
-<p>This module provides the primary command line argument parser for
-the torrentfile package. The main_script function is automatically
-invoked when called from command line, and parses accompanying arguments.</p>
-<p>Functions:
-    main_script: process command line arguments and run program.</p>
 
 
 
@@ -187,39 +181,7 @@ HelpFormat            (<span title="argparse.HelpFormatter">HelpFormatter</span>
 
     <div class="doc doc-contents ">
 
-      <p>Formatting class for help tips provided by the CLI.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>prog</code></td>
-        <td><code>`str`</code></td>
-        <td><p>Name of the program.</p></td>
-        <td><em>required</em></td>
-      </tr>
-      <tr>
-        <td><code>width</code></td>
-        <td><code>`int`</code></td>
-        <td><p>Max width of help message output.</p></td>
-        <td><em>required</em></td>
-      </tr>
-      <tr>
-        <td><code>max_help_positions</code></td>
-        <td><code>`int`</code></td>
-        <td><p>max length until line wrap.</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
 
 
 
@@ -248,7 +210,6 @@ HelpFormat            (<span title="argparse.HelpFormatter">HelpFormatter</span>
 
     <div class="doc doc-contents ">
 
-      <p>Construct HelpFormat class.</p>
 
         <details class="quote">
           <summary>Source code in <code>torrentfile\cli.py</code></summary>
@@ -286,7 +247,6 @@ HelpFormat            (<span title="argparse.HelpFormatter">HelpFormatter</span>
 
     <div class="doc doc-contents ">
 
-      <p>Initiate main function for CLI script.</p>
 
         <details class="quote">
           <summary>Source code in <code>torrentfile\cli.py</code></summary>
@@ -313,27 +273,7 @@ HelpFormat            (<span title="argparse.HelpFormatter">HelpFormatter</span>
 
     <div class="doc doc-contents ">
 
-      <p>Initialize Command Line Interface for torrentfile.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>args</code></td>
-        <td><code>`list`</code></td>
-        <td><p>Commandline arguments. default=None</p></td>
-        <td><code>None</code></td>
-      </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>torrentfile\cli.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">main_script</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -501,17 +441,29 @@ HelpFormat            (<span title="argparse.HelpFormatter">HelpFormatter</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span>
 
-    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
-        <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">,</span>
-        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(prog)s</span><span class="s2"> </span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">tlogger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;tlogger&quot;</span><span class="p">)</span>
+    <span class="n">tlogger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+
+    <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
+        <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(prog)s</span><span class="s2"> </span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;%m-</span><span class="si">%d</span><span class="s2">-%Y %H:%M:%S&quot;</span><span class="p">,</span>
+        <span class="n">style</span><span class="o">=</span><span class="s2">&quot;%&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
+    <span class="n">handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+    <span class="n">handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+    <span class="n">handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+    <span class="n">tlogger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">flags</span><span class="o">.</span><span class="n">checker</span><span class="p">:</span>
+        <span class="n">tlogger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Program as entered Recheck mode.&quot;</span><span class="p">)</span>
         <span class="n">metafile</span> <span class="o">=</span> <span class="n">flags</span><span class="o">.</span><span class="n">checker</span>
         <span class="n">content</span> <span class="o">=</span> <span class="n">flags</span><span class="o">.</span><span class="n">content</span>
+        <span class="n">tlogger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Checking </span><span class="si">%s</span><span class="s2"> against </span><span class="si">%s</span><span class="s2"> contents&quot;</span><span class="p">,</span> <span class="n">metafile</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
         <span class="n">checker</span> <span class="o">=</span> <span class="n">Checker</span><span class="p">(</span><span class="n">metafile</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+        <span class="n">tlogger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Completed initialization of the Checker class&quot;</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">checker</span><span class="o">.</span><span class="n">results</span><span class="p">()</span>
+        <span class="n">tlogger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Final result for </span><span class="si">%s</span><span class="s2"> recheck:  </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">metafile</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">result</span>
@@ -527,17 +479,19 @@ HelpFormat            (<span title="argparse.HelpFormatter">HelpFormatter</span>
         <span class="s2">&quot;comment&quot;</span><span class="p">:</span> <span class="n">flags</span><span class="o">.</span><span class="n">comment</span><span class="p">,</span>
     <span class="p">}</span>
 
+    <span class="n">tlogger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Program has entered torrent creation mode.&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">flags</span><span class="o">.</span><span class="n">meta_version</span> <span class="o">==</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span>
         <span class="n">torrent</span> <span class="o">=</span> <span class="n">TorrentFileV2</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">flags</span><span class="o">.</span><span class="n">meta_version</span> <span class="o">==</span> <span class="s2">&quot;3&quot;</span><span class="p">:</span>
         <span class="n">torrent</span> <span class="o">=</span> <span class="n">TorrentFileHybrid</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">torrent</span> <span class="o">=</span> <span class="n">TorrentFile</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
+    <span class="n">tlogger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Completed torrent files meta info assembly.&quot;</span><span class="p">)</span>
     <span class="n">outfile</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">torrent</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="n">meta</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">outfile</span> <span class="o">=</span> <span class="n">outfile</span>
+    <span class="n">tlogger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;New torrent file (</span><span class="si">%s</span><span class="s2">) has been created.&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">outfile</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">parser</span>
 </code></pre></div>
         </details>
@@ -573,39 +527,7 @@ torrentfile.cli.HelpFormat            (<span title="argparse.HelpFormatter">Help
 
     <div class="doc doc-contents first">
 
-      <p>Formatting class for help tips provided by the CLI.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>prog</code></td>
-        <td><code>`str`</code></td>
-        <td><p>Name of the program.</p></td>
-        <td><em>required</em></td>
-      </tr>
-      <tr>
-        <td><code>width</code></td>
-        <td><code>`int`</code></td>
-        <td><p>Max width of help message output.</p></td>
-        <td><em>required</em></td>
-      </tr>
-      <tr>
-        <td><code>max_help_positions</code></td>
-        <td><code>`int`</code></td>
-        <td><p>max length until line wrap.</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
 
 
 
@@ -634,7 +556,6 @@ torrentfile.cli.HelpFormat            (<span title="argparse.HelpFormatter">Help
 
     <div class="doc doc-contents ">
 
-      <p>Construct HelpFormat class.</p>
 
         <details class="quote">
           <summary>Source code in <code>torrentfile\cli.py</code></summary>
