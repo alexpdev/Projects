@@ -181,14 +181,6 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
     <div class="doc doc-contents first">
 
-      <p>Utility functions and classes used throughout package.</p>
-<p>Functions:
-  get_piece_length: calculate ideal piece length for torrent file.
-  sortfiles: traverse directory in sorted order yielding paths encountered.
-  path_size: Sum the sizes of each file in path.
-  get_file_list: Return list of all files contained in directory.
-  path_stat: Get ideal piece length, total size, and file list for directory.
-  path_piece_length: Get ideal piece length based on size of directory.</p>
 
 
 
@@ -215,28 +207,7 @@ MissingPathError            (<span title="Exception">Exception</span>)
 
     <div class="doc doc-contents ">
 
-      <p>Path parameter is required to specify target content.</p>
-<p>Creating a .torrent file with no contents seems rather silly.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>message</code></td>
-        <td><code>`any`</code></td>
-        <td><p>Message for user (optional).</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
 
 
 
@@ -265,8 +236,6 @@ MissingPathError            (<span title="Exception">Exception</span>)
 
     <div class="doc doc-contents ">
 
-      <p>Raise when creating a meta file without specifying target content.</p>
-<p>The <code>message</code> argument is a message to pass to Exception base class.</p>
 
         <details class="quote">
           <summary>Source code in <code>torrentfile\utils.py</code></summary>
@@ -310,27 +279,7 @@ PieceLengthValueError            (<span title="Exception">Exception</span>)
 
     <div class="doc doc-contents ">
 
-      <p>Piece Length parameter must equal a perfect power of 2.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>message</code></td>
-        <td><code>`any`</code></td>
-        <td><p>Message for user (optional).</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
 
 
 
@@ -359,8 +308,6 @@ PieceLengthValueError            (<span title="Exception">Exception</span>)
 
     <div class="doc doc-contents ">
 
-      <p>Raise when creating a meta file with incorrect piece length value.</p>
-<p>The <code>message</code> argument is a message to pass to Exception base class.</p>
 
         <details class="quote">
           <summary>Source code in <code>torrentfile\utils.py</code></summary>
@@ -402,57 +349,7 @@ PieceLengthValueError            (<span title="Exception">Exception</span>)
 
     <div class="doc doc-contents ">
 
-      <p>Perform error checking and format conversion to os.PathLike.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>pathstring</code></td>
-        <td><code>`str`</code></td>
-        <td><p>An existing filesystem path.</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
-<p><strong>Exceptions:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>MissingPathError</code></td>
-        <td><p>File could not be found.</p></td>
-      </tr>
-  </tbody>
-</table>
-<p><strong>Returns:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>`os.PathLike`</code></td>
-      <td><p>Input path converted to bytes format.</p></td>
-    </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>torrentfile\utils.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">filelist_total</span><span class="p">(</span><span class="n">pathstring</span><span class="p">):</span>
@@ -497,42 +394,7 @@ PieceLengthValueError            (<span title="Exception">Exception</span>)
 
     <div class="doc doc-contents ">
 
-      <p>Return a sorted list of file paths contained in directory.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>path</code></td>
-        <td><code>`str`</code></td>
-        <td><p>target file or directory.</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
-<p><strong>Returns:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>`list`</code></td>
-      <td><p>sorted list of file paths.</p></td>
-    </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>torrentfile\utils.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_file_list</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
@@ -570,42 +432,7 @@ PieceLengthValueError            (<span title="Exception">Exception</span>)
 
     <div class="doc doc-contents ">
 
-      <p>Calculate the ideal piece length for bittorrent data.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>size</code></td>
-        <td><code>int</code></td>
-        <td><p>Total bits of all files incluided in .torrent file.</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
-<p><strong>Returns:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>int</code></td>
-      <td><p>Ideal peace length size arguement.</p></td>
-    </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>torrentfile\utils.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_piece_length</span><span class="p">(</span><span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -645,27 +472,7 @@ PieceLengthValueError            (<span title="Exception">Exception</span>)
 
     <div class="doc doc-contents ">
 
-      <p>Convert integer into human readable memory sized denomination.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>amount</code></td>
-        <td><code>`int`</code></td>
-        <td><p>total number of bytes.</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>torrentfile\utils.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">humanize_bytes</span><span class="p">(</span><span class="n">amount</span><span class="p">):</span>
@@ -708,57 +515,7 @@ PieceLengthValueError            (<span title="Exception">Exception</span>)
 
     <div class="doc doc-contents ">
 
-      <p>Verify input piece_length is valid and convert accordingly.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>piece_length</code></td>
-        <td><code>`int` | `str`</code></td>
-        <td><p>The piece length provided by user.</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
-<p><strong>Exceptions:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>PieceLengthValueError :</code></td>
-        <td><p>If piece length is improper value.</p></td>
-      </tr>
-  </tbody>
-</table>
-<p><strong>Returns:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>int</code></td>
-      <td><p>normalized piece length.</p></td>
-    </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>torrentfile\utils.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">normalize_piece_length</span><span class="p">(</span><span class="n">piece_length</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -814,42 +571,7 @@ PieceLengthValueError            (<span title="Exception">Exception</span>)
 
     <div class="doc doc-contents ">
 
-      <p>Calculate piece length for input path and contents.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>path</code></td>
-        <td><code>`str`</code></td>
-        <td><p>The absolute path to directory and contents.</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
-<p><strong>Returns:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>`int`</code></td>
-      <td><p>The size of pieces of torrent content.</p></td>
-    </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>torrentfile\utils.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">path_piece_length</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
@@ -887,42 +609,7 @@ PieceLengthValueError            (<span title="Exception">Exception</span>)
 
     <div class="doc doc-contents ">
 
-      <p>Return the total size of all files in path recursively.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>path</code></td>
-        <td><code>`str`</code></td>
-        <td><p>path to target file or directory.</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
-<p><strong>Returns:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>`int`</code></td>
-      <td><p>total size of files.</p></td>
-    </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>torrentfile\utils.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">path_size</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
@@ -960,42 +647,7 @@ PieceLengthValueError            (<span title="Exception">Exception</span>)
 
     <div class="doc doc-contents ">
 
-      <p>Calculate directory statistics.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>path</code></td>
-        <td><code>`str`</code></td>
-        <td><p>The path to start calculating from.</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
-<p><strong>Returns:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>`list`</code></td>
-      <td><p>List of all files contained in Directory</p></td>
-    </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>torrentfile\utils.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">path_stat</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>

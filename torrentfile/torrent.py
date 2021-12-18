@@ -12,158 +12,173 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #####################################################################
-"""Base and Subclasses for bittorrent meta files.
-
-This module `metafile2` contains classes and functions related
-to constructing .torrent files using Bittorrent v2 Protocol
+"""Classes and procedures pertaining to the creation of torrent meta files.
 
 Classes
 -------
-`TorrentFile`
-    construct .torrent file.
-`TorrentFileV2`
-    construct .torrent v2 files using provided data.
-`MetaFile`
-    base class for all MetaFile classes.
+
+    - `TorrentFile`
+        construct .torrent file.
+
+    - `TorrentFileV2`
+        construct .torrent v2 files using provided data.
+
+    - `MetaFile`
+        base class for all MetaFile classes.
 
 Constants
 ---------
-BLOCK_SIZE : `int`
-    size of leaf hashes for merkle tree.
-HASH_SIZE : `int`
-    Length of a sha256 hash.
 
-Notes
------
-Implementation details for Bittorrent Protocol v2.
+    - BLOCK_SIZE : `int`
+        size of leaf hashes for merkle tree.
 
-Metainfo files (also known as .torrent files) are bencoded dictionaries
-with the following keys:
+    - HASH_SIZE : `int`
+        Length of a sha256 hash.
 
-"announce":
-    The URL of the tracker.
+Bittorrent V2
+-------------
 
-"info":
-    This maps to a dictionary, with keys described below.
+**From Bittorrent.org Documentation pages.**
+*Implementation details for Bittorrent Protocol v2.*
 
-    "name":
-        A display name for the torrent. It is purely advisory.
+!!! attention
+    All strings in a .torrent file that contains text
+    must be UTF-8 encoded.
 
-    "piece length":
-        The number of bytes that each logical piece in the peer
-        protocol refers to. I.e. it sets the granularity of piece, request,
-        bitfield and have messages. It must be a power of two and at least
-        6KiB.
+### Meta Version 2 Dictionary:
 
-    "meta version":
-        An integer value, set to 2 to indicate compatibility
-        with the current revision of this specification. Version 1 is not
-        assigned to avoid confusion with BEP3. Future revisions will only
-        increment this issue to indicate an incompatible change has been made,
-        for example that hash algorithms were changed due to newly discovered
-        vulnerabilities. Lementations must check this field first and indicate
-        that a torrent is of a newer version than they can handle before
-        performing other idations which may result in more general messages
-        about invalid files. Files are mapped into this piece address space so
-        that each non-empty
+    - "announce":
+        The URL of the tracker.
 
-    "file tree":
-        A tree of dictionaries where dictionary keys represent UTF-8
-        encoded path elements. Entries with zero-length keys describe the
-        properties of the composed path at that point. 'UTF-8 encoded' in this
-        context only means that if the native encoding is known at creation
-        time it must be converted to UTF-8. Keys may contain invalid UTF-8
-        sequences or characters and names that are reserved on specific
-        filesystems. Implementations must be prepared to sanitize them. On
-        most platforms path components exactly matching '.' and '..' must be
-        sanitized since they could lead to directory traversal attacks and
-        conflicting path descriptions. On platforms that require valid UTF-8
-        path components this sanitizing step must happen after normalizing
-        overlong UTF-8 encodings.
-        File is aligned to a piece boundary and occurs in the same order as in
-        the file tree. The last piece of each file may be shorter than the
-        specified piece length, resulting in an alignment gap.
+    - "info":
+        This maps to a dictionary, with keys described below.
 
-    "length":
-        Length of the file in bytes. Presence of this field indicates
-        that the dictionary describes a file, not a directory. Which means
-        it must not have any sibling entries.
+        "name":
+            A display name for the torrent. It is purely advisory.
 
-    "pieces root":
-        For non-empty files this is the the root hash of a merkle
-        tree with a branching factor of 2, constructed from 16KiB blocks of the
-        file. The last block may be shorter than 16KiB. The remaining leaf
-        hashes beyond the end of the file required to construct upper layers
-        of the merkle tree are set to zero. As of meta version 2 SHA2-256 is
-        used as digest function for the merkle tree. The hash is stored in its
-        binary form, not as human-readable string.
+        "piece length":
+            The number of bytes that each logical piece in the peer
+            protocol refers to. I.e. it sets the granularity of piece, request,
+            bitfield and have messages. It must be a power of two and at least
+            6KiB.
 
-"piece layers":
-    A dictionary of strings. For each file in the file tree that
-    is larger than the piece size it contains one string value.
-    The keys are the merkle roots while the values consist of concatenated
-    hashes of one layer within that merkle tree. The layer is chosen so
-    that one hash covers piece length bytes. For example if the piece size is
-    16KiB then the leaf hashes are used. If a piece size of 128KiB is used
-    then 3rd layer up from the leaf hashes is used. Layer hashes which
-    exclusively cover data beyond the end of file, i.e. are only needed to
-    balance the tree, are omitted. All hashes are stored in their binary
-    format. A torrent is not valid if this field is absent, the contained
-    hashes do not match the merkle roots or are not from the correct layer.
+        "meta version":
+            An integer value, set to 2 to indicate compatibility
+            with the current revision of this specification. Version 1 is not
+            assigned to avoid confusion with BEP3. Future revisions will only
+            increment this issue to indicate an incompatible change has been made,
+            for example that hash algorithms were changed due to newly discovered
+            vulnerabilities. Lementations must check this field first and indicate
+            that a torrent is of a newer version than they can handle before
+            performing other idations which may result in more general messages
+            about invalid files. Files are mapped into this piece address space so
+            that each non-empty
 
-> The file tree root dictionary itself must not be a file, i.e. it must not
-> contain a zero-length key with a dictionary containing a length key.
+        "file tree":
+            A tree of dictionaries where dictionary keys represent UTF-8
+            encoded path elements. Entries with zero-length keys describe the
+            properties of the composed path at that point. 'UTF-8 encoded'
+            context only means that if the native encoding is known at creation
+            time it must be converted to UTF-8. Keys may contain invalid UTF-8
+            sequences or characters and names that are reserved on specific
+            filesystems. Implementations must be prepared to sanitize them. On
+            platforms path components exactly matching '.' and '..' must be
+            sanitized since they could lead to directory traversal attacks and
+            conflicting path descriptions. On platforms that require UTF-8
+            path components this sanitizing step must happen after normalizing
+            overlong UTF-8 encodings.
+            File is aligned to a piece boundary and occurs in same order as
+            the file tree. The last piece of each file may be shorter than the
+            specified piece length, resulting in an alignment gap.
 
---------
+        "length":
+            Length of the file in bytes. Presence of this field indicates
+            that the dictionary describes a file, not a directory. Which means
+            it must not have any sibling entries.
 
-From Bittorrent.org Documentation pages.
+        "pieces root":
+            For non-empty files this is the the root hash of a merkle
+            tree with a branching factor of 2, constructed from 16KiB blocks
+            of the file. The last block may be shorter than 16KiB. The
+            remaining leaf hashes beyond the end of the file required to
+            construct upper layers of the merkle tree are set to zero. As of
+            meta version 2 SHA2-256 is used as digest function for the merkle
+            tree. The hash is stored in its binary form, not as human-readable
+            string.
 
-Metainfo files (also known as .torrent files) are bencoded dictionaries with
-the following keys:
+    -"piece layers":
+        A dictionary of strings. For each file in the file tree that
+        is larger than the piece size it contains one string value.
+        The keys are the merkle roots while the values consist of concatenated
+        hashes of one layer within that merkle tree. The layer is chosen so
+        that one hash covers piece length bytes. For example if the piece
+        size is 16KiB then the leaf hashes are used. If a piece size of
+        128KiB is used then 3rd layer up from the leaf hashes is used. Layer
+        hashes which exclusively cover data beyond the end of file, i.e.
+        are only needed to balance the tree, are omitted. All hashes are
+        stored in their binary format. A torrent is not valid if this field is
+        absent, the contained hashes do not match the merkle roots or are
+        not from the correct layer.
 
-announce
-    The URL of the tracker.
+!!! important
+    The file tree root dictionary itself must not be a file,
+    i.e. it must not contain a zero-length key with a dictionary containing
+    a length key.
 
-info
+Bittorrent V1
+-------------
 
-This maps to a dictionary, with keys described below.
+### Version 1 meta-dictionary
 
-All strings in a .torrent file that contains text must be UTF-8 encoded.
+    -announce:
+        The URL of the tracker.
 
-## info dictionary
+    - info:
+        This maps to a dictionary, with keys described below.
 
-The `name` key maps to a UTF-8 encoded string which is the suggested name to
-save the file (or directory) as. It is purely advisory.
 
-`piece length` maps to the number of bytes in each piece the file is split
-into. For the purposes of transfer, files are split into fixed-size pieces
-which are all the same length except for possibly the last one which may be
-truncated. `piece length` is almost always a power of two, most commonly 2 18
-= 256 K (BitTorrent prior to version 3.2 uses 2 20 = 1 M as default).
+## Version 1 info-dictionary
 
-`pieces` maps to a string whose length is a multiple of 20. It is to be
-subdivided into strings of length 20, each of which is the SHA1 hash of the
-piece at the corresponding index.
+    - `name`:
+        maps to a UTF-8 encoded string which is the suggested name to
+        save the file (or directory) as. It is purely advisory.
 
-There is also a key `length` or a key `files`, but not both or neither. If
-`length` is present then the download represents a single file, otherwise it
-represents a set of files which go in a directory structure.
+    - `piece length`:
+        maps to the number of bytes in each piece the file is split
+        into. For the purposes of transfer, files are split into
+        fixed-size pieces which are all the same length except for
+        possibly the last one which may be truncated.
 
-In the single file case, `length` maps to the length of the file in bytes.
+    - `piece length`:
+        is almost always a power of two, most commonly 2^18 = 256 K
 
-For the purposes of the other keys, the multi-file case is treated as only
-having a single file by concatenating the files in the order they appear in
-the files list. The files list is the value `files` maps to, and is a list of
-dictionaries containing the following keys:
+    - `pieces`:
+        maps to a string whose length is a multiple of 20. It is to be
+        subdivided into strings of length 20, each of which is the SHA1
+        hash of the piece at the corresponding index.
 
-`length` - The length of the file, in bytes.
+    - `length`:
+        In the single file case, maps to the length of the file in bytes.
 
-`path` - A list of UTF-8 encoded strings corresponding to subdirectory names,
-the last of which is the actual file name (a zero length list is an error
-case).
+    - `files`:
+        If present then the download represents a single file, otherwise it
+        represents a set of files which go in a directory structure.
+        For the purposes of the other keys, the multi-file case is treated
+        as only having a single file by concatenating the files in the order
+        they appear in the files list. The files list is the value `files`
+        maps to, and is a list of dictionaries containing the following keys:
 
-In the single file case, the name key is the name of a file, in the muliple
-file case, it's the name of a directory.
+        `path`:
+            A list of UTF-8 encoded strings corresponding to subdirectory
+            names, the last of which is the actual file name
+
+        `length`:
+            Maps to the length of the file in bytes.
+
+
+!!! Important
+    In the single file case, the name key is the name of a file,
+    in the muliple file case, it's the name of a directory.
 """
 
 import logging
@@ -184,19 +199,19 @@ class MetaFile:
     Parameters
     ----------
     path : `str`
-        target path to torrent content.
+        target path to torrent content.  Default: None
     announce : `str`
-        One or more tracker URL's.
+        One or more tracker URL's.  Default: None
     comment : `str`
-        A comment.
+        A comment.  Default: None
     piece_length : `int`
-        Size of torrent pieces.
+        Size of torrent pieces.  Default: None
     private : `bool`
-        For private trackers?
+        For private trackers.  Default: None
     outfile : `str`
-        target path to write .torrent file.
+        target path to write .torrent file. Default: None
     source : `str`
-        Private tracker source.
+        Private tracker source. Default: None
     """
 
     # fmt: off
