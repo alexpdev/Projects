@@ -1,5 +1,16 @@
 # TorrentFile
 
+## Version 0.1.2
+
+### Updated / Fixed
+
+    - Package documentation has been updated to a new look and smoother layout.
+    - Fixed bug with the logging output functionality.
+    - Improved logging in general with new notifications and more output for -d flag
+    - Additional tests added for logging.
+
+----------------
+
 ## Version 0.1.1
 
 ### Fixed
