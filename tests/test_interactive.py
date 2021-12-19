@@ -13,33 +13,71 @@
 #####################################################################
 """Testing functions for the command line interface."""
 
-import datetime
 import os
-import sys
-import shutil
-from pathlib import Path
 
-import pyben
 import pytest
 
-from tests import dir1, dir2, rmpath
-from torrentfile.cli import main
 import torrentfile
-from torrentfile.interactive import program_options, create_torrent, printheader, recheck_torrent, edit_torrent
-
-def get_input(output, arg=None):
-    if "Action" in output:
-        return "create"
-    if "Piece" in output:
-        return "18"
-    if "Path" in output:
-        return arg
-    return ""
-
-torrentfile.interactive.Options.get_input = get_input
+from tests import dir1, dir2
+from torrentfile.interactive import (edit_torrent, program_options,
+                                     recheck_torrent)
 
 
-def test_interactive_program_options(dir1):
-    outfile = str(dir1) + ".torrent"
+def alt_input(mapping):
+    """Insert Dummy data intop class method."""
+
+    def get_input(output, mapping=mapping):
+        """Get dummy user input and return it."""
+        for key, val in mapping.items():
+            if key in output:
+                return val
+        return ""
+
+    torrentfile.interactive.Options.get_input = get_input
+
+
+def test_fix():
+    """Test for unused imports."""
+    assert dir1 and dir2  # nosec
+
+
+@pytest.mark.parametrize("piece", [16, ""])
+@pytest.mark.parametrize("private", ["Y", "N"])
+@pytest.mark.parametrize("comment", ["", "this is a comment"])
+@pytest.mark.parametrize("source", ["", "this source"])
+@pytest.mark.parametrize("version", ["1", "2", "3"])
+@pytest.mark.parametrize("announce", ["url1", "url4 url5", ""])
+@pytest.mark.parametrize("webseed", ["url1", "ftp2 ftp1", ""])
+@pytest.mark.parametrize("outfile", ["", "0"])
+def test_interactive_options(
+    dir1, piece, private, version, comment, announce, webseed, source, outfile
+):
+    """Test interactive module with different parameters."""
+    outpath = dir1 + ".torrent"
+    if outfile == "0":
+        outfile = outpath = dir1 + "1.torrent"
+    mapping = {
+        "Action": "create",
+        "Content": str(dir1),
+        "Piece": str(piece),
+        "Private": private,
+        "Comment": comment,
+        "Version": version,
+        "Tracker": announce,
+        "Web": webseed,
+        "Source": source,
+        "Output": outfile,
+    }
+    alt_input(mapping)
     program_options()
-    assert os.path.exists(outfile)
+    assert os.path.exists(outpath)  # nosec
+
+
+def test_recheck_torrent():
+    """Test recheck function."""
+    assert recheck_torrent() is None  # nosec
+
+
+def test_edit_torrent():
+    """Test edit function."""
+    assert edit_torrent() is None  # nosec

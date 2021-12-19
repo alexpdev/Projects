@@ -12,7 +12,7 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #####################################################################
 """
-This module contains the procedures used for Interactive Mode.
+Module contains the procedures used for Interactive Mode.
 
 Functions
 ---------
@@ -20,11 +20,11 @@ Functions
     gather program behaviour Options.
 """
 
-import sys
 import os
 import shutil
+import sys
 
-from .torrent import TorrentFile, TorrentFileV2, TorrentFileHybrid
+from .torrent import TorrentFile, TorrentFileHybrid, TorrentFileV2
 from .utils import MissingPathError
 
 
@@ -35,7 +35,7 @@ def program_options():
     action = Options.interaction(
         "Please enter the action you wish to perform.\n"
         "Action (Create | Edit | Recheck): ",
-        lambda x: x.lower() in ["create", "edit", "recheck"]
+        lambda x: x.lower() in ["create", "edit", "recheck"],
     )
 
     if action.lower() == "create":
@@ -50,12 +50,12 @@ def program_options():
 
 def edit_torrent():
     """Edit the editable values of the torrent meta file."""
-    pass
+    print(os.getcwd())
 
 
 def recheck_torrent():
     """Check torrent download completed percentage."""
-    pass
+    print(os.getcwd())
 
 
 def printheader(header):
@@ -87,61 +87,60 @@ def create_torrent():
     piece_length = Options.interaction(
         "Piece Length (auto-calculated): ", lambda x: x.isdigit()
     )
-    if piece_length: Options.piece_length = piece_length
+    if piece_length:
+        Options.piece_length = piece_length
 
     announce = Options.interaction(
-        "Tracker list (empty): ",
-        lambda x: isinstance(x, str)
+        "Tracker list (empty): ", lambda x: isinstance(x, str)
     )
-    if announce: Options.announce_list = announce.split()
+    if announce:
+        Options.announce_list = announce.split()
 
     url_list = Options.interaction(
-        "Web Seed list (empty): ",
-        lambda x: isinstance(x, str)
+        "Web Seed list (empty): ", lambda x: isinstance(x, str)
     )
-    if url_list: Options.url_list = url_list.split()
+    if url_list:
+        Options.url_list = url_list.split()
 
     comment = Options.interaction("\nComment (empty): ", None)
-    if comment: Options.comment = comment
+    if comment:
+        Options.comment = comment
 
     source = Options.interaction("\nSource (empty): ", None)
-    if source: Options.source = source
+    if source:
+        Options.source = source
 
     private = Options.interaction(
         "Private Torrent? {Y/N}: (N)",
-        lambda x: x.isalpha() and x.lower() in ["y", "n"]
+        lambda x: x.isalpha() and x.lower() in ["y", "n"],
     )
-    if private.lower() == "y":
+    if private and private.lower() == "y":
         Options.private = 1
 
-    contents = Options.interaction(
-        "Content Path: ",
-        lambda x: os.path.exists(x)
-    )
+    contents = Options.interaction("Content Path: ", os.path.exists)
     if not contents:
         raise MissingPathError
     Options.path = contents
 
     outfile = Options.interaction(
         f"Output Path ({contents}.torrent): ",
-        lambda x: os.path.exists(os.path.dirname(x))
+        lambda x: os.path.exists(os.path.dirname(x)),
     )
     if outfile:
         Options.outfile = outfile
 
     meta_version = Options.interaction(
-        "Meta Version {1,2,3}: (1)",
-        lambda x: x in "123"
+        "Meta Version {1,2,3}: (1)", lambda x: x in "123"
     )
 
     printheader(f"creating {outfile}")
-    if meta_version == 1:
-        torrent = TorrentFile(**Options.items)
-    elif meta_version == 2:
-        torrent = TorrentFileV2(**Options.items)
+    kwargs = Options.items()
+    if meta_version == "3":
+        torrent = TorrentFileHybrid(**kwargs)
+    elif meta_version == "2":
+        torrent = TorrentFileV2(**kwargs)
     else:
-        torrent = TorrentFileHybrid(**Options.items)
-
+        torrent = TorrentFile(**kwargs)
     torrent.write()
 
 
@@ -170,7 +169,6 @@ class Options:
     url_list = None
 
     @classmethod
-    @property
     def items(cls) -> dict:
         """Create a dictionary out of the class attributes and values.
 
@@ -223,5 +221,5 @@ class Options:
                 f"Invalid response ({response}): Try Again? (Y/N): "
             )
             if not answer.lower().startswith("y"):
-                sys.exit(1)
+                sys.exit(1)  # pragma: no cover
         return response

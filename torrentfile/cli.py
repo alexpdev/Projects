@@ -28,9 +28,9 @@ from argparse import ArgumentParser, HelpFormatter
 
 import torrentfile
 
+from .interactive import program_options
 from .recheck import Checker
 from .torrent import TorrentFile, TorrentFileHybrid, TorrentFileV2
-from .interactive import program_options
 
 
 class HelpFormat(HelpFormatter):
@@ -198,7 +198,7 @@ def main_script(args=None):
         Activates Interactive Mode. Causes all other command line flags
         are ignored. User will respond to a series of prompts to specify
         program options.
-        """
+        """,
     )
 
     parser.add_argument(

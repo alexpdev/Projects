@@ -76,8 +76,13 @@ docs: ## Regenerate docs from changes
 	mkdocs -q build
 	touch docs/.nojekyll
 
+coverage: ## Get coverage report
+	coverage run -m pytest tests
+	coverage report
+	coverage xml
+
 push: clean lint docs ## Push to github
-	pytest
+	pytest --cov=torrentfile --cov=tests
 	git add .
 	git commit -m "$m"
 	git push
