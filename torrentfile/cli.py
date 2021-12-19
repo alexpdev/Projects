@@ -30,6 +30,7 @@ import torrentfile
 
 from .recheck import Checker
 from .torrent import TorrentFile, TorrentFileHybrid, TorrentFileV2
+from .interactive import program_options
 
 
 class HelpFormat(HelpFormatter):
@@ -80,7 +81,7 @@ def main_script(args=None):
     )
 
     parser.add_argument(
-        "-v",
+        "-V",
         "--version",
         action="version",
         version=f"torrentfile v{torrentfile.__version__}",
@@ -88,8 +89,8 @@ def main_script(args=None):
     )
 
     parser.add_argument(
-        "-d",
-        "--debug",
+        "-v",
+        "--verbose",
         action="store_true",
         dest="debug",
         help="output debug information",
@@ -147,7 +148,6 @@ def main_script(args=None):
     )
 
     parser.add_argument(
-        "-l",
         "--piece-length",
         action="store",
         dest="piece_length",
@@ -190,6 +190,18 @@ def main_script(args=None):
     )
 
     parser.add_argument(
+        "-i",
+        "--interactive",
+        action="store_true",
+        dest="interactive",
+        help="""
+        Activates Interactive Mode. Causes all other command line flags
+        are ignored. User will respond to a series of prompts to specify
+        program options.
+        """
+    )
+
+    parser.add_argument(
         "-r",
         "--check",
         "--recheck",
@@ -208,6 +220,7 @@ def main_script(args=None):
         "content",
         action="store",
         metavar="<content>",
+        nargs="?",
         help="path to content file or directory",
     )
 
@@ -233,6 +246,9 @@ def main_script(args=None):
     handler.setLevel(level)
     handler.setFormatter(formatter)
     tlogger.addHandler(handler)
+
+    if flags.interactive:
+        return program_options()
 
     if flags.checker:
         tlogger.debug("Program as entered Recheck mode.")

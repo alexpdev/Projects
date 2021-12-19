@@ -225,7 +225,7 @@ def test_cli_with_debug(dir1, piece_length, version):
     """Test debug mode cli flag."""
     # fmt: off
     args = ["torrentfile", str(dir1), "--piece-length", str(piece_length),
-            "--meta-version", version, "--comment", "this is a comment", "-d"]
+            "--meta-version", version, "--comment", "this is a comment", "-v"]
     sys.argv = args
     main()
     assert os.path.exists(str(dir1) + ".torrent")  # nosec

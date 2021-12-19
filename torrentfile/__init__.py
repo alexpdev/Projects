@@ -26,6 +26,7 @@ Modules:
     utils: Utilities used throughout package.
 """
 from . import utils
+from . import interactive
 from .cli import main, main_script
 from .recheck import Checker
 from .torrent import TorrentFile, TorrentFileHybrid, TorrentFileV2
