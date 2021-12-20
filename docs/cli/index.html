@@ -468,7 +468,7 @@ HelpFormat            (<span title="argparse.HelpFormatter">HelpFormatter</span>
     <span class="n">tlogger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">flags</span><span class="o">.</span><span class="n">interactive</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">program_options</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">get_options_from_input</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">flags</span><span class="o">.</span><span class="n">checker</span><span class="p">:</span>
         <span class="n">tlogger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Program as entered Recheck mode.&quot;</span><span class="p">)</span>

@@ -94,7 +94,7 @@ def create_torrent():
         "Tracker list (empty): ", lambda x: isinstance(x, str)
     )
     if announce:
-        Options.set_announce_list(announce)
+        Options.set_announce(announce)
 
     url_list = Options.interaction(
         "Web Seed list (empty): ", lambda x: isinstance(x, str)
@@ -179,7 +179,7 @@ class Options:
             cls.set_piece_length,
             cls.set_private,
             cls.set_source,
-            cls.set_url_list
+            cls.set_url_list,
         ]:
             func(None)
 
@@ -189,7 +189,7 @@ class Options:
 
         Parameters
         ----------
-        `announce` : str
+        announce : `str`
             The new value for Options.announce.
         """
         if isinstance(announce, str) and len(announce) > 0:
@@ -203,7 +203,7 @@ class Options:
 
         Parameters
         ----------
-        `comment` : str
+        comment : `str`
             The new value for Options.comment.
         """
         cls._comment = comment
@@ -214,10 +214,10 @@ class Options:
 
         Parameters
         ----------
-        `outfile` : str
+        outfile : `str`
             The new value for Options.outfile.
         """
-        if isinstance(str, outfile) and len(str) > 0:
+        if isinstance(outfile, str) and len(outfile) > 0:
             cls._outfile = outfile
         elif outfile is None:
             cls._outfile = outfile
@@ -230,12 +230,13 @@ class Options:
 
         Parameters
         ----------
-        `path` : str
+        path : `str`
             The new value for Options.path.
         """
         if path is None:
             cls._path = path
-        cls._path = str(path)
+        else:
+            cls._path = str(path)
 
     @classmethod
     def set_piece_length(cls, piece_length):
@@ -243,7 +244,7 @@ class Options:
 
         Parameters
         ----------
-        `piece_length` : str
+        piece_length : `str`
             The new value for Options.piece_length.
         """
         if isinstance(piece_length, str) and len(piece_length) > 0:
@@ -257,8 +258,8 @@ class Options:
 
         Parameters
         ----------
-        `private` : str
-            The new value for Options.private.
+        arg : `str`
+            The new value for Options.private (default: None)
         """
         if arg is None:
             cls._private = None
@@ -271,7 +272,7 @@ class Options:
 
         Parameters
         ----------
-        `source` : str
+        source : `str`
             The new value for Options.source.
         """
         cls._source = source
@@ -282,7 +283,7 @@ class Options:
 
         Parameters
         ----------
-        `url_list` : str
+        url_list : `str`
             The new value for Options.url_list.
         """
         if isinstance(url_list, str):
@@ -303,7 +304,7 @@ class Options:
 
         Returns
         -------
-        dict
+        `dict`
             Keyword arguments for any of the TorrentFile classes.
         """
         return {
