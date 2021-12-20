@@ -8,7 +8,7 @@
 # NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
 # HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 # WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# FROM, OUT OF OR IN commentION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #####################################################################
 """
@@ -28,12 +28,12 @@ from .torrent import TorrentFile, TorrentFileHybrid, TorrentFileV2
 from .utils import MissingPathError
 
 
-def program_options():
+def get_options_from_input():
     """Operate TorrentFile program interactively through terminal."""
     printheader("TorrentFile: Starting Interactive Mode\n")
 
     action = Options.interaction(
-        "Please enter the action you wish to perform.\n"
+        "Enter the action you wish to perform.\n"
         "Action (Create | Edit | Recheck): ",
         lambda x: x.lower() in ["create", "edit", "recheck"],
     )
@@ -75,7 +75,7 @@ def printheader(header):
 def create_torrent():
     """Create new torrent file interactively."""
     printheader("\nCreate Torrent\n")
-
+    Options.reset()
     sys.stdout.write(
         "\nEnter values for each of the options for the torrent creator, "
         "or leave blank for program defaults.\nSpaces are considered item "
@@ -88,46 +88,46 @@ def create_torrent():
         "Piece Length (auto-calculated): ", lambda x: x.isdigit()
     )
     if piece_length:
-        Options.piece_length = piece_length
+        Options.set_piece_length(piece_length)
 
     announce = Options.interaction(
         "Tracker list (empty): ", lambda x: isinstance(x, str)
     )
     if announce:
-        Options.announce_list = announce.split()
+        Options.set_announce_list(announce)
 
     url_list = Options.interaction(
         "Web Seed list (empty): ", lambda x: isinstance(x, str)
     )
     if url_list:
-        Options.url_list = url_list.split()
+        Options.set_url_list(url_list)
 
     comment = Options.interaction("\nComment (empty): ", None)
     if comment:
-        Options.comment = comment
+        Options.set_comment(comment)
 
     source = Options.interaction("\nSource (empty): ", None)
     if source:
-        Options.source = source
+        Options.set_source(source)
 
     private = Options.interaction(
         "Private Torrent? {Y/N}: (N)",
         lambda x: x.isalpha() and x.lower() in ["y", "n"],
     )
     if private and private.lower() == "y":
-        Options.private = 1
+        Options.set_private()
 
     contents = Options.interaction("Content Path: ", os.path.exists)
     if not contents:
         raise MissingPathError
-    Options.path = contents
+    Options.set_path(contents)
 
     outfile = Options.interaction(
         f"Output Path ({contents}.torrent): ",
         lambda x: os.path.exists(os.path.dirname(x)),
     )
     if outfile:
-        Options.outfile = outfile
+        Options.set_outfile(outfile)
 
     meta_version = Options.interaction(
         "Meta Version {1,2,3}: (1)", lambda x: x in "123"
@@ -149,24 +149,153 @@ class Options:
 
     Attributes
     ----------
-    piece_length : int
-    comment : str
-    source : str
-    url_list : list
-    path : str
-    outfile : str
-    announce : str
-    announce_list : list
+    _piece_length : int
+    _comment : str
+    _source : str
+    _url_list : list
+    _path : str
+    _outfile : str
+    _announce : str
+    _announce_list : list
     """
 
-    announce = None
-    comment = None
-    outfile = None
-    path = None
-    piece_length = None
-    private = None
-    source = None
-    url_list = None
+    _announce = None
+    _comment = None
+    _outfile = None
+    _path = None
+    _piece_length = None
+    _private = None
+    _source = None
+    _url_list = None
+
+    @classmethod
+    def reset(cls):
+        """Reset all options to empty."""
+        for func in [
+            cls.set_announce,
+            cls.set_comment,
+            cls.set_outfile,
+            cls.set_path,
+            cls.set_piece_length,
+            cls.set_private,
+            cls.set_source,
+            cls.set_url_list
+        ]:
+            func(None)
+
+    @classmethod
+    def set_announce(cls, announce):
+        """Set the announce attribute inside Options namespace.
+
+        Parameters
+        ----------
+        `announce` : str
+            The new value for Options.announce.
+        """
+        if isinstance(announce, str) and len(announce) > 0:
+            cls._announce = announce.strip().split()
+        else:
+            cls._announce = announce
+
+    @classmethod
+    def set_comment(cls, comment):
+        """Set the comment attribute inside Options namespace.
+
+        Parameters
+        ----------
+        `comment` : str
+            The new value for Options.comment.
+        """
+        cls._comment = comment
+
+    @classmethod
+    def set_outfile(cls, outfile):
+        """Set the outfile attribute inside Options namespace.
+
+        Parameters
+        ----------
+        `outfile` : str
+            The new value for Options.outfile.
+        """
+        if isinstance(str, outfile) and len(str) > 0:
+            cls._outfile = outfile
+        elif outfile is None:
+            cls._outfile = outfile
+        else:
+            cls._outfile = str(outfile)
+
+    @classmethod
+    def set_path(cls, path):
+        """Set the path attribute inside Options namespace.
+
+        Parameters
+        ----------
+        `path` : str
+            The new value for Options.path.
+        """
+        if path is None:
+            cls._path = path
+        cls._path = str(path)
+
+    @classmethod
+    def set_piece_length(cls, piece_length):
+        """Set the piece_length attribute inside Options namespace.
+
+        Parameters
+        ----------
+        `piece_length` : str
+            The new value for Options.piece_length.
+        """
+        if isinstance(piece_length, str) and len(piece_length) > 0:
+            cls._piece_length = int(piece_length)
+        else:
+            cls._piece_length = piece_length
+
+    @classmethod
+    def set_private(cls, arg=None):
+        """Set the private attribute inside Options namespace.
+
+        Parameters
+        ----------
+        `private` : str
+            The new value for Options.private.
+        """
+        if arg is None:
+            cls._private = None
+        else:
+            cls._private = 1
+
+    @classmethod
+    def set_source(cls, source: str):
+        """Set the source attribute inside Options namespace.
+
+        Parameters
+        ----------
+        `source` : str
+            The new value for Options.source.
+        """
+        cls._source = source
+
+    @classmethod
+    def set_url_list(cls, url_list: str):
+        """Set the url_list attribute inside Options namespace.
+
+        Parameters
+        ----------
+        `url_list` : str
+            The new value for Options.url_list.
+        """
+        if isinstance(url_list, str):
+            cls._url_list = url_list.strip().split()
+        else:
+            cls._url_list = url_list
+
+    @classmethod
+    def _get_input(cls, arg: str) -> str:
+        """Return user input."""
+        return input(arg)
+
+    get_input = _get_input
 
     @classmethod
     def items(cls) -> dict:
@@ -178,22 +307,15 @@ class Options:
             Keyword arguments for any of the TorrentFile classes.
         """
         return {
-            "announce": cls.announce,
-            "comment": cls.comment,
-            "outfile": cls.outfile,
-            "path": cls.path,
-            "piece_length": cls.piece_length,
-            "private": cls.private,
-            "source": cls.source,
-            "url_list": cls.url_list,
+            "announce": cls._announce,
+            "comment": cls._comment,
+            "outfile": cls._outfile,
+            "path": cls._path,
+            "piece_length": cls._piece_length,
+            "private": cls._private,
+            "source": cls._source,
+            "url_list": cls._url_list,
         }
-
-    @classmethod
-    def _get_input(cls, arg: str) -> str:
-        """Return user input."""
-        return input(arg)
-
-    get_input = _get_input
 
     @classmethod
     def interaction(cls, output: str, key=None) -> str:

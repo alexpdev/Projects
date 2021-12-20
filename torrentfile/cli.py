@@ -28,7 +28,7 @@ from argparse import ArgumentParser, HelpFormatter
 
 import torrentfile
 
-from .interactive import program_options
+from .interactive import get_options_from_input
 from .recheck import Checker
 from .torrent import TorrentFile, TorrentFileHybrid, TorrentFileV2
 
@@ -248,7 +248,7 @@ def main_script(args=None):
     tlogger.addHandler(handler)
 
     if flags.interactive:
-        return program_options()
+        return get_options_from_input()
 
     if flags.checker:
         tlogger.debug("Program as entered Recheck mode.")

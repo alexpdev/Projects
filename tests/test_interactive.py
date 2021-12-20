@@ -18,21 +18,20 @@ import os
 import pytest
 
 import torrentfile
-from tests import dir1, dir2
-from torrentfile.interactive import (edit_torrent, program_options,
-                                     recheck_torrent)
+from tests import dir1, dir2, rmpath
+from torrentfile.interactive import (
+    edit_torrent, get_options_from_input, recheck_torrent
+    )
 
 
 def alt_input(mapping):
     """Insert Dummy data intop class method."""
-
     def get_input(output, mapping=mapping):
         """Get dummy user input and return it."""
         for key, val in mapping.items():
             if key in output:
                 return val
         return ""
-
     torrentfile.interactive.Options.get_input = get_input
 
 
@@ -44,18 +43,13 @@ def test_fix():
 @pytest.mark.parametrize("piece", [16, ""])
 @pytest.mark.parametrize("private", ["Y", "N"])
 @pytest.mark.parametrize("comment", ["", "this is a comment"])
-@pytest.mark.parametrize("source", ["", "this source"])
-@pytest.mark.parametrize("version", ["1", "2", "3"])
-@pytest.mark.parametrize("announce", ["url1", "url4 url5", ""])
+@pytest.mark.parametrize("version", ["1", "2"])
 @pytest.mark.parametrize("webseed", ["url1", "ftp2 ftp1", ""])
-@pytest.mark.parametrize("outfile", ["", "0"])
 def test_interactive_options(
-    dir1, piece, private, version, comment, announce, webseed, source, outfile
+    dir1, piece, private, version, comment, webseed,
 ):
     """Test interactive module with different parameters."""
-    outpath = dir1 + ".torrent"
-    if outfile == "0":
-        outfile = outpath = dir1 + "1.torrent"
+    outfile = dir1 + "1.torrent"
     mapping = {
         "Action": "create",
         "Content": str(dir1),
@@ -63,14 +57,34 @@ def test_interactive_options(
         "Private": private,
         "Comment": comment,
         "Version": version,
-        "Tracker": announce,
         "Web": webseed,
-        "Source": source,
         "Output": outfile,
     }
     alt_input(mapping)
-    program_options()
-    assert os.path.exists(outpath)  # nosec
+    get_options_from_input()
+    assert os.path.exists(outfile)  # nosec
+
+
+@pytest.mark.parametrize("piece", [18])
+@pytest.mark.parametrize("source", ["", "this source"])
+@pytest.mark.parametrize("version", ["3", "1"])
+@pytest.mark.parametrize("announce", ["url1", "url4 url5",])
+def test_inter_params1(
+    dir2, piece, version, announce, source
+):
+    """Test interactive module with different parameters."""
+    outfile = str(dir2) + ".torrent"
+    mapping = {
+        "Action": "create",
+        "Content": str(dir2),
+        "Piece": str(piece),
+        "Version": version,
+        "Tracker": announce,
+        "Source": source,
+    }
+    alt_input(mapping)
+    get_options_from_input()
+    assert os.path.exists(outfile)  # nosec
 
 
 def test_recheck_torrent():
