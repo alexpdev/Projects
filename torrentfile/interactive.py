@@ -117,7 +117,7 @@ def create_torrent():
     if private and private.lower() == "y":
         Options.set_private()
 
-    contents = Options.interaction("Content Path: ", os.path.exists)
+    contents = Options.interaction("Content Path: ")
     Options.set_path(contents)
 
     outfile = Options.interaction(

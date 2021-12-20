@@ -46,7 +46,7 @@ def test_fix():
 
 def test_interactive_empty():
     """Test interactive module with different parameters."""
-    mapping = {"OTHER": "None"}
+    mapping = {"Content": "", "Action": "create"}
     alt_input(mapping)
     try:
         get_options_from_input()

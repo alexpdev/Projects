@@ -77,7 +77,7 @@ def test_torrentfile_single(version, size, piece_length):
     torrent = version(**args)
     torrent.write()
     assert os.path.exists(str(tfile) + ".torrent")
-    rmpath(str(tfile) + ".torrent")
+    rmpath(tfile, str(tfile) + ".torrent")
 
 
 @pytest.mark.parametrize("size", list(range(17, 25)))
@@ -97,7 +97,7 @@ def test_torrentfile_single_extra(version, size, piece_length):
     torrent = version(**args)
     torrent.write()
     assert os.path.exists(str(tfile) + ".torrent")
-    rmpath(str(tfile) + ".torrent")
+    rmpath(tfile, str(tfile) + ".torrent")
 
 
 @pytest.mark.parametrize("size", list(range(17, 25)))
