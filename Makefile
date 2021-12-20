@@ -82,7 +82,7 @@ coverage: ## Get coverage report
 	coverage xml
 
 push: clean lint docs ## Push to github
-	pytest --cov=torrentfile --cov=tests
+	pytest --cov=torrentfile --cov=tests --pylint
 	git add .
 	git commit -m "$m"
 	git push

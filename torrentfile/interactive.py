@@ -112,14 +112,12 @@ def create_torrent():
 
     private = Options.interaction(
         "Private Torrent? {Y/N}: (N)",
-        lambda x: x.isalpha() and x.lower() in ["y", "n"],
+        lambda x: x.isalpha() and x in "yYnN",
     )
     if private and private.lower() == "y":
         Options.set_private()
 
     contents = Options.interaction("Content Path: ", os.path.exists)
-    if not contents:
-        raise MissingPathError
     Options.set_path(contents)
 
     outfile = Options.interaction(
@@ -177,11 +175,11 @@ class Options:
             cls.set_outfile,
             cls.set_path,
             cls.set_piece_length,
-            cls.set_private,
             cls.set_source,
             cls.set_url_list,
         ]:
             func(None)
+        cls.unset_private()
 
     @classmethod
     def set_announce(cls, announce):
@@ -221,8 +219,6 @@ class Options:
             cls._outfile = outfile
         elif outfile is None:
             cls._outfile = outfile
-        else:
-            cls._outfile = str(outfile)
 
     @classmethod
     def set_path(cls, path):
@@ -235,8 +231,10 @@ class Options:
         """
         if path is None:
             cls._path = path
+        elif path == "" or not os.path.exists(path):
+            raise MissingPathError
         else:
-            cls._path = str(path)
+            cls._path = path
 
     @classmethod
     def set_piece_length(cls, piece_length):
@@ -253,18 +251,14 @@ class Options:
             cls._piece_length = piece_length
 
     @classmethod
-    def set_private(cls, arg=None):
-        """Set the private attribute inside Options namespace.
+    def set_private(cls):
+        """Set the private attribute inside Options namespace."""
+        cls._private = 1
 
-        Parameters
-        ----------
-        arg : `str`
-            The new value for Options.private (default: None)
-        """
-        if arg is None:
-            cls._private = None
-        else:
-            cls._private = 1
+    @classmethod
+    def unset_private(cls):
+        """Unset the private attribute inside Options namespace."""
+        cls._private = None
 
     @classmethod
     def set_source(cls, source: str):
@@ -294,7 +288,7 @@ class Options:
     @classmethod
     def _get_input(cls, arg: str) -> str:
         """Return user input."""
-        return input(arg)
+        return input(arg)  # pragma: no cover
 
     get_input = _get_input
 
@@ -342,7 +336,7 @@ class Options:
                 break
             answer = cls.get_input(
                 f"Invalid response ({response}): Try Again? (Y/N): "
-            )
-            if not answer.lower().startswith("y"):
-                sys.exit(1)  # pragma: no cover
+            )  # pragma: no cover
+            if not answer.lower().startswith("y"):  # pragma: no cover
+                sys.exit(1)
         return response

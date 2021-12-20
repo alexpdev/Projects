@@ -30,7 +30,7 @@ def test_cli_v1(dir1):
     args = ["torrentfile", str(dir1)]
     sys.argv = args
     main()
-    assert os.path.exists(str(dir1) + ".torrent")  # nosec
+    assert os.path.exists(str(dir1) + ".torrent")
     rmpath(str(dir1) + ".torrent")
 
 
@@ -39,7 +39,7 @@ def test_cli_v2(dir1):
     args = ["torrentfile", str(dir1), "--meta-version", "2"]
     sys.argv = args
     main()
-    assert os.path.exists(str(dir1) + ".torrent")  # nosec
+    assert os.path.exists(str(dir1) + ".torrent")
     rmpath(str(dir1) + ".torrent")
 
 
@@ -48,7 +48,7 @@ def test_cli_v3(dir1):
     args = ["torrentfile", str(dir1), "--meta-version", "3"]
     sys.argv = args
     main()
-    assert os.path.exists(str(dir1) + ".torrent")  # nosec
+    assert os.path.exists(str(dir1) + ".torrent")
     rmpath(str(dir1) + ".torrent")
 
 
@@ -58,7 +58,7 @@ def test_cli_private(dir1):
     sys.argv = args
     main()
     meta = pyben.load(str(dir1) + ".torrent")
-    assert "private" in meta["info"]  # nosec
+    assert "private" in meta["info"]
     rmpath(str(dir1) + ".torrent")
 
 
@@ -66,14 +66,18 @@ def test_cli_private(dir1):
 @pytest.mark.parametrize("version", ["1", "2", "3"])
 def test_cli_piece_length(dir1, piece_length, version):
     """Test piece length cli flag."""
-    # fmt: off
-    args = ["torrentfile", str(dir1), "--piece-length",
-            str(piece_length), "--meta-version", version]
-    # fmt: on
+    args = [
+        "torrentfile",
+        str(dir1),
+        "--piece-length",
+        str(piece_length),
+        "--meta-version",
+        version,
+    ]
     sys.argv = args
     main()
     meta = pyben.load(str(dir1) + ".torrent")
-    assert meta["info"]["piece length"] == piece_length  # nosec
+    assert meta["info"]["piece length"] == piece_length
     rmpath(str(dir1) + ".torrent")
 
 
@@ -81,36 +85,43 @@ def test_cli_piece_length(dir1, piece_length, version):
 @pytest.mark.parametrize("version", ["1", "2", "3"])
 def test_cli_announce(dir1, piece_length, version):
     """Test announce cli flag."""
-    # fmt: off
-    args = ["torrentfile", str(dir1), "--piece-length",
-            str(piece_length), "--meta-version", version,
-            "--tracker", "https://announce.org/tracker"]
-    # fmt: on
+    args = [
+        "torrentfile",
+        str(dir1),
+        "--piece-length",
+        str(piece_length),
+        "--meta-version",
+        version,
+        "--tracker",
+        "https://announce.org/tracker",
+    ]
     sys.argv = args
     main()
     meta = pyben.load(str(dir1) + ".torrent")
-    assert meta["announce"] == "https://announce.org/tracker"  # nosec
+    assert meta["announce"] == "https://announce.org/tracker"
     rmpath(str(dir1) + ".torrent")
 
 
 @pytest.mark.parametrize("version", ["1", "2", "3"])
 def test_cli_announce_list(dir1, version):
     """Test announce list cli flag."""
-    # fmt: off
     trackers = [
         "https://announce.org/tracker",
         "https://announce.net/tracker",
         "https://tracker.net/announce",
     ]
     args = [
-        "torrentfile", str(dir1), "--meta-version", version, "--tracker"
+        "torrentfile",
+        str(dir1),
+        "--meta-version",
+        version,
+        "--tracker",
     ] + trackers
-    # fmt: on
     sys.argv = args
     main()
     meta = pyben.load(str(dir1) + ".torrent")
     for url in trackers:
-        assert url in [j for i in meta["announce list"] for j in i]  # nosec
+        assert url in [j for i in meta["announce list"] for j in i]
     rmpath(str(dir1) + ".torrent")
 
 
@@ -131,7 +142,7 @@ def test_cli_comment(dir1, piece_length, version):
     sys.argv = args
     main()
     meta = pyben.load(str(dir1) + ".torrent")
-    assert meta["info"]["comment"] == "this is a comment"  # nosec
+    assert meta["info"]["comment"] == "this is a comment"
     rmpath(str(dir1) + ".torrent")
 
 
@@ -152,7 +163,7 @@ def test_cli_outfile(dir1, piece_length, version):
     ]
     sys.argv = args
     main()
-    assert os.path.exists(outfile)  # nosec
+    assert os.path.exists(outfile)
     rmpath(outfile)
 
 
@@ -176,9 +187,9 @@ def test_cli_creation_date(dir1, piece_length, version):
     num = float(meta["creation date"])
     date = datetime.datetime.fromtimestamp(num)
     now = datetime.datetime.now()
-    assert date.day == now.day  # nosec
-    assert date.year == now.year  # nosec
-    assert date.month == now.month  # nosec
+    assert date.day == now.day
+    assert date.year == now.year
+    assert date.month == now.month
     rmpath(str(dir1) + ".torrent")
 
 
@@ -199,7 +210,7 @@ def test_cli_created_by(dir1, piece_length, version):
     sys.argv = args
     main()
     meta = pyben.load(str(dir1) + ".torrent")
-    assert "TorrentFile" in meta["created by"]  # nosec
+    assert "TorrentFile" in meta["created by"]
     rmpath(str(dir1) + ".torrent")
 
 
@@ -207,15 +218,22 @@ def test_cli_created_by(dir1, piece_length, version):
 @pytest.mark.parametrize("version", ["1", "2", "3"])
 def test_cli_web_seeds(dir1, piece_length, version):
     """Test if created torrents recieve a created by field in meta info."""
-    # fmt: off
-    args = ["torrentfile", str(dir1), "--piece-length", str(piece_length),
-            "--meta-version", version, "-w", "https://webseed.url/1",
-            "https://webseed.url/2", "https://webseed.url/3"]
-    # fmt: on
+    args = [
+        "torrentfile",
+        str(dir1),
+        "--piece-length",
+        str(piece_length),
+        "--meta-version",
+        version,
+        "-w",
+        "https://webseed.url/1",
+        "https://webseed.url/2",
+        "https://webseed.url/3",
+    ]
     sys.argv = args
     main()
     meta = pyben.load(str(dir1) + ".torrent")
-    assert "https://webseed.url/1" in meta["url-list"]  # nosec
+    assert "https://webseed.url/1" in meta["url-list"]
     rmpath(str(dir1) + ".torrent")
 
 
@@ -223,28 +241,41 @@ def test_cli_web_seeds(dir1, piece_length, version):
 @pytest.mark.parametrize("version", ["1", "2", "3"])
 def test_cli_with_debug(dir1, piece_length, version):
     """Test debug mode cli flag."""
-    # fmt: off
-    args = ["torrentfile", str(dir1), "--piece-length", str(piece_length),
-            "--meta-version", version, "--comment", "this is a comment", "-v"]
+    args = [
+        "torrentfile",
+        str(dir1),
+        "--piece-length",
+        str(piece_length),
+        "--meta-version",
+        version,
+        "--comment",
+        "this is a comment",
+        "-v",
+    ]
     sys.argv = args
     main()
-    assert os.path.exists(str(dir1) + ".torrent")  # nosec
+    assert os.path.exists(str(dir1) + ".torrent")
     rmpath(str(dir1) + ".torrent")
-    # fmt: on
 
 
 @pytest.mark.parametrize("piece_length", [2 ** exp for exp in range(14, 21)])
 @pytest.mark.parametrize("version", ["1", "2", "3"])
 def test_cli_with_source(dir1, piece_length, version):
     """Test source cli flag."""
-    # fmt: off
-    args = ["torrentfile", str(dir1), "--piece-length", str(piece_length),
-            "--meta-version", version, "--source", "somesource"]
-    # fmt: on
+    args = [
+        "torrentfile",
+        str(dir1),
+        "--piece-length",
+        str(piece_length),
+        "--meta-version",
+        version,
+        "--source",
+        "somesource",
+    ]
     sys.argv = args
     main()
     meta = pyben.load(str(dir1) + ".torrent")
-    assert meta["info"]["source"] == "somesource"  # nosec
+    assert meta["info"]["source"] == "somesource"
     rmpath(str(dir1) + ".torrent")
 
 
@@ -253,11 +284,11 @@ def test_cli_help():
     args = ["-h"]
     sys.argv = args
     try:
-        assert main()  # nosec
+        assert main()
     except SystemExit:
-        assert True  # nosec
-        assert dir1  # nosec
-        assert dir2  # nosec
+        assert True
+        assert dir1
+        assert dir2
 
 
 @pytest.mark.parametrize("version", ["1", "2", "3"])
@@ -279,5 +310,5 @@ def test_cli_empty_files(dir2, version):
         else:
             break
     main()
-    assert os.path.exists(str(dir2) + ".torrent")  # nosec
+    assert os.path.exists(str(dir2) + ".torrent")
     rmpath(str(dir2) + ".torrent")
