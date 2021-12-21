@@ -30,7 +30,7 @@ def torrents():
 
 def test_fixtures():
     """Test pytest fixtures."""
-    assert dir1 and dir2  # nosec
+    assert dir1 and dir2
 
 
 @pytest.mark.parametrize("version", torrents())
@@ -39,7 +39,7 @@ def test_torrentfile_missing_path(version):
     try:
         version()
     except MissingPathError:
-        assert True  # nosec
+        assert True
 
 
 def test_metafile_assemble(dir1):
@@ -48,7 +48,7 @@ def test_metafile_assemble(dir1):
     try:
         metafile.assemble()
     except NotImplementedError:
-        assert True  # nosec
+        assert True
 
 
 @pytest.mark.parametrize("version", torrents())
@@ -59,7 +59,7 @@ def test_torrentfile_extra(dir2, version):
             binfile.write(bytes(1200))
     args = {"path": dir2, "comment": "somecomment", "announce": "announce"}
     torrent = version(**args)
-    assert torrent.meta["announce"] == "announce"  # nosec
+    assert torrent.meta["announce"] == "announce"
 
 
 @pytest.mark.parametrize("size", list(range(17, 25)))
@@ -76,8 +76,8 @@ def test_torrentfile_single(version, size, piece_length):
     }
     torrent = version(**args)
     torrent.write()
-    assert os.path.exists(str(tfile) + ".torrent")  # nosec
-    rmpath(str(tfile) + ".torrent")
+    assert os.path.exists(str(tfile) + ".torrent")
+    rmpath(tfile, str(tfile) + ".torrent")
 
 
 @pytest.mark.parametrize("size", list(range(17, 25)))
@@ -96,8 +96,8 @@ def test_torrentfile_single_extra(version, size, piece_length):
     }
     torrent = version(**args)
     torrent.write()
-    assert os.path.exists(str(tfile) + ".torrent")  # nosec
-    rmpath(str(tfile) + ".torrent")
+    assert os.path.exists(str(tfile) + ".torrent")
+    rmpath(tfile, str(tfile) + ".torrent")
 
 
 @pytest.mark.parametrize("size", list(range(17, 25)))
@@ -118,5 +118,5 @@ def test_torrentfile_single_under(version, size, piece_length):
     }
     torrent = version(**args)
     torrent.write()
-    assert os.path.exists(str(tfile) + ".torrent")  # nosec
+    assert os.path.exists(str(tfile) + ".torrent")
     rmpath(str(tfile) + ".torrent")

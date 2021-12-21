@@ -13,6 +13,7 @@ sites/
 tests/TESTDIR
 runtests.py
 coverage.xml
+nixenv/
 
 # bite-code
 *.pyc

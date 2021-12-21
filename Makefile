@@ -1,4 +1,4 @@
-.PHONY: clean help full lint build environment test docs push
+.PHONY: clean help lint test docs nixenv
 .DEFAULT_GOAL := help
 
 define BROWSER_PYSCRIPT
@@ -76,8 +76,13 @@ docs: ## Regenerate docs from changes
 	mkdocs -q build
 	touch docs/.nojekyll
 
+coverage: ## Get coverage report
+	coverage run -m pytest tests
+	coverage report
+	coverage xml
+
 push: clean lint docs ## Push to github
-	pytest
+	pytest --cov=torrentfile --cov=tests --pylint
 	git add .
 	git commit -m "$m"
 	git push
@@ -106,10 +111,13 @@ winbuild: clean
 	cp -rfv ../runner/dist/* ./dist/
 	python -c "$$FIX_BIN_VERSION_FILES"
 
+nixenv: ## activate unix python vurtual environment
+	source nixenv/bin/activate
 
-nixbuild: clean install
+nixbuild:
 	pip install pyinstaller
 	python3 setup.py sdist bdist_wheel bdist_egg
+	pip install -e .
 	rm -rfv ../runner
 	mkdir ../runner
 	touch ../runner/exec

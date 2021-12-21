@@ -4,6 +4,12 @@ doc-warnings: true
 test-warnings: true
 member-warnings: true
 
+bandit:
+  run: true
+  options:
+    config: pyproject.toml
+
+
 pep257:
   run: true
   disable:
@@ -29,9 +35,6 @@ pylint:
   run: true
   disable:
     - R1729
-
-bandit:
-  run: true
 
 pyroma:
   run: true

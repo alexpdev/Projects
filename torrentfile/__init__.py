@@ -25,7 +25,7 @@ Modules:
     exceptions: Custom Exceptions used in package.
     utils: Utilities used throughout package.
 """
-from . import utils
+from . import interactive, utils
 from .cli import main, main_script
 from .recheck import Checker
 from .torrent import TorrentFile, TorrentFileHybrid, TorrentFileV2
