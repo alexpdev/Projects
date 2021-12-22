@@ -24,33 +24,115 @@ import os
 import shutil
 import sys
 
+import pyben
+
+from .edit import edit_torrent
 from .torrent import TorrentFile, TorrentFileHybrid, TorrentFileV2
-from .utils import MissingPathError
+from .utils import humanize_bytes, normalize_piece_length
 
 
-def get_options_from_input():
+def get_input(*args):
+    """
+    Determine appropriate input function to call.
+
+    Parameters
+    ----------
+    args : `tuple`
+        Arbitrary number of args to pass to next function
+
+    Returns
+    -------
+    `str`
+        The results of the function call.
+    """
+    if len(args) == 2:
+        return _get_input_loop(*args)
+    return _get_input(*args)
+
+
+def _get_input(txt):
+    """
+    Gather information needed from user.
+
+    Parameters
+    ----------
+    txt : `str`
+        The message usually containing instructions for the user.
+
+    Returns
+    -------
+    `str`
+        The text input received from the user.
+    """
+    value = input(txt)
+    return value
+
+
+def _get_input_loop(txt, func):
+    """
+    Gather information needed from user.
+
+    Parameters
+    ----------
+    txt : `str`
+        The message usually containing instructions for the user.
+    func : function
+        Validate/Check user input data, failure = retry, success = continue.
+
+    Returns
+    -------
+    `str`
+        The text input received from the user.
+    """
+    while True:
+        value = input(txt)
+        if func and func(value):
+            return value
+        if not func or value == "":
+            return value
+        showtext(f"Invalid input {value}: try again")
+
+
+def showtext(txt):
+    """
+    Print contents of txt to screen.
+
+    Parameters
+    ----------
+    txt : `str`
+        text to print to terminal.
+    """
+    sys.stdout.write(txt)
+
+
+def showcenter(txt):
+    """
+    Prints text to screen in the center position of the terminal.
+
+    Parameters
+    ----------
+    txt : `str`
+        the preformated message to send to stdout.
+    """
+    termlen = shutil.get_terminal_size().columns
+    padding = " " * ((termlen - len(txt)) / 2)
+    string = "".join(["\n", padding, txt, "\n"])
+    showtext(string)
+
+
+def select_action():
     """Operate TorrentFile program interactively through terminal."""
-    printheader("TorrentFile: Starting Interactive Mode\n")
-
-    action = Options.interaction(
+    showcenter("TorrentFile: Starting Interactive Mode")
+    action = get_input(
         "Enter the action you wish to perform.\n"
-        "Action (Create | Edit | Recheck): ",
-        lambda x: x.lower() in ["create", "edit", "recheck"],
+        "Action (Create | Edit | Recheck): "
     )
-
     if action.lower() == "create":
         create_torrent()
-
     elif action.lower() == "recheck":
         recheck_torrent()
-
     else:
-        edit_torrent()
-
-
-def edit_torrent():
-    """Edit the editable values of the torrent meta file."""
-    print(os.getcwd())
+        edit_action()
 
 
 def recheck_torrent():
@@ -58,91 +140,180 @@ def recheck_torrent():
     print(os.getcwd())
 
 
-def printheader(header):
-    """Print the header text to the terminal.
-
-    Parameters
-    ----------
-    header : `str`
-        Heading text describing the new section.
-    """
-    sys.stdout.write("\n")
-    termlen = shutil.get_terminal_size().columns
-    padding = (termlen - len(header)) / 2
-    sys.stdout.write(" " * int(padding) + header + "\n")
-
-
 def create_torrent():
     """Create new torrent file interactively."""
-    printheader("\nCreate Torrent\n")
-    Options.reset()
-    sys.stdout.write(
+    showcenter("Create Torrent")
+    showtext(
         "\nEnter values for each of the options for the torrent creator, "
         "or leave blank for program defaults.\nSpaces are considered item "
         "seperators for options that accept a list of values.\nValues "
         "enclosed in () indicate the default value, while {} holds all "
         "valid choices available for the option.\n\n"
     )
-
-    piece_length = Options.interaction(
-        "Piece Length (auto-calculated): ", lambda x: x.isdigit()
-    )
-    if piece_length:
-        Options.set_piece_length(piece_length)
-
-    announce = Options.interaction(
-        "Tracker list (empty): ", lambda x: isinstance(x, str)
-    )
-    if announce:
-        Options.set_announce(announce)
-
-    url_list = Options.interaction(
-        "Web Seed list (empty): ", lambda x: isinstance(x, str)
-    )
-    if url_list:
-        Options.set_url_list(url_list)
-
-    comment = Options.interaction("\nComment (empty): ", None)
-    if comment:
-        Options.set_comment(comment)
-
-    source = Options.interaction("\nSource (empty): ", None)
-    if source:
-        Options.set_source(source)
-
-    private = Options.interaction(
-        "Private Torrent? {Y/N}: (N)",
-        lambda x: x.isalpha() and x in "yYnN",
-    )
-    if private and private.lower() == "y":
-        Options.set_private()
-
-    contents = Options.interaction("Content Path: ")
-    Options.set_path(contents)
-
-    outfile = Options.interaction(
-        f"Output Path ({contents}.torrent): ",
-        lambda x: os.path.exists(os.path.dirname(x)),
-    )
-    if outfile:
-        Options.set_outfile(outfile)
-
-    meta_version = Options.interaction(
-        "Meta Version {1,2,3}: (1)", lambda x: x in "123"
-    )
-
-    printheader(f"creating {outfile}")
-    kwargs = Options.items()
-    if meta_version == "3":
-        torrent = TorrentFileHybrid(**kwargs)
-    elif meta_version == "2":
-        torrent = TorrentFileV2(**kwargs)
-    else:
-        torrent = TorrentFile(**kwargs)
-    torrent.write()
+    InteractiveCreator()
 
 
-class Options:
+def edit_action():
+    """Edit the editable values of the torrent meta file."""
+    showcenter("Edit Torrent")
+    metafile = get_input("Metafile(.torrent): ", os.path.exists)
+    dialog = InteractiveEditor(metafile)
+    dialog.show_current()
+    dialog.edit_props()
+
+
+class InteractiveEditor:
+    """Interactive dialog class for torrent editing."""
+
+    def __init__(self, metafile):
+        """
+        Initialize the Interactive torrent editor guide.
+
+        Parameters
+        ----------
+        metafile : `str`
+            user input string identifying the path to a torrent meta file.
+        """
+        self.metafile = metafile
+        self.meta = pyben.load(metafile)
+        self.info = self.meta["info"]
+        if "announce list" in self.meta:
+            self.announce = self.meta["announce list"]
+        else:
+            self.announce = self.meta.get("announce", None)
+        self.piece_length = self.info.get("piece length")
+        self.comment = self.info.get("comment", None)
+        self.source = self.info.get("source", None)
+        self.private = self.info.get("private", None)
+        self.url_list = self.meta.get("url-list", None)
+        self.name = self.info.get("name")
+        self.labels = {
+            "piece length": "piece_length",
+            "comment": "comment",
+            "source": "source",
+            "private": "private",
+            "tracker": "announce",
+            "webseed": "url_list",
+        }
+
+    def show_current(self):
+        """Display the current met file information to screen."""
+        out = "Current properties and values:\n"
+        longest = max([len(label) for label in self.labels]) + 3
+        for key, val in self.labels.items():
+            val = self.__getattribute__(val)
+            txt = (key.title() + ":").ljust(longest)
+            if key == "trackers":
+                if isinstance(val, str):
+                    txt += self.announce
+                else:
+                    txt += " ".join([url for grp in val for url in grp])
+            elif key == "web-seeds":
+                txt += " ".join(val)
+            elif key == "piece length":
+                txt += humanize_bytes(val)
+            else:
+                txt += str(val)
+            out += f"\t{txt}\n"
+        sys.stdout.write(out)
+
+    def sanatize_response(self, key, response):
+        """
+        Convert the input data into a form recognizable by the program.
+
+        Parameters
+        ----------
+        key : `str`
+            name of the property and attribute being eddited.
+        response : `str`
+            User input value the property is being edited to.
+        """
+        if key in ["announce", "url_list"]:
+            val = response.split()
+        elif key == "piece_length":
+            val = normalize_piece_length(response)
+        elif key == "private":
+            if self.private:
+                val = None
+            else:
+                val = 1
+        else:
+            val = response
+        self.__setattr__(key, val)
+
+    def edit_props(self):
+        """Loop continuosly for edits until user signals DONE."""
+        while True:
+            showcenter(
+                "Choose the number for a propert the needs editing."
+                "Enter DONE when all editing has been completed."
+            )
+            props = {
+                1: "comment",
+                2: "source",
+                3: "private",
+                4: "tracker",
+                5: "webseed",
+                6: "piece length",
+            }
+            txt = ", ".join((str(k) + ": " + v) for k, v in props.items())
+            prop = get_input(txt)
+            if prop.lower() == "done":
+                break
+            if prop.isdigit() and 0 < int(prop) < 7:
+                label = props[int(prop)]
+                key = self.labels[label]
+                val = self.__getattribute__(key)
+                showtext(
+                    "Enter new property value or leave empty for no value."
+                )
+                response = get_input(f"{key} ({val}): ")
+                self.sanatize_response(key, response)
+            else:
+                showtext("Invalid input: Try again.")
+        args = {
+            "announce": self.announce,
+            "piece_length": self.piece_length,
+            "comment": self.comment,
+            "source": self.source,
+            "private": self.private,
+            "url_list": self.url_list,
+        }
+        edit_torrent(self.metafile, args)
+
+    def write_metafile(self):
+        """Overwrite the metafile with newly edited information."""
+        self.meta["announce list"] = [self.announce]
+        self.meta["announce"] = self.announce[0]
+
+        if self.url_list:
+            self.meta["url-list"] = self.url_list
+        elif "url-list" in self.meta:
+            del self.meta["url-list"]
+
+        if self.private:
+            self.info["private"] = 1
+        else:
+            del self.info["private"]
+
+        self.info["piece length"] = self.piece_length
+
+        if self.comment:
+            self.info["comment"] = self.comment
+        elif "comment" in self.info:
+            del self.info["comment"]
+
+        if self.source:
+            self.info["source"] = self.source
+        elif "source" in self.info:
+            del self.info["source"]
+
+        self.meta["info"] = self.info
+
+        pyben.dump(self.meta, self.metafile)
+
+
+class InteractiveCreator:
     """Class namespace for interactive program options.
 
     Attributes
@@ -157,186 +328,65 @@ class Options:
     _announce_list : list
     """
 
-    _announce = None
-    _comment = None
-    _outfile = None
-    _path = None
-    _piece_length = None
-    _private = None
-    _source = None
-    _url_list = None
-
-    @classmethod
-    def reset(cls):
-        """Reset all options to empty."""
-        for func in [
-            cls.set_announce,
-            cls.set_comment,
-            cls.set_outfile,
-            cls.set_path,
-            cls.set_piece_length,
-            cls.set_source,
-            cls.set_url_list,
-        ]:
-            func(None)
-        cls.unset_private()
-
-    @classmethod
-    def set_announce(cls, announce):
-        """Set the announce attribute inside Options namespace.
-
-        Parameters
-        ----------
-        announce : `str`
-            The new value for Options.announce.
-        """
-        if isinstance(announce, str) and len(announce) > 0:
-            cls._announce = announce.strip().split()
-        else:
-            cls._announce = announce
-
-    @classmethod
-    def set_comment(cls, comment):
-        """Set the comment attribute inside Options namespace.
-
-        Parameters
-        ----------
-        comment : `str`
-            The new value for Options.comment.
-        """
-        cls._comment = comment
-
-    @classmethod
-    def set_outfile(cls, outfile):
-        """Set the outfile attribute inside Options namespace.
-
-        Parameters
-        ----------
-        outfile : `str`
-            The new value for Options.outfile.
-        """
-        if isinstance(outfile, str) and len(outfile) > 0:
-            cls._outfile = outfile
-        elif outfile is None:
-            cls._outfile = outfile
-
-    @classmethod
-    def set_path(cls, path):
-        """Set the path attribute inside Options namespace.
-
-        Parameters
-        ----------
-        path : `str`
-            The new value for Options.path.
-        """
-        if path is None:
-            cls._path = path
-        elif path == "" or not os.path.exists(path):
-            raise MissingPathError
-        else:
-            cls._path = path
-
-    @classmethod
-    def set_piece_length(cls, piece_length):
-        """Set the piece_length attribute inside Options namespace.
-
-        Parameters
-        ----------
-        piece_length : `str`
-            The new value for Options.piece_length.
-        """
-        if isinstance(piece_length, str) and len(piece_length) > 0:
-            cls._piece_length = int(piece_length)
-        else:
-            cls._piece_length = piece_length
-
-    @classmethod
-    def set_private(cls):
-        """Set the private attribute inside Options namespace."""
-        cls._private = 1
-
-    @classmethod
-    def unset_private(cls):
-        """Unset the private attribute inside Options namespace."""
-        cls._private = None
-
-    @classmethod
-    def set_source(cls, source: str):
-        """Set the source attribute inside Options namespace.
-
-        Parameters
-        ----------
-        source : `str`
-            The new value for Options.source.
-        """
-        cls._source = source
-
-    @classmethod
-    def set_url_list(cls, url_list: str):
-        """Set the url_list attribute inside Options namespace.
-
-        Parameters
-        ----------
-        url_list : `str`
-            The new value for Options.url_list.
-        """
-        if isinstance(url_list, str):
-            cls._url_list = url_list.strip().split()
-        else:
-            cls._url_list = url_list
-
-    @classmethod
-    def _get_input(cls, arg: str) -> str:
-        """Return user input."""
-        return input(arg)  # pragma: no cover
-
-    get_input = _get_input
-
-    @classmethod
-    def items(cls) -> dict:
-        """Create a dictionary out of the class attributes and values.
-
-        Returns
-        -------
-        `dict`
-            Keyword arguments for any of the TorrentFile classes.
-        """
-        return {
-            "announce": cls._announce,
-            "comment": cls._comment,
-            "outfile": cls._outfile,
-            "path": cls._path,
-            "piece_length": cls._piece_length,
-            "private": cls._private,
-            "source": cls._source,
-            "url_list": cls._url_list,
+    def __init__(self):
+        """Initialize interactive meta file creator dialog."""
+        self.kwargs = {
+            "announce": None,
+            "url_list": None,
+            "private": None,
+            "source": None,
+            "comment": None,
+            "piece_length": None,
+            "outfile": None,
+            "path": None,
         }
+        self.get_props()
 
-    @classmethod
-    def interaction(cls, output: str, key=None) -> str:
-        """Interact with user to get input values.
+    def get_props(self):
+        """Gather details for torrentfile from user."""
+        piece_length = get_input(
+            "Piece Length (empty=auto): ", lambda x: x.isdigit()
+        )
+        self.kwargs["piece_length"] = piece_length
+        announce = get_input(
+            "Tracker list (empty): ", lambda x: isinstance(x, str)
+        )
+        if announce:
+            self.kwargs["announce"] = announce.split()
+        url_list = get_input(
+            "Web Seed list (empty): ", lambda x: isinstance(x, str)
+        )
+        if url_list:
+            self.kwargs["url_list"] = url_list.split()
+        comment = get_input("Comment (empty): ", None)
+        if comment:
+            self.kwargs["comment"] = comment
+        source = get_input("Source (empty): ", None)
+        if source:
+            self.kwargs["source"] = source
+        private = get_input(
+            "Private Torrent? {Y/N}: (N)", lambda x: x in "yYnN"
+        )
+        if private and private.lower() == "y":
+            self.kwargs["private"] = 1
+        contents = get_input("Content Path: ", os.path.exists)
+        self.kwargs["path"] = contents
+        outfile = get_input(
+            f"Output Path ({contents}.torrent): ",
+            lambda x: os.path.exists(os.path.dirname(x)),
+        )
+        if outfile:
+            self.kwargs["outfile"] = outfile
+        meta_version = get_input(
+            "Meta Version {1,2,3}: (1)", lambda x: x in "123"
+        )
 
-        Parameters
-        ----------
-        output : str
-            The text input prompt with defaults or examples.
-        key : function | None
-            function that accepts one parameter, and outputs `True` if
-            users input passes the function test otherwise it returns false
-            and asks the user if they want to try again.
+        showcenter(f"creating {outfile}")
 
-        Returns
-        -------
-        str
-            Program option value received as input for user.
-        """
-        while True:
-            response = cls.get_input(output)
-            if not response or not key or key(response):
-                break
-            answer = cls.get_input(
-                f"Invalid response ({response}): Try Again? (Y/N): "
-            )  # pragma: no cover
-            if not answer.lower().startswith("y"):  # pragma: no cover
-                sys.exit(1)
-        return response
+        if meta_version == "3":
+            torrent = TorrentFileHybrid(**self.kwargs)
+        elif meta_version == "2":
+            torrent = TorrentFileV2(**self.kwargs)
+        else:
+            torrent = TorrentFile(**self.kwargs)
+        torrent.write()

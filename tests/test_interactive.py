@@ -13,133 +13,148 @@
 #####################################################################
 """Testing functions for the command line interface."""
 
-import os
-import sys
+# import os
+# import sys
 
-import pytest
+# import pytest
 
-import torrentfile
-from tests import dir1, dir2, rmpath
-from torrentfile.cli import main
-from torrentfile.interactive import (edit_torrent, get_options_from_input,
-                                     recheck_torrent)
-from torrentfile.utils import MissingPathError
-
-
-def alt_input(mapping):
-    """Insert Dummy data intop class method."""
-
-    def get_input(output, mapping=mapping):
-        """Get dummy user input and return it."""
-        for key, val in mapping.items():
-            if key in output:
-                return val
-        return ""
-
-    torrentfile.interactive.Options.get_input = get_input
+# import torrentfile
+# from tests import dir1, dir2, rmpath
+# from torrentfile.cli import main
+# from torrentfile.interactive import select_action, recheck_torrent
+# from torrentfile.utils import MissingPathError
 
 
-def test_fix():
-    """Test for unused imports."""
-    assert dir1 and dir2
+# @pytest.fixture(scope="function")
+# def metafile(dir2):
+#     out = str(dir2) + "t.torrent"
+#     sys.argv = [
+#         "torrentfile", "create", dir2, -0, out,
+#         "--comment", "Some comment", "--source",
+#         "Source1", "-t", "url1", "url2", "url3",
+#         "--private", "-w", "ftp1", "url3"
+#     ]
+#     main()
+#     yield out
+#     rmpath(out)
 
 
-def test_interactive_empty():
-    """Test interactive module with different parameters."""
-    mapping = {"Content": "", "Action": "create"}
-    alt_input(mapping)
-    try:
-        get_options_from_input()
-    except MissingPathError:
-        assert True
+# def input_map(mapping):
+#     """Insert Dummy data intop class method."""
+
+#     def get_input(output, mapping=mapping):
+#         """Get dummy user input and return it."""
+#         for key, val in mapping.items():
+#             if key in output:
+#                 return val
+#         return ""
+
+#     torrentfile.interactive.Options.get_input = get_input
 
 
-@pytest.mark.parametrize("action", ["recheck", "edit"])
-def test_interactive_actions(action):
-    """Test interactive module with different parameters."""
-    mapping = {"Action": action}
-    alt_input(mapping)
-    get_options_from_input()
-    assert True
+# def input_iter(seq):
+#     def get_input(output):
+#         val = next(seq)
+#         yield val
+#         print(output, val)
+#     torrentfile.interactive.Options.get_input = get_input
 
 
-@pytest.mark.parametrize("piece", [16, 18])
-@pytest.mark.parametrize("private", ["Y", "N"])
-@pytest.mark.parametrize("comment", ["this comment", "also this"])
-@pytest.mark.parametrize("version", ["1", "2"])
-@pytest.mark.parametrize("webseed", ["url1", "ftp2 ftp1"])
-def test_interactive_options(
-    dir1,
-    piece,
-    private,
-    version,
-    comment,
-    webseed,
-):
-    """Test interactive module with different parameters."""
-    outfile = dir1 + "1.torrent"
-    mapping = {
-        "Action": "create",
-        "Content": str(dir1),
-        "Piece": str(piece),
-        "Private": private,
-        "Comment": comment,
-        "Version": version,
-        "Web": webseed,
-        "Output": outfile,
-    }
-    alt_input(mapping)
-    get_options_from_input()
-    assert os.path.exists(outfile)
-    rmpath(outfile)
+# def test_fix():
+#     """Test for unused imports."""
+#     assert dir1 and dir2
 
 
-@pytest.mark.parametrize("piece", [18])
-@pytest.mark.parametrize("source", ["this source"])
-@pytest.mark.parametrize("version", ["3", "1"])
-@pytest.mark.parametrize("announce", ["url4 url5"])
-def test_inter_params1(dir2, piece, version, announce, source):
-    """Test interactive module with different parameters."""
-    outfile = str(dir2) + ".torrent"
-    mapping = {
-        "Action": "create",
-        "Content": str(dir2),
-        "Piece": str(piece),
-        "Version": version,
-        "Tracker": announce,
-        "Source": source,
-    }
-    alt_input(mapping)
-    get_options_from_input()
-    assert os.path.exists(outfile)
-    rmpath(outfile)
+# def test_inter_empty():
+#     """Test interactive module with different parameters."""
+#     mapping = {"Content": "", "Action": "create"}
+#     input_map(mapping)
+#     try:
+#         select_action()
+#     except MissingPathError:
+#         assert True
 
 
-@pytest.mark.parametrize("piece", [15])
-@pytest.mark.parametrize("version", ["1", "2", "3"])
-@pytest.mark.parametrize("announce", ["url1", "http://a.b ftp://b.a"])
-def test_interactive_cli(dir2, piece, version, announce):
-    """Test interactive module with different parameters."""
-    outfile = str(dir2) + ".torrent"
-    mapping = {
-        "Action": "create",
-        "Content": str(dir2),
-        "Piece": str(piece),
-        "Version": version,
-        "Tracker": announce,
-    }
-    alt_input(mapping)
-    sys.argv[1:] = ["-i", "--private"]
-    main()
-    assert os.path.exists(outfile)
-    rmpath(outfile)
+# @pytest.mark.parametrize("action", ["recheck"])
+# def test_inter_actions(action):
+#     """Test interactive module with different parameters."""
+#     mapping = {"Action": action}
+#     input_map(mapping)
+#     select_action()
+#     assert True
 
 
-def test_recheck_torrent():
-    """Test recheck function."""
-    assert recheck_torrent() is None
+# @pytest.mark.parametrize("piece", [16, 18])
+# @pytest.mark.parametrize("private", ["Y", "N"])
+# @pytest.mark.parametrize("comment", ["this comment", "also this"])
+# @pytest.mark.parametrize("version", ["1", "2"])
+# def test_inter_options(dir1, piece, private, version, comment):
+#     """Test interactive module with different parameters."""
+#     outfile = dir1 + "1.torrent"
+#     mapping = {
+#         "Action": "create",
+#         "Content": str(dir1),
+#         "Piece": str(piece),
+#         "Private": private,
+#         "Comment": comment,
+#         "Version": version,
+#         "Output": outfile,
+#     }
+#     input_map(mapping)
+#     select_action()
+#     assert os.path.exists(outfile)
+#     rmpath(outfile)
 
 
-def test_edit_torrent():
-    """Test edit function."""
-    assert edit_torrent() is None
+# @pytest.mark.parametrize("piece", [18, 22])
+# @pytest.mark.parametrize("source", ["this source", ""])
+# @pytest.mark.parametrize("version", ["3", "1"])
+# @pytest.mark.parametrize("announce", ["url4 url5 url6", "url"])
+# def test_inter_params1(dir2, piece, version, announce, source):
+#     """Test interactive module with different parameters."""
+#     outfile = str(dir2) + ".torrent"
+#     mapping = {
+#         "Action": "create",
+#         "Content": str(dir2),
+#         "Piece": str(piece),
+#         "Version": version,
+#         "Tracker": announce,
+#         "Source": source,
+#     }
+#     input_map(mapping)
+#     select_action()
+#     assert os.path.exists(outfile)
+#     rmpath(outfile)
+
+
+# @pytest.mark.parametrize("piece", [15, 19])
+# @pytest.mark.parametrize("version", ["1", "2", "3"])
+# @pytest.mark.parametrize("announce", ["url1", "http://a.b ftp://b.a"])
+# @pytest.mark.parametrize("webseed", ["url1", "ftp2 ftp1"])
+# def test_interactive_cli(dir2, piece, version, announce, webseed):
+#     """Test interactive module with different parameters."""
+#     outfile = str(dir2) + ".torrent"
+#     mapping = {
+#         "Action": "create",
+#         "Content": str(dir2),
+#         "Piece": str(piece),
+#         "Version": version,
+#         "Tracker": announce,
+#         "Web": webseed
+#     }
+#     input_map(mapping)
+#     sys.argv[1:] = ["-i"]
+#     main()
+#     assert os.path.exists(outfile)
+#     rmpath(outfile)
+
+
+# def test_recheck_torrent():
+#     """Test recheck function."""
+#     assert recheck_torrent() is None
+
+
+# @pytest.mark.parametrize("comment", ["", "some comment"])
+# def test_edit_torrent(metafile):
+#     """Test edit function."""
+#     seq = ["edit", metafile, ]

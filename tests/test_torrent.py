@@ -106,6 +106,7 @@ def test_torrentfile_single_extra(version, size, piece_length):
 def test_torrentfile_single_under(version, size, piece_length):
     """Test creating a torrent file from less than a single file contents."""
     tfile = tempfile(exp=size)
+    outfile = str(tfile) + ".torrent"
     with open(tfile, "rb") as binfile:
         data = binfile.read()
     with open(tfile, "wb") as binfile:
@@ -119,4 +120,4 @@ def test_torrentfile_single_under(version, size, piece_length):
     torrent = version(**args)
     torrent.write()
     assert os.path.exists(str(tfile) + ".torrent")
-    rmpath(str(tfile) + ".torrent")
+    rmpath(tfile, outfile)

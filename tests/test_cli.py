@@ -27,7 +27,7 @@ from torrentfile.cli import main
 
 def test_cli_v1(dir1):
     """Basic create torrent cli command."""
-    args = ["torrentfile", str(dir1)]
+    args = ["torrentfile", "create", str(dir1)]
     sys.argv = args
     main()
     assert os.path.exists(str(dir1) + ".torrent")
@@ -36,7 +36,7 @@ def test_cli_v1(dir1):
 
 def test_cli_v2(dir1):
     """Create torrent v2 cli command."""
-    args = ["torrentfile", str(dir1), "--meta-version", "2"]
+    args = ["torrentfile", "create", str(dir1), "--meta-version", "2"]
     sys.argv = args
     main()
     assert os.path.exists(str(dir1) + ".torrent")
@@ -45,7 +45,7 @@ def test_cli_v2(dir1):
 
 def test_cli_v3(dir1):
     """Create hybrid torrent cli command."""
-    args = ["torrentfile", str(dir1), "--meta-version", "3"]
+    args = ["torrentfile", "create", str(dir1), "--meta-version", "3"]
     sys.argv = args
     main()
     assert os.path.exists(str(dir1) + ".torrent")
@@ -54,7 +54,7 @@ def test_cli_v3(dir1):
 
 def test_cli_private(dir1):
     """Test private cli flag."""
-    args = ["torrentfile", str(dir1), "--private"]
+    args = ["torrentfile", "create", str(dir1), "--private"]
     sys.argv = args
     main()
     meta = pyben.load(str(dir1) + ".torrent")
@@ -68,6 +68,7 @@ def test_cli_piece_length(dir1, piece_length, version):
     """Test piece length cli flag."""
     args = [
         "torrentfile",
+        "create",
         str(dir1),
         "--piece-length",
         str(piece_length),
@@ -87,6 +88,7 @@ def test_cli_announce(dir1, piece_length, version):
     """Test announce cli flag."""
     args = [
         "torrentfile",
+        "create",
         str(dir1),
         "--piece-length",
         str(piece_length),
@@ -112,6 +114,7 @@ def test_cli_announce_list(dir1, version):
     ]
     args = [
         "torrentfile",
+        "create",
         str(dir1),
         "--meta-version",
         version,
@@ -131,6 +134,7 @@ def test_cli_comment(dir1, piece_length, version):
     """Test comment cli flag."""
     args = [
         "torrentfile",
+        "create",
         str(dir1),
         "--piece-length",
         str(piece_length),
@@ -153,6 +157,7 @@ def test_cli_outfile(dir1, piece_length, version):
     outfile = str(dir1) + "test.torrent"
     args = [
         "torrentfile",
+        "create",
         str(dir1),
         "--piece-length",
         str(piece_length),
@@ -173,6 +178,7 @@ def test_cli_creation_date(dir1, piece_length, version):
     """Test if torrents created get an accurate timestamp."""
     args = [
         "torrentfile",
+        "create",
         str(dir1),
         "--piece-length",
         str(piece_length),
@@ -199,6 +205,7 @@ def test_cli_created_by(dir1, piece_length, version):
     """Test if created torrents recieve a created by field in meta info."""
     args = [
         "torrentfile",
+        "create",
         str(dir1),
         "--piece-length",
         str(piece_length),
@@ -220,6 +227,7 @@ def test_cli_web_seeds(dir1, piece_length, version):
     """Test if created torrents recieve a created by field in meta info."""
     args = [
         "torrentfile",
+        "create",
         str(dir1),
         "--piece-length",
         str(piece_length),
@@ -243,6 +251,8 @@ def test_cli_with_debug(dir1, piece_length, version):
     """Test debug mode cli flag."""
     args = [
         "torrentfile",
+        "-v",
+        "create",
         str(dir1),
         "--piece-length",
         str(piece_length),
@@ -250,7 +260,6 @@ def test_cli_with_debug(dir1, piece_length, version):
         version,
         "--comment",
         "this is a comment",
-        "-v",
     ]
     sys.argv = args
     main()
@@ -264,6 +273,7 @@ def test_cli_with_source(dir1, piece_length, version):
     """Test source cli flag."""
     args = [
         "torrentfile",
+        "create",
         str(dir1),
         "--piece-length",
         str(piece_length),
@@ -296,6 +306,7 @@ def test_cli_empty_files(dir2, version):
     """Test creating torrent with empty files."""
     args = [
         "torrentfile",
+        "create",
         str(dir2),
         "--meta-version",
         version,
