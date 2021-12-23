@@ -28,10 +28,9 @@ import pyben
 
 from .edit import edit_torrent
 from .torrent import TorrentFile, TorrentFileHybrid, TorrentFileV2
-from .utils import humanize_bytes, normalize_piece_length
 
 
-def get_input(*args):
+def get_input(*args):  # pragma: no cover
     """
     Determine appropriate input function to call.
 
@@ -50,7 +49,7 @@ def get_input(*args):
     return _get_input(*args)
 
 
-def _get_input(txt):
+def _get_input(txt):  # pragma: no cover
     """
     Gather information needed from user.
 
@@ -68,7 +67,7 @@ def _get_input(txt):
     return value
 
 
-def _get_input_loop(txt, func):
+def _get_input_loop(txt, func):  # pragma: no cover
     """
     Gather information needed from user.
 
@@ -115,7 +114,7 @@ def showcenter(txt):
         the preformated message to send to stdout.
     """
     termlen = shutil.get_terminal_size().columns
-    padding = " " * ((termlen - len(txt)) / 2)
+    padding = " " * int(((termlen - len(txt)) / 2))
     string = "".join(["\n", padding, txt, "\n"])
     showtext(string)
 
@@ -128,16 +127,16 @@ def select_action():
         "Action (Create | Edit | Recheck): "
     )
     if action.lower() == "create":
-        create_torrent()
-    elif action.lower() == "recheck":
-        recheck_torrent()
-    else:
-        edit_action()
+        return create_torrent()
+    if action.lower() == "recheck":
+        return recheck_torrent()
+    return edit_action()
 
 
 def recheck_torrent():
     """Check torrent download completed percentage."""
     print(os.getcwd())
+    return True
 
 
 def create_torrent():
@@ -150,7 +149,8 @@ def create_torrent():
         "enclosed in () indicate the default value, while {} holds all "
         "valid choices available for the option.\n\n"
     )
-    InteractiveCreator()
+    creator = InteractiveCreator()
+    return creator
 
 
 def edit_action():
@@ -177,45 +177,22 @@ class InteractiveEditor:
         self.metafile = metafile
         self.meta = pyben.load(metafile)
         self.info = self.meta["info"]
-        if "announce list" in self.meta:
-            self.announce = self.meta["announce list"]
-        else:
-            self.announce = self.meta.get("announce", None)
-        self.piece_length = self.info.get("piece length")
-        self.comment = self.info.get("comment", None)
-        self.source = self.info.get("source", None)
-        self.private = self.info.get("private", None)
-        self.url_list = self.meta.get("url-list", None)
-        self.name = self.info.get("name")
-        self.labels = {
-            "piece length": "piece_length",
-            "comment": "comment",
-            "source": "source",
-            "private": "private",
-            "tracker": "announce",
-            "webseed": "url_list",
+        self.args = {
+            "url-list": self.meta.get("url-list", None),
+            "announce": self.meta.get("announce list", None),
+            "source": self.info.get("source", None),
+            "private": self.info.get("private", None),
+            "comment": self.info.get("comment", None),
         }
 
     def show_current(self):
         """Display the current met file information to screen."""
         out = "Current properties and values:\n"
-        longest = max([len(label) for label in self.labels]) + 3
-        for key, val in self.labels.items():
-            val = self.__getattribute__(val)
-            txt = (key.title() + ":").ljust(longest)
-            if key == "trackers":
-                if isinstance(val, str):
-                    txt += self.announce
-                else:
-                    txt += " ".join([url for grp in val for url in grp])
-            elif key == "web-seeds":
-                txt += " ".join(val)
-            elif key == "piece length":
-                txt += humanize_bytes(val)
-            else:
-                txt += str(val)
+        longest = max([len(label) for label in self.args]) + 3
+        for key, val in self.args.items():
+            txt = (key.title() + ":").ljust(longest) + str(val)
             out += f"\t{txt}\n"
-        sys.stdout.write(out)
+        showtext(out)
 
     def sanatize_response(self, key, response):
         """
@@ -228,18 +205,11 @@ class InteractiveEditor:
         response : `str`
             User input value the property is being edited to.
         """
-        if key in ["announce", "url_list"]:
+        if key in ["announce", "url-list"]:
             val = response.split()
-        elif key == "piece_length":
-            val = normalize_piece_length(response)
-        elif key == "private":
-            if self.private:
-                val = None
-            else:
-                val = 1
         else:
             val = response
-        self.__setattr__(key, val)
+        self.args[key] = val
 
     def edit_props(self):
         """Loop continuosly for edits until user signals DONE."""
@@ -253,64 +223,31 @@ class InteractiveEditor:
                 2: "source",
                 3: "private",
                 4: "tracker",
-                5: "webseed",
-                6: "piece length",
+                5: "web-seed",
+            }
+            args = {
+                1: "comment",
+                2: "source",
+                3: "private",
+                4: "announce",
+                5: "url-list",
             }
             txt = ", ".join((str(k) + ": " + v) for k, v in props.items())
             prop = get_input(txt)
             if prop.lower() == "done":
                 break
-            if prop.isdigit() and 0 < int(prop) < 7:
-                label = props[int(prop)]
-                key = self.labels[label]
-                val = self.__getattribute__(key)
+            if prop.isdigit() and 0 < int(prop) < 6:
+                key = props[int(prop)]
+                key2 = args[int(prop)]
+                val = self.args.get(key2)
                 showtext(
                     "Enter new property value or leave empty for no value."
                 )
-                response = get_input(f"{key} ({val}): ")
-                self.sanatize_response(key, response)
+                response = get_input(f"{key.title()} ({val}): ")
+                self.sanatize_response(key2, response)
             else:
                 showtext("Invalid input: Try again.")
-        args = {
-            "announce": self.announce,
-            "piece_length": self.piece_length,
-            "comment": self.comment,
-            "source": self.source,
-            "private": self.private,
-            "url_list": self.url_list,
-        }
-        edit_torrent(self.metafile, args)
-
-    def write_metafile(self):
-        """Overwrite the metafile with newly edited information."""
-        self.meta["announce list"] = [self.announce]
-        self.meta["announce"] = self.announce[0]
-
-        if self.url_list:
-            self.meta["url-list"] = self.url_list
-        elif "url-list" in self.meta:
-            del self.meta["url-list"]
-
-        if self.private:
-            self.info["private"] = 1
-        else:
-            del self.info["private"]
-
-        self.info["piece length"] = self.piece_length
-
-        if self.comment:
-            self.info["comment"] = self.comment
-        elif "comment" in self.info:
-            del self.info["comment"]
-
-        if self.source:
-            self.info["source"] = self.source
-        elif "source" in self.info:
-            del self.info["source"]
-
-        self.meta["info"] = self.info
-
-        pyben.dump(self.meta, self.metafile)
+        edit_torrent(self.metafile, self.args)
 
 
 class InteractiveCreator:
@@ -340,7 +277,7 @@ class InteractiveCreator:
             "outfile": None,
             "path": None,
         }
-        self.get_props()
+        self.outfile, self.meta = self.get_props()
 
     def get_props(self):
         """Gather details for torrentfile from user."""
@@ -389,4 +326,4 @@ class InteractiveCreator:
             torrent = TorrentFileV2(**self.kwargs)
         else:
             torrent = TorrentFile(**self.kwargs)
-        torrent.write()
+        return torrent.write()

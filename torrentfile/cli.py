@@ -285,14 +285,6 @@ def main_script(args=None):
     )
 
     edit_parser.add_argument(
-        "--piece-length",
-        action="store",
-        dest="piece_length",
-        metavar="<int>",
-        help="replace current piece-length with <int>",
-    )
-
-    edit_parser.add_argument(
         "--private",
         action="store_true",
         help="If currently private, will make it public, if public then private.",
@@ -316,7 +308,7 @@ def main_script(args=None):
     )
 
     flags = parser.parse_args(args)
-
+    print(flags)
     if flags.debug:
         level = logging.DEBUG
     else:
@@ -351,11 +343,10 @@ def main_script(args=None):
         return result
 
     if flags.command == "edit":
-        metafile = (flags.metafile,)
+        metafile = flags.metafile
         editargs = {
             "url-list": flags.url_list,
             "announce": flags.announce,
-            "piece length": flags.piece_length,
             "source": flags.source,
             "private": flags.private,
             "comment": flags.comment,

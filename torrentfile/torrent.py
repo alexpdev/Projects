@@ -238,10 +238,10 @@ class MetaFile:
         # Most torrent clients have editting trackers as a feature.
         elif isinstance(announce, str):
             self.announce = announce
-            self.announce_list = [[announce]]
+            self.announce_list = [announce]
         elif isinstance(announce, Sequence):
             self.announce = announce[0]
-            self.announce_list = [[i] for i in announce]
+            self.announce_list = [announce]
 
         if private:
             self.private = 1

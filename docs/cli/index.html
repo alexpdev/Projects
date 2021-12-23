@@ -504,14 +504,6 @@ HelpFormat            (<span title="argparse.HelpFormatter">HelpFormatter</span>
     <span class="p">)</span>
 
     <span class="n">edit_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--piece-length&quot;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span>
-        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;piece_length&quot;</span><span class="p">,</span>
-        <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;&lt;int&gt;&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;replace current piece-length with &lt;int&gt;&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-
-    <span class="n">edit_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s2">&quot;--private&quot;</span><span class="p">,</span>
         <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;If currently private, will make it public, if public then private.&quot;</span><span class="p">,</span>
@@ -535,7 +527,7 @@ HelpFormat            (<span title="argparse.HelpFormatter">HelpFormatter</span>
     <span class="p">)</span>
 
     <span class="n">flags</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-
+    <span class="nb">print</span><span class="p">(</span><span class="n">flags</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">flags</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
         <span class="n">level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span>
     <span class="k">else</span><span class="p">:</span>
@@ -570,11 +562,10 @@ HelpFormat            (<span title="argparse.HelpFormatter">HelpFormatter</span>
         <span class="k">return</span> <span class="n">result</span>
 
     <span class="k">if</span> <span class="n">flags</span><span class="o">.</span><span class="n">command</span> <span class="o">==</span> <span class="s2">&quot;edit&quot;</span><span class="p">:</span>
-        <span class="n">metafile</span> <span class="o">=</span> <span class="p">(</span><span class="n">flags</span><span class="o">.</span><span class="n">metafile</span><span class="p">,)</span>
+        <span class="n">metafile</span> <span class="o">=</span> <span class="n">flags</span><span class="o">.</span><span class="n">metafile</span>
         <span class="n">editargs</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;url-list&quot;</span><span class="p">:</span> <span class="n">flags</span><span class="o">.</span><span class="n">url_list</span><span class="p">,</span>
             <span class="s2">&quot;announce&quot;</span><span class="p">:</span> <span class="n">flags</span><span class="o">.</span><span class="n">announce</span><span class="p">,</span>
-            <span class="s2">&quot;piece length&quot;</span><span class="p">:</span> <span class="n">flags</span><span class="o">.</span><span class="n">piece_length</span><span class="p">,</span>
             <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">flags</span><span class="o">.</span><span class="n">source</span><span class="p">,</span>
             <span class="s2">&quot;private&quot;</span><span class="p">:</span> <span class="n">flags</span><span class="o">.</span><span class="n">private</span><span class="p">,</span>
             <span class="s2">&quot;comment&quot;</span><span class="p">:</span> <span class="n">flags</span><span class="o">.</span><span class="n">comment</span><span class="p">,</span>

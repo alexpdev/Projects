@@ -13,34 +13,51 @@
 #####################################################################
 """Edit torrent meta file."""
 
+import os
+
 import pyben
 
-from .utils import normalize_piece_length
+
+def filter_empty(args, meta, info):
+    """
+    Remove dictionary keys with empty values.
+
+    Parameters
+    ----------
+    args : `dict`
+        Editable metafile properties from user.
+    meta : `dict`
+        Metafile data dictionary.
+    info : `dict`
+        Metafile info dictionary.
+    """
+    for key, val in list(args.items()):
+        if val is None:
+            del args[key]
+            continue
+
+        if val == "":
+            if key in meta:
+                del meta[key]
+            elif key in info:
+                del info[key]
+            del args[key]
 
 
 def edit_torrent(metafile, args):
     """
-    Edit the properties of provided torrent meta file.
+    Edit the properties and values in a torrent meta file.
 
     Parameters
     ----------
     metafile : `str`
-        path to an existing torrent meta file
+        path to the torrent meta file.
     args : `dict`
-        dictionary of meta file properties and their values
+        key value pairs of the properties to be edited.
     """
     meta = pyben.load(metafile)
     info = meta["info"]
-    print(args)
-
-    if "piece_length" in args:
-        info["piece length"] = normalize_piece_length(args["piece_length"])
-
-    if "private" in args:
-        if "private" in info:
-            del info["private"]
-        else:
-            info["private"] = 1
+    filter_empty(args, meta, info)
 
     if "comment" in args:
         info["comment"] = args["comment"]
@@ -48,13 +65,27 @@ def edit_torrent(metafile, args):
     if "source" in args:
         info["source"] = args["source"]
 
-    if "url_list" in args:
-        meta["url-list"] = args["url_list"].split(" ")
+    if "private" in args:
+        info["private"] = 1
 
     if "announce" in args:
-        alist = args["announce"].split(" ")
-        meta["announce"] = alist[0]
-        meta["announce list"] = [alist]
+        val = args.get("announce", None)
+        if isinstance(val, str):
+            vallist = val.split()
+            meta["announce"] = vallist[0]
+            meta["announce list"] = [vallist]
+        elif isinstance(val, list):
+            meta["announce"] = val[0]
+            meta["announce list"] = [val]
+
+    if "url-list" in args:
+        val = args.get("url-list")
+        if isinstance(val, str):
+            meta["url-list"] = val.split()
+        elif isinstance(val, list):
+            meta["url-list"] = val
 
     meta["info"] = info
+    os.remove(metafile)
     pyben.dump(meta, metafile)
+    return meta

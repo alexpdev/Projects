@@ -13,13 +13,15 @@
 #####################################################################
 """Testing the edit torrent feature."""
 
+import sys
+
 import pyben
 import pytest
 
 from tests import dir1, dir2, rmpath
+from torrentfile.cli import main
 from torrentfile.edit import edit_torrent
 from torrentfile.torrent import TorrentFile, TorrentFileHybrid, TorrentFileV2
-from torrentfile.utils import normalize_piece_length
 
 
 def torrents():
@@ -28,21 +30,19 @@ def torrents():
 
 
 @pytest.fixture(scope="function", params=torrents())
-def meta1(dir1, request):
+def torfile(dir2, request):
     """Create a standard metafile for testing."""
     args = {
-        "path": dir1,
-        "announce": "https://tracker1.org/announce https://tracker2.net/ann",
-        "private": 1,
+        "path": dir2,
+        "announce": "url1 url2 url4",
         "comment": "this is a comment",
         "source": "SomeSource",
-        "piece_length": "18",
-        "url_list": "www.someurl.net ftp://othersite.lua",
     }
     torrent_class = request.param
     torrent = torrent_class(**args)
     outfile, _ = torrent.write()
     yield outfile
+    rmpath(outfile)
 
 
 def test_fix():
@@ -50,83 +50,142 @@ def test_fix():
     assert dir2 and dir1
 
 
-@pytest.mark.parametrize("announce", ["https://other.org/announce", ""])
-def test_edit_torrent_announce(meta1, announce):
-    """Test edit torrent function with announce."""
-    outfile = meta1
-    args = {
-        "announce": announce,
+@pytest.mark.parametrize(
+    "announce", [["urla"], ["urlb", "urlc"], ["urla", "urlb", "urlc"]]
+)
+def test_edit_torrent(torfile, announce):
+    """Test edit torrent with announce param."""
+    edits = {"announce": announce}
+    data = edit_torrent(torfile, edits)
+    meta = pyben.load(torfile)
+    assert data == meta
+    assert data["announce list"] == [announce]
+
+
+@pytest.mark.parametrize("announce", ["urla", "urlb urlc", "urla urlb urlc"])
+def test_edit_torrent_str(torfile, announce):
+    """Test edit torrent with announce param as string."""
+    edits = {"announce": announce}
+    data = edit_torrent(torfile, edits)
+    meta = pyben.load(torfile)
+    assert data == meta
+    assert data["announce list"] == [announce.split()]
+
+
+@pytest.mark.parametrize("url_list", ["urla", "urlb urlc", "urla urlb urlc"])
+def test_edit_urllist_str(torfile, url_list):
+    """Test edit torrent with webseed param."""
+    edits = {"url-list": url_list}
+    data = edit_torrent(torfile, edits)
+    meta = pyben.load(torfile)
+    assert data == meta
+    assert data["url-list"] == url_list.split()
+
+
+@pytest.mark.parametrize(
+    "url_list", [["urla"], ["urlb", "urlc"], ["urla", "urlb", "urlc"]]
+)
+def test_edit_urllist(torfile, url_list):
+    """Test edit torrent with webseed param as string."""
+    edits = {"url-list": url_list}
+    data = edit_torrent(torfile, edits)
+    meta = pyben.load(torfile)
+    assert data == meta
+    assert data["url-list"] == url_list
+
+
+@pytest.mark.parametrize("comment", ["COMMENT", "COMIT", "MITCO"])
+def test_edit_comment(torfile, comment):
+    """Test edit torrent with comment param."""
+    edits = {"comment": comment}
+    data = edit_torrent(torfile, edits)
+    meta = pyben.load(torfile)
+    assert data == meta
+    assert data["info"]["comment"] == comment
+
+
+@pytest.mark.parametrize("source", ["SomeSource", "NoSouce", "MidSource"])
+def test_edit_source(torfile, source):
+    """Test edit torrent with source param."""
+    edits = {"source": source}
+    data = edit_torrent(torfile, edits)
+    meta = pyben.load(torfile)
+    assert data == meta
+    assert data["info"]["source"] == source
+
+
+def test_edit_private_true(torfile):
+    """Test edit torrent with private param."""
+    edits = {"private": "1"}
+    data = edit_torrent(torfile, edits)
+    meta = pyben.load(torfile)
+    assert data == meta
+    assert data["info"]["private"] == 1
+
+
+def test_edit_private_false(torfile):
+    """Test edit torrent with private param False."""
+    edits = {"private": ""}
+    data = edit_torrent(torfile, edits)
+    meta = pyben.load(torfile)
+    assert data == meta
+    assert "private" not in data["info"]
+
+
+def test_edit_none(torfile):
+    """Test edit torrent with None for all params."""
+    edits = {
+        "announce": None,
+        "url-list": None,
+        "comment": None,
+        "source": None,
+        "private": None,
     }
-    edit_torrent(outfile, args)
-    info = pyben.load(outfile)
-    assert info["announce"] == announce
-    rmpath(outfile)
+    data = pyben.load(torfile)
+    edited = edit_torrent(torfile, edits)
+    meta = pyben.load(torfile)
+    assert data == meta == edited
 
 
-@pytest.mark.parametrize("private", [1, 1])
-def test_edit_torrent_private(meta1, private):
-    """Test edit torrent function with private."""
-    outfile = meta1
-    args = {
-        "private": private,
+def test_edit_removal(torfile):
+    """Test edit torrent with empty for all params."""
+    edits = {
+        "announce": "",
+        "url-list": "",
+        "comment": "",
+        "source": "",
+        "private": "",
     }
-    edit_torrent(outfile, args)
-    data = pyben.load(outfile)
-    try:
-        assert "private" not in data["info"]
-    except KeyError:
-        assert data["info"]["private"] == private
-    rmpath(outfile)
+    data = edit_torrent(torfile, edits)
+    meta = pyben.load(torfile)
+    assert data == meta
 
 
-@pytest.mark.parametrize("source", ["", "othersource"])
-def test_edit_torrent_source(meta1, source):
-    """Test edit torrent function with source."""
-    outfile = meta1
-    args = {
-        "source": source,
-    }
-    edit_torrent(outfile, args)
-    meta = pyben.load(outfile)
-    assert meta["info"]["source"] == source
-    rmpath(outfile)
-
-
-@pytest.mark.parametrize("comment", ["Nocomment", ""])
-def test_edit_torrent_comment(meta1, comment):
-    """Test edit torrent function with comment."""
-    outfile = meta1
-    args = {
-        "comment": comment,
-    }
-    edit_torrent(outfile, args)
-    meta = pyben.load(outfile)
-    assert meta["info"]["comment"] == comment
-    rmpath(outfile)
-
-
-@pytest.mark.parametrize("url_list", ["item1 item2", "item5"])
-def test_edit_torrent_urllist(meta1, url_list):
-    """Test edit torrent function with url-list."""
-    outfile = meta1
-    args = {
-        "url_list": url_list,
-    }
-    edit_torrent(outfile, args)
-    meta = pyben.load(outfile)
-    assert meta["url-list"] == url_list.split()
-    rmpath(outfile)
-
-
-@pytest.mark.parametrize("piece_length", ["18", "19", "25", "16384"])
-def test_edit_torrent_piecelength(meta1, piece_length):
-    """Test edit torrent function with piece length."""
-    outfile = meta1
-    args = {
-        "piece_length": piece_length,
-    }
-    plen = normalize_piece_length(piece_length)
-    edit_torrent(outfile, args)
-    meta = pyben.load(outfile)
-    assert meta["info"]["piece length"] == plen
-    rmpath(outfile)
+@pytest.mark.parametrize("comment", ["commenta", "commentb", "commentc"])
+@pytest.mark.parametrize("source", ["sourcea", "sourceb", "sourcec"])
+@pytest.mark.parametrize("announce", [["url1", "url2", "url3"], ["url1"]])
+@pytest.mark.parametrize("webseed", [["ftp1"], ["ftpa", "ftpb"]])
+def test_edit_cli(torfile, comment, source, announce, webseed):
+    """Test edit torrent with all params on cli."""
+    sys.argv = [
+        "torrentfile",
+        "edit",
+        torfile,
+        "--comment",
+        comment,
+        "--source",
+        source,
+        "--web-seed",
+        webseed,
+        "--tracker",
+        announce,
+        "--private",
+    ]
+    main()
+    meta = pyben.load(torfile)
+    info = meta["info"]
+    assert comment == info.get("comment")
+    assert source == info.get("source")
+    assert info.get("private") == 1
+    assert meta["announce list"] == [[announce]]
+    assert meta["url-list"] == [webseed]
