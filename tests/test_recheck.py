@@ -234,7 +234,7 @@ def test_checker_cli_args(dir1, version):
     path = str(dir1)
     args = {"announce": "announce", "path": path, "private": 1}
     outfile = mktorrent(args, v=version)
-    sys.argv[1:] = ["--recheck", outfile, path]
+    sys.argv = ["torrentfile", "check", outfile, path]
     output = main()
     assert output == 100
     rmpath(outfile)
