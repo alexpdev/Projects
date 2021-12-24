@@ -27,6 +27,7 @@ import sys
 import pyben
 
 from .edit import edit_torrent
+from .recheck import Checker
 from .torrent import TorrentFile, TorrentFileHybrid, TorrentFileV2
 
 
@@ -128,15 +129,27 @@ def select_action():
     )
     if action.lower() == "create":
         return create_torrent()
-    if action.lower() == "recheck":
+    if "check" in action.lower():
         return recheck_torrent()
     return edit_action()
 
 
 def recheck_torrent():
     """Check torrent download completed percentage."""
-    print(os.getcwd())
-    return True
+    showcenter("Check Torrent")
+    msg = (
+        "Enter absolute or relative path to torrent file content, and the "
+        "corresponding torrent metafile."
+    )
+    showtext(msg)
+    metafile = get_input(
+        "Conent Path (downloads/complete/torrentname):", os.path.exists
+    )
+    contents = get_input("Metafile (*.torrent): ", os.path.exists)
+    checker = Checker(metafile, contents)
+    results = checker.results()
+    showtext(f"Completion for {metafile} is {results}%")
+    return results
 
 
 def create_torrent():
@@ -262,7 +275,6 @@ class InteractiveCreator:
     _path : str
     _outfile : str
     _announce : str
-    _announce_list : list
     """
 
     def __init__(self):

@@ -114,10 +114,9 @@ def main_script(args=None):
 
     create_parser = subparsers.add_parser(
         "create",
-        help="""
-        Create a new torrent meta file from directory contents or individual file.
-        """,
+        help="Create a torrent file.",
         prefix_chars="-",
+        aliases=["c"],
         formatter_class=HelpFormat,
     )
 
@@ -222,11 +221,9 @@ def main_script(args=None):
     )
 
     check_parser = subparsers.add_parser(
-        "check",
-        help="""
-        Check contents file or directory against information contained in
-        a torrent meta file, and display percentage complete/valid/available.
-        """,
+        "recheck",
+        help="Recheck/Check torrent download completion",
+        aliases=["r", "check"],
         prefix_chars="-",
         formatter_class=HelpFormat,
     )
@@ -247,9 +244,8 @@ def main_script(args=None):
 
     edit_parser = subparsers.add_parser(
         "edit",
-        help="""
-        Edit the properties of a torrent file.
-        """,
+        help="Edit a torrent file.",
+        aliases=["e"],
         prefix_chars="-",
         formatter_class=HelpFormat,
     )
@@ -329,8 +325,8 @@ def main_script(args=None):
     if flags.interactive:
         return select_action()
 
-    if flags.command == "check":
-        tlogger.debug("Program as entered Recheck mode.")
+    if flags.command in ["recheck", "r", "check"]:
+        tlogger.debug("Program entering Recheck mode.")
         metafile = flags.metafile
         content = flags.content
         tlogger.debug("Checking %s against %s contents", metafile, content)
@@ -342,7 +338,7 @@ def main_script(args=None):
         sys.stdout.flush()
         return result
 
-    if flags.command == "edit":
+    if flags.command in ["edit", "e"]:
         metafile = flags.metafile
         editargs = {
             "url-list": flags.url_list,
