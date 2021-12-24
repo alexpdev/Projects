@@ -1,5 +1,14 @@
 # TorrentFile
 
+## Version 0.2.0
+
+### Added
+
+    - Added recheck/check option in interactive mode
+    - updated documentation and testing
+
+----------------
+
 ## Version 0.1.3
 
 ### Added
