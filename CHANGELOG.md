@@ -1,5 +1,18 @@
 # TorrentFile
 
+## Version 0.1.3
+
+### Added
+
+    - Created sub-commands for the cli interface
+    - Created edit torrent capabilities
+    - Created edit sub-command for cli
+    - Added interactive mode 
+    - Added -i flag for CLI to invoke interactive mode
+    - Added full set of tests for interactive and editing
+
+----------------
+
 ## Version 0.1.2
 
 ### Updated / Fixed
