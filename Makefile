@@ -65,27 +65,23 @@ clean-build: ## remove build artifacts
 	rm -f *.spec
 
 test: ## Get coverage report
-	pytest --cov=torrentfile --cov=tests --pylint --max-fail=5
+	pytest --cov=torrentfile --cov=tests
 
 lint:
-	pip install pyroma bandit black isort prospector
 	black torrentfile tests
 	isort torrentfile tests
 	prospector torrentfile
 	prospector tests
 
 docs: ## Regenerate docs from changes
-	pip install mkdocs mkdocs-material mkdocstrings
 	rm -rf docs/*
 	mkdocs -q build
 	touch docs/.nojekyll
 
-coverage: ## Get coverage report
-	pytest --cov=torrentfile --cov=tests --pylint
+coverage: test ## Get coverage report
 	coverage html
 
-push: clean lint docs ## Push to github
-	pytest --cov=torrentfile --cov=tests --pylint
+push: clean lint docs test ## Push to github
 	git add .
 	git commit -m "$m"
 	git push

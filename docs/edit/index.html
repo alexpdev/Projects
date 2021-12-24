@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    <link rel="canonical" href="https://alexpdev.github.io/torrentfile/edit/">
+    <link rel="shortcut icon" href="../img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Documentation for `Edit` Module - TorrentFile</title>
+    <link href="../css/bootstrap-3.3.7.min.css" rel="stylesheet">
+    <link href="../css/font-awesome-4.7.0.css" rel="stylesheet">
+    <link href="../css/base.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/highlight.css">
+    <link href="//use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet">
+    <link href="//use.fontawesome.com/releases/v5.8.1/css/v4-shims.css" rel="stylesheet">
+    <link href="../css/mkapi-common.css" rel="stylesheet">
+    <link href="../assets/_mkdocstrings.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="../js/jquery-3.2.1.min.js"></script>
+    <script src="../js/bootstrap-3.3.7.min.js"></script>
+    <script src="../js/highlight.pack.js"></script>
+    
+    <base target="_top">
+    <script>
+      var base_url = '..';
+      var is_top_frame = false;
+        
+        var pageToc = [
+          {title: "Documentation for Edit Module", url: "#_top", children: [
+              {title: "edit", url: "#torrentfile.edit" },
+          ]},
+        ];
+
+    </script>
+    <script src="../js/base.js"></script>
+      <script src="../js/mkapi.js"></script> 
+</head>
+
+<body>
+<script>
+if (is_top_frame) { $('body').addClass('wm-top-page'); }
+</script>
+
+
+
+<div class="container-fluid wm-page-content">
+  <a name="_top"></a>
+    
+
+    
+
+    <h1 id="documentation-for-edit-module">Documentation for <code>Edit</code> Module</h1>
+<div class="mkapi-node" id="torrentfile.edit">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object module code top">
+    <div class="mkapi-object-kind module top">module</div>
+    <div class="mkapi-object-body module top"><code class="mkapi-object-prefix">torrentfile.</code><code class="mkapi-object-name">edit</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Edit torrent meta file.</p></div>
+    </div>
+  <div class="mkapi-section functions">
+      <div class="mkapi-section-name functions">
+          <span class="mkapi-section-name-body functions">Functions</span> 
+        </div>
+      <div class="mkapi-section-body functions"><ul class="mkapi-items">
+<li class="function"><code class="mkapi-item-name">edit_torrent</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">metafile</code>, <code class="mkapi-object-signature">args</code><code class="mkapi-object-parenthesis">)</code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Edit the properties and values in a torrent meta file.</span></li>
+
+<li class="function"><code class="mkapi-item-name">filter_empty</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">args</code>, <code class="mkapi-object-signature">meta</code>, <code class="mkapi-object-signature">info</code><code class="mkapi-object-parenthesis">)</code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Remove dictionary keys with empty values.</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+</div>
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="torrentfile.edit" class="doc doc-heading">
+        <code>torrentfile.edit</code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="torrentfile.edit.edit_torrent" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">edit_torrent</span><span class="p">(</span><span class="n">metafile</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>torrentfile\edit.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">edit_torrent</span><span class="p">(</span><span class="n">metafile</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Edit the properties and values in a torrent meta file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    metafile : `str`</span>
+<span class="sd">        path to the torrent meta file.</span>
+<span class="sd">    args : `dict`</span>
+<span class="sd">        key value pairs of the properties to be edited.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">pyben</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">metafile</span><span class="p">)</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;info&quot;</span><span class="p">]</span>
+    <span class="n">filter_empty</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s2">&quot;comment&quot;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="n">info</span><span class="p">[</span><span class="s2">&quot;comment&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;comment&quot;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="s2">&quot;source&quot;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="n">info</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="s2">&quot;private&quot;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="n">info</span><span class="p">[</span><span class="s2">&quot;private&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="s2">&quot;announce&quot;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;announce&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">vallist</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;announce&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vallist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;announce list&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">vallist</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;announce&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;announce list&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">val</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="s2">&quot;url-list&quot;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;url-list&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;url-list&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;url-list&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+    <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;info&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">info</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">metafile</span><span class="p">)</span>
+    <span class="n">pyben</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">metafile</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">meta</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="torrentfile.edit.filter_empty" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">filter_empty</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>torrentfile\edit.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">filter_empty</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Remove dictionary keys with empty values.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    args : `dict`</span>
+<span class="sd">        Editable metafile properties from user.</span>
+<span class="sd">    meta : `dict`</span>
+<span class="sd">        Metafile data dictionary.</span>
+<span class="sd">    info : `dict`</span>
+<span class="sd">        Metafile info dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">args</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">meta</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">meta</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">info</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">info</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">del</span> <span class="n">args</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+  <br>
+    
+
+    <br>
+</div>
+
+<footer class="container-fluid wm-page-content">
+      <p>
+        <a href="https://github.com/alexpdev/torrentfile/edit/master/docs/edit.md"><i class="fa fa-github"></i>
+Edit on GitHub</a>
+      </p><p>alexpdev 2021</p>
+  <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using <a href="https://github.com/gristlabs/mkdocs-windmill">Windmill</a> theme by Grist Labs.</p>
+</footer>
+
+</body>
+</html>
