@@ -61,7 +61,7 @@ optional arguments:
   -v, --verbose      output debug information
 ```
 
-> Usage examples can be found [on the examples page in the documentation.][https://alexpdev.github.io/TorrentFile/examples]
+> Usage examples can be found in the project documentation on the [examples page.](https://alexpdev.github.io/TorrentFile/examples)
 
 ## :memo: License
 
