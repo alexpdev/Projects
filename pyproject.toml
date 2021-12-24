@@ -17,7 +17,7 @@ testpaths = [
     "torrentfile",
 ]
 console_output_style = "progress"
-addopts = "--maxfail=10"
+addopts = "--maxfail=5"
 
 [build-system]
 requires = ["setuptools>=40.8.0", "wheel"]

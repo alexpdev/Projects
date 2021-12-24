@@ -57,11 +57,15 @@ clean-build: ## remove build artifacts
 	rm -fr .tox/
 	rm -f .coverage
 	rm -rf */__pycache__
+	rm -f coverage.xml
 	rm -fr htmlcov/
 	rm -rf *.egg-info
 	rm -f corbertura.xml
 	rm -fr .pytest_cache
 	rm -f *.spec
+
+test: ## Get coverage report
+	pytest --cov=torrentfile --cov=tests --pylint --max-fail=5
 
 lint:
 	pip install pyroma bandit black isort prospector
@@ -77,9 +81,8 @@ docs: ## Regenerate docs from changes
 	touch docs/.nojekyll
 
 coverage: ## Get coverage report
-	coverage run -m pytest tests
-	coverage report
-	coverage xml
+	pytest --cov=torrentfile --cov=tests --pylint
+	coverage html
 
 push: clean lint docs ## Push to github
 	pytest --cov=torrentfile --cov=tests --pylint
@@ -93,7 +96,8 @@ setup: clean ## setup and build repo
 	pip install -e .
 	twine upload dist/*
 
-winbuild: clean
+build: clean
+	pip install --pre --upgrade --force-reinstall --no-cache -rrequirements.txt
 	pip install pyinstaller
 	python setup.py sdist bdist_wheel bdist_egg
 	rm -rfv ../runner

@@ -20,7 +20,7 @@ import pyben
 import pytest
 
 import torrentfile
-from tests import dir1, dir2, rmpath
+from tests import dir1, dir2, rmpath, tempfile
 from torrentfile.cli import main
 from torrentfile.interactive import select_action
 from torrentfile.torrent import TorrentFile, TorrentFileHybrid, TorrentFileV2
@@ -93,11 +93,11 @@ def test_interactive_create(dir1):
 
 
 @pytest.mark.parametrize("version", ["1", "2", "3"])
-@pytest.mark.parametrize("piece_length", ["23", "18", "16", "131072"])
-@pytest.mark.parametrize("announce", ["url1", "urla urlb urlc", "urld url2"])
+@pytest.mark.parametrize("piece_length", ["23", "18", "131072"])
+@pytest.mark.parametrize("announce", ["url1", "urla urlb urlc"])
 @pytest.mark.parametrize("url_list", ["ftp url2", "ftp1 ftp2 ftp3"])
 @pytest.mark.parametrize("comment", ["Some Comment", "No Comment"])
-@pytest.mark.parametrize("source", ["Do", "Ra", "Me", "Fa", "So", "La"])
+@pytest.mark.parametrize("source", ["Do", "Ra", "Me"])
 def test_inter_create_full(
     dir1, piece_length, announce, comment, source, url_list, version
 ):
@@ -122,10 +122,10 @@ def test_inter_create_full(
     assert meta["url-list"] == url_list.split()
 
 
-@pytest.mark.parametrize("announce", ["url1", "urla urlb urlc", "urld url2"])
+@pytest.mark.parametrize("announce", ["url1"])
 @pytest.mark.parametrize("url_list", ["ftp url2", "ftp1 ftp2 ftp3"])
 @pytest.mark.parametrize("comment", ["Some Comment", "No Comment"])
-@pytest.mark.parametrize("source", ["Do", "Ra", "Me", "Fa", "So", "La"])
+@pytest.mark.parametrize("source", ["Fa", "So", "La"])
 def test_inter_edit_full(metafile, announce, comment, source, url_list):
     """Test editing torrent file interactively."""
     seq = [
@@ -183,8 +183,14 @@ def test_inter_edit_cli(metafile, announce, comment, source, url_list):
     assert meta["info"]["private"] == 1
 
 
-def test_inter_recheck():
+@pytest.mark.parametrize("size", list(range(16, 22)))
+@pytest.mark.parametrize("torrentclass", torrents())
+def test_inter_recheck(size, torrentclass):
     """Test interactive recheck function."""
-    seq = ["recheck"]
+    tfile = tempfile(exp=size)
+    torrent = torrentclass(path=tfile)
+    metafile, _ = torrent.write()
+    seq = ["recheck", metafile, str(tfile)]
     input_iter(seq)
-    assert select_action()
+    result = select_action()
+    assert result == 100
