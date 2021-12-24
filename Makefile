@@ -22,19 +22,25 @@ endef
 export PRINT_HELP_PYSCRIPT
 
 define FIX_BIN_VERSION_FILES
-import os
-import shutil
+import os, shutil
 from pathlib import Path
 from torrentfile.version import __version__ as version
-
 for item in Path("./dist").iterdir():
+	if item.is_dir() and item.name == "torrentfile_linux":
+		name = name = f"TorrentFile-{version}-portable_linux"
+		path = item.parent / name
+		shutil.move(item, path)
+		shutil.make_archive(path, 'zip', path)
 	if item.is_dir() and item.name == 'torrentfile':
 		name = f"TorrentFile-{version}-portable_win"
 		path = item.parent / name
 		shutil.move(item, path)
 		shutil.make_archive(path, 'zip', path)
-
-	if item.suffix == ".exe":
+	elif item.name == "torrentfile" and item.is_file():
+		name = f"torrentfile-{version}-linux_exec"
+		path = item.parent / name
+		os.rename(item, path)
+	elif item.suffix == ".exe":
 		newname = f"{item.stem}-{version}-portable.exe"
 		full = item.parent / newname
 		os.rename(item, full)
@@ -127,4 +133,8 @@ nixbuild:
 	pyinstaller --distpath ../runner/dist --workpath ../runner/build \
 		-F -n torrentfile -c -i ../runner/favicon.png \
 		--specpath ../runner/ ../runner/exec
+	pyinstaller --distpath ../runner/dist --workpath ../runner/build \
+		-D -n torrentfile_linux -c -i ../runner/favicon.png \
+		--specpath ../runner/ ../runner/exec
 	cp -rfv ../runner/dist/* ./dist/
+	python3 -c "$$FIX_BIN_VERSION_FILES"
