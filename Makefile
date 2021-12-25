@@ -92,11 +92,11 @@ push: clean lint docs test ## Push to github
 	git commit -m "$m"
 	git push
 
-setup: clean ## setup and build repo
+setup: clean docs ## setup and build repo
 	pip install --pre --upgrade --force-reinstall --no-cache -rrequirements.txt
 	python setup.py sdist bdist_wheel bdist_egg
 	pip install -e .
-	twine upload dist/*
+	twine upload --verbose dist/*
 
 build: clean
 	pip install --pre --upgrade --force-reinstall --no-cache -rrequirements.txt
