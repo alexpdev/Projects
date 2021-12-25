@@ -1,7 +1,7 @@
 {
   "name": "torrentfile",
   "displayName": "TorrentFile",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "url": "https://github.com/alexpdev/TorrentFile",
   "description": "CLI tool for creating, editing, and checking Bittorrent meta files. Support for all Bittorrent versions including hybrid torrent files.",
   "directories": {

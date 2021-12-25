@@ -3,18 +3,19 @@ site_url: https://alexpdev.github.io/torrentfile
 repo_url: https://github.com/alexpdev/torrentfile
 site_description: "Bittorrent Meta File Creator."
 copyright: alexpdev 2021
+extra_css:
+  - stylesheets/extra.css
 
 theme:
   name: windmill
-  logo: torrentfile.png
-  favicon: favicon.png
+  logo: images/torrentfile.png
+  favicon: images/favicon.png
 
 nav:
   - home : index.md
   - API : api.md
-  - license : LGPLv3.md
   - Examples : examples.md
-
+  - license : LGPLv3.md
 
 plugins:
   - search
@@ -27,7 +28,6 @@ plugins:
             docstring_style: numpy
           rendering:
             show_root_heading: yes
-
 
 docs_dir: site/
 site_dir: docs/
