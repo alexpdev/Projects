@@ -90,7 +90,6 @@ class Client:
         print("Connection Closed Successfully")
         return
 
-
     def disconnect(self):
         return self.close()
 

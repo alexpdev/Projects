@@ -1,9 +1,7 @@
 import os
 from time import time
 from ftplib import FTP, error_perm
-import dotenv
-dotenv.load_environment()
-assert os.environ.get('ENVTEST') == 1
+from ftp.dotenv import LOAD_ENVARS
 
 then = time()
 host = os.environ.get("HOST")
@@ -57,6 +55,7 @@ def get_path(client,path,parent):
 
 
 if __name__ == "__main__":
+    LOAD_ENVARS()
     client.set_debuglevel(1)
     client.connect(host=host,port=port)
     client.login(user=user,passwd=auth)
