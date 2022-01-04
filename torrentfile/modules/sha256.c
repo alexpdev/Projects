@@ -1,133 +1,143 @@
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
+#include "sha256.h"
 
-#define ror(value, by) ((value >> by) | (((value & ((1 << by) - 1))) << (32 - by)))
+#define TOTAL_LEN_LEN 8
+#define SHA256_LENGTH 32
+#define SHA256_CHUNK_LENGTH 64
 
-const uint32_t initial_h[8]
-    = { 0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
-        0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19 };
+#define rrot(val, cnt) ((val >> cnt) | (val << (32 - cnt)))
 
-const uint32_t round_k[64]
-    = { 0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1,
-        0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
-        0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786,
-        0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
-        0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147,
-        0x06ca6351, 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13,
-        0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b,
-        0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
-        0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a,
-        0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
-        0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2 };
+static inline void consume_chunk(uint32_t *h, const uint8_t *p)
+{
+	unsigned i, j;
+	uint32_t ah[8];
+	for (i = 0; i < 8; i++)
+		ah[i] = h[i];
+	uint32_t w[16];
+	for (i = 0; i < 4; i++) {
+		for (j = 0; j < 16; j++) {
+			if (i == 0) {
+				w[j] = (uint32_t)p[0] << 24 | (uint32_t)p[1] << 16 | (uint32_t)p[2] << 8 | (uint32_t)p[3];
+				p += 4;
+			} else {
+				const uint32_t s0 = rrot(w[(j + 1) & 0xf], 7) ^ rrot(w[(j + 1) & 0xf], 18) ^ (w[(j + 1) & 0xf] >> 3);
+				const uint32_t s1 = rrot(w[(j + 14) & 0xf], 17) ^ rrot(w[(j + 14) & 0xf], 19) ^ (w[(j + 14) & 0xf] >> 10);
+				w[j] = w[j] + s0 + w[(j + 9) & 0xf] + s1;
+			}
+			const uint32_t s1 = rrot(ah[4], 6) ^ rrot(ah[4], 11) ^ rrot(ah[4], 25);
+			const uint32_t ch = (ah[4] & ah[5]) ^ (~ah[4] & ah[6]);
 
-void reverse64(uint64_t input, uint8_t *output) {
-    output[7] = (input >> 0) & 0xff;
-    output[6] = (input >> 8) & 0xff;
-    output[5] = (input >> 16) & 0xff;
-    output[4] = (input >> 24) & 0xff;
-    output[3] = (input >> 32) & 0xff;
-    output[2] = (input >> 40) & 0xff;
-    output[1] = (input >> 48) & 0xff;
-    output[0] = (input >> 56) & 0xff;
+			static const uint32_t k[] = {
+			    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4,
+			    0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe,
+			    0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f,
+			    0x4a7484aa, 0x5cb0a9dc, 0x76f988da, 0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7,
+			    0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc,
+			    0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b,
+			    0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070, 0x19a4c116,
+			    0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+			    0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7,
+			    0xc67178f2};
+
+			const uint32_t temp1 = ah[7] + s1 + ch + k[i << 4 | j] + w[j];
+			const uint32_t s0 = rrot(ah[0], 2) ^ rrot(ah[0], 13) ^ rrot(ah[0], 22);
+			const uint32_t maj = (ah[0] & ah[1]) ^ (ah[0] & ah[2]) ^ (ah[1] & ah[2]);
+			const uint32_t temp2 = s0 + maj;
+			ah[7] = ah[6];
+			ah[6] = ah[5];
+			ah[5] = ah[4];
+			ah[4] = ah[3] + temp1;
+			ah[3] = ah[2];
+			ah[2] = ah[1];
+			ah[1] = ah[0];
+			ah[0] = temp1 + temp2;
+		}
+	}
+	for (i = 0; i < 8; i++)
+		h[i] += ah[i];
 }
 
-uint32_t read32(uint8_t *input) {
-    uint32_t output = 0;
-    output |= (input[0] << 24);
-    output |= (input[1] << 16);
-    output |= (input[2] << 8);
-    output |= (input[3] << 0);
-
-    return output;
+void SHA256Init(SHA256_CTX *context, uint8_t hash[SHA256_LENGTH])
+{
+	context->hash = hash;
+	context->chunk_pos = context->chunk;
+	context->space_left = SHA256_CHUNK_LENGTH;
+	context->total_len = 0;
+	context->h[0] = 0x6a09e667;
+	context->h[1] = 0xbb67ae85;
+	context->h[2] = 0x3c6ef372;
+	context->h[3] = 0xa54ff53a;
+	context->h[4] = 0x510e527f;
+	context->h[5] = 0x9b05688c;
+	context->h[6] = 0x1f83d9ab;
+	context->h[7] = 0x5be0cd19;
 }
 
-void reverse32(uint32_t input, uint8_t *output) {
-    output[3] = (input >> 0) & 0xff;
-    output[2] = (input >> 8) & 0xff;
-    output[1] = (input >> 16) & 0xff;
-    output[0] = (input >> 24) & 0xff;
+void SHA256Update(SHA256_CTX *context, const void *data, size_t len)
+{
+	context->total_len += len;
+	const uint8_t *p = data;
+	while (len > 0) {
+		if (context->space_left == SHA256_CHUNK_LENGTH && len >= SHA256_CHUNK_LENGTH) {
+			consume_chunk(context->h, p);
+			len -= SHA256_CHUNK_LENGTH;
+			p += SHA256_CHUNK_LENGTH;
+			continue;
+		}
+		const size_t consumed_len = len < context->space_left ? len : context->space_left;
+		memcpy(context->chunk_pos, p, consumed_len);
+		context->space_left -= consumed_len;
+		len -= consumed_len;
+		p += consumed_len;
+		if (context->space_left == 0) {
+			consume_chunk(context->h, context->chunk);
+			context->chunk_pos = context->chunk;
+			context->space_left = SHA256_CHUNK_LENGTH;
+		} else {
+			context->chunk_pos += consumed_len;
+		}
+	}
 }
 
+uint8_t *SHA256Final(SHA256_CTX *context)
+{
+	uint8_t *pos = context->chunk_pos;
+	size_t space_left = context->space_left;
+	uint32_t *const h = context->h;
+	*pos++ = 0x80;
+	--space_left;
+	if (space_left < TOTAL_LEN_LEN) {
+		memset(pos, 0x00, space_left);
+		consume_chunk(h, context->chunk);
+		pos = context->chunk;
+		space_left = SHA256_CHUNK_LENGTH;
+	}
+	const size_t left = space_left - TOTAL_LEN_LEN;
+	memset(pos, 0x00, left);
+	pos += left;
+	size_t len = context->total_len;
+	pos[7] = (uint8_t)(len << 3);
+	len >>= 5;
+	int i;
+	for (i = 6; i >= 0; --i) {
+		pos[i] = (uint8_t)len;
+		len >>= 8;
+	}
+	consume_chunk(h, context->chunk);
+	int j;
+	uint8_t *const hash = context->hash;
+	for (i = 0, j = 0; i < 8; i++) {
+		hash[j++] = (uint8_t)(h[i] >> 24);
+		hash[j++] = (uint8_t)(h[i] >> 16);
+		hash[j++] = (uint8_t)(h[i] >> 8);
+		hash[j++] = (uint8_t)h[i];
+	}
+	return context->hash;
+}
 
-void sha256(const void *data, uint64_t len, void *output) {
-    uint8_t padding[80];
-    uint64_t current = (len + 1) % 64;
-    // want to be == 56 % 64.
-    uint64_t needed = (64 + 56 - current) % 64;
-    uint64_t extra = needed + 9;
-    uint64_t total = len + extra;
-
-    for(int i = 1; i < 80; i++)
-        padding[i] = 0;
-    padding[0] = 0x80;
-    reverse64(len * 8, padding + total - len - 8);
-
-    uint32_t v[8];
-    for(int i = 0; i < 8; i++)
-        v[i] = initial_h[i];
-
-    for(uint64_t cursor = 0; cursor * 64 < total; cursor++) {
-        uint32_t t[8];
-        for(int i = 0; i < 8; i++)
-            t[i] = v[i];
-
-        uint32_t w[64];
-        if(cursor * 64 + 64 <= len) {
-            for(int j = 0; j < 16; j++) {
-                w[j] = read32(
-                    (uint8_t *)data + cursor * 64 + j * 4);
-            }
-        }
-        else {
-            if(cursor * 64 < len) {
-                uint64_t size = len - cursor * 64;
-                if(size > 0) memcpy(w, (uint8_t *)data + cursor * 64, size);
-                memcpy((uint8_t *)w + size, padding, 64 - size);
-            }
-            else {
-                uint64_t off = (cursor * 64 - len) % 64;
-                memcpy((uint8_t *)w, padding + off, 64);
-            }
-
-            for(int j = 0; j < 16; j++) {
-                w[j] = read32((uint8_t *)&w[j]);
-            }
-        }
-
-        for(int j = 16; j < 64; j++) {
-            uint32_t s1 = ror(w[j - 2], 17) ^ ror(w[j - 2], 19)
-                ^ (w[j - 2] >> 10);
-            uint32_t s0 = ror(w[j - 15], 7) ^ ror(w[j - 15], 18)
-                ^ (w[j - 15] >> 3);
-            w[j] = s1 + w[j - 7] + s0 + w[j - 16];
-        }
-
-        for(int j = 0; j < 64; j++) {
-            uint32_t ch = (t[4] & t[5]) ^ (~t[4] & t[6]);
-            uint32_t maj = (t[0] & t[1]) ^ (t[0] & t[2]) ^ (t[1] & t[2]);
-            uint32_t S0 = ror(t[0], 2) ^ ror(t[0], 13)
-                ^ ror(t[0], 22);
-            uint32_t S1 = ror(t[4], 6) ^ ror(t[4], 11)
-                ^ ror(t[4], 25);
-
-            uint32_t t1 = t[7] + S1 + ch + round_k[j] + w[j];
-            uint32_t t2 = S0 + maj;
-
-            t[7] = t[6];
-            t[6] = t[5];
-            t[5] = t[4];
-            t[4] = t[3] + t1;
-            t[3] = t[2];
-            t[2] = t[1];
-            t[1] = t[0];
-            t[0] = t1 + t2;
-        }
-
-        for(int i = 0; i < 8; i++)
-            v[i] += t[i];
-    }
-
-    for(int i = 0; i < 8; i++)
-        reverse32(v[i], (uint8_t *)output + i * 4);
+void SHA256(uint8_t hash[SHA256_LENGTH], const void *input, size_t len)
+{
+	SHA256_CTX ctx;
+	SHA256Init(&ctx, hash);
+	SHA256Update(&ctx, input, len);
+	(void)SHA256Final(&ctx);
 }

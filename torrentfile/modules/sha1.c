@@ -1,11 +1,11 @@
 #define SHA1HANDSOFF
 #include <stdio.h>
 #include <string.h>
-
 #include <stdint.h>
 
 #include "sha1.h"
 
+#define SHA1_LENGTH 20
 #define rol(value, bits) ((value << bits) | ((value) >> (32 - (bits))))
 #if BYTE_ORDER == LITTLE_ENDIAN
 #define blk0(i) (block->l[i] = (rol(block->l[i],24)&0xFF00FF00) \
@@ -18,7 +18,6 @@
 #define blk(i) (block->l[i&15] = rol(block->l[(i+13)&15]^block->l[(i+8)&15] \
     ^block->l[(i+2)&15]^block->l[i&15],1))
 
-/* (R0+R1), R2, R3, R4 are the different operations used in SHA1 */
 #define R0(v,w,x,y,z,i) z+=((w&(x^y))^y)+blk0(i)+0x5A827999+rol(v,5);w=rol(w,30);
 #define R1(v,w,x,y,z,i) z+=((w&(x^y))^y)+blk(i)+0x5A827999+rol(v,5);w=rol(w,30);
 #define R2(v,w,x,y,z,i) z+=(w^x^y)+blk(i)+0x6ED9EBA1+rol(v,5);w=rol(w,30);
@@ -115,9 +114,7 @@ void SHA1Update(SHA1_CTX * context, const unsigned char *data, uint32_t len)
         i = 0;
     memcpy(&context->buffer[j], &data[i], len - i);
 }
-/* Add padding and return the message digest. */
-
-void SHA1Final(unsigned char digest[20], SHA1_CTX * context)
+void SHA1Final(unsigned char digest[20], SHA1_CTX *context)
 {
     unsigned i;
     unsigned char finalcount[8];
@@ -139,7 +136,6 @@ void SHA1Final(unsigned char digest[20], SHA1_CTX * context)
         digest[i] = (unsigned char)
             ((context->state[i >> 2] >> ((3 - (i & 3)) * 8)) & 255);
     }
-    /* Wipe variables */
     memset(context, '\0', sizeof(*context));
     memset(&finalcount, '\0', sizeof(finalcount));
 }

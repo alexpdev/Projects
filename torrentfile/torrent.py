@@ -16,23 +16,23 @@
 Classes
 -------
 
-    - `TorrentFile`
-        construct .torrent file.
+- `TorrentFile`
+    construct .torrent file.
 
-    - `TorrentFileV2`
-        construct .torrent v2 files using provided data.
+- `TorrentFileV2`
+    construct .torrent v2 files using provided data.
 
-    - `MetaFile`
-        base class for all MetaFile classes.
+- `MetaFile`
+    base class for all MetaFile classes.
 
 Constants
 ---------
 
-    - BLOCK_SIZE : `int`
-        size of leaf hashes for merkle tree.
+- BLOCK_SIZE : `int`
+    size of leaf hashes for merkle tree.
 
-    - HASH_SIZE : `int`
-        Length of a sha256 hash.
+- HASH_SIZE : `int`
+    Length of a sha256 hash.
 
 Bittorrent V2
 -------------
@@ -46,78 +46,78 @@ Bittorrent V2
 
 ### Meta Version 2 Dictionary:
 
-    - "announce":
-        The URL of the tracker.
+- "announce":
+    The URL of the tracker.
 
-    - "info":
-        This maps to a dictionary, with keys described below.
+- "info":
+    This maps to a dictionary, with keys described below.
 
-        "name":
-            A display name for the torrent. It is purely advisory.
+    "name":
+        A display name for the torrent. It is purely advisory.
 
-        "piece length":
-            The number of bytes that each logical piece in the peer
-            protocol refers to. I.e. it sets the granularity of piece, request,
-            bitfield and have messages. It must be a power of two and at least
-            6KiB.
+    "piece length":
+        The number of bytes that each logical piece in the peer
+        protocol refers to. I.e. it sets the granularity of piece, request,
+        bitfield and have messages. It must be a power of two and at least
+        6KiB.
 
-        "meta version":
-            An integer value, set to 2 to indicate compatibility
-            with the current revision of this specification. Version 1 is not
-            assigned to avoid confusion with BEP3. Future revisions will only
-            increment this issue to indicate an incompatible change has been made,
-            for example that hash algorithms were changed due to newly discovered
-            vulnerabilities. Lementations must check this field first and indicate
-            that a torrent is of a newer version than they can handle before
-            performing other idations which may result in more general messages
-            about invalid files. Files are mapped into this piece address space so
-            that each non-empty
+    "meta version":
+        An integer value, set to 2 to indicate compatibility
+        with the current revision of this specification. Version 1 is not
+        assigned to avoid confusion with BEP3. Future revisions will only
+        increment this issue to indicate an incompatible change has been made,
+        for example that hash algorithms were changed due to newly discovered
+        vulnerabilities. Lementations must check this field first and indicate
+        that a torrent is of a newer version than they can handle before
+        performing other idations which may result in more general messages
+        about invalid files. Files are mapped into this piece address space so
+        that each non-empty
 
-        "file tree":
-            A tree of dictionaries where dictionary keys represent UTF-8
-            encoded path elements. Entries with zero-length keys describe the
-            properties of the composed path at that point. 'UTF-8 encoded'
-            context only means that if the native encoding is known at creation
-            time it must be converted to UTF-8. Keys may contain invalid UTF-8
-            sequences or characters and names that are reserved on specific
-            filesystems. Implementations must be prepared to sanitize them. On
-            platforms path components exactly matching '.' and '..' must be
-            sanitized since they could lead to directory traversal attacks and
-            conflicting path descriptions. On platforms that require UTF-8
-            path components this sanitizing step must happen after normalizing
-            overlong UTF-8 encodings.
-            File is aligned to a piece boundary and occurs in same order as
-            the file tree. The last piece of each file may be shorter than the
-            specified piece length, resulting in an alignment gap.
+    "file tree":
+        A tree of dictionaries where dictionary keys represent UTF-8
+        encoded path elements. Entries with zero-length keys describe the
+        properties of the composed path at that point. 'UTF-8 encoded'
+        context only means that if the native encoding is known at creation
+        time it must be converted to UTF-8. Keys may contain invalid UTF-8
+        sequences or characters and names that are reserved on specific
+        filesystems. Implementations must be prepared to sanitize them. On
+        platforms path components exactly matching '.' and '..' must be
+        sanitized since they could lead to directory traversal attacks and
+        conflicting path descriptions. On platforms that require UTF-8
+        path components this sanitizing step must happen after normalizing
+        overlong UTF-8 encodings.
+        File is aligned to a piece boundary and occurs in same order as
+        the file tree. The last piece of each file may be shorter than the
+        specified piece length, resulting in an alignment gap.
 
-        "length":
-            Length of the file in bytes. Presence of this field indicates
-            that the dictionary describes a file, not a directory. Which means
-            it must not have any sibling entries.
+    "length":
+        Length of the file in bytes. Presence of this field indicates
+        that the dictionary describes a file, not a directory. Which means
+        it must not have any sibling entries.
 
-        "pieces root":
-            For non-empty files this is the the root hash of a merkle
-            tree with a branching factor of 2, constructed from 16KiB blocks
-            of the file. The last block may be shorter than 16KiB. The
-            remaining leaf hashes beyond the end of the file required to
-            construct upper layers of the merkle tree are set to zero. As of
-            meta version 2 SHA2-256 is used as digest function for the merkle
-            tree. The hash is stored in its binary form, not as human-readable
-            string.
+    "pieces root":
+        For non-empty files this is the the root hash of a merkle
+        tree with a branching factor of 2, constructed from 16KiB blocks
+        of the file. The last block may be shorter than 16KiB. The
+        remaining leaf hashes beyond the end of the file required to
+        construct upper layers of the merkle tree are set to zero. As of
+        meta version 2 SHA2-256 is used as digest function for the merkle
+        tree. The hash is stored in its binary form, not as human-readable
+        string.
 
-    -"piece layers":
-        A dictionary of strings. For each file in the file tree that
-        is larger than the piece size it contains one string value.
-        The keys are the merkle roots while the values consist of concatenated
-        hashes of one layer within that merkle tree. The layer is chosen so
-        that one hash covers piece length bytes. For example if the piece
-        size is 16KiB then the leaf hashes are used. If a piece size of
-        128KiB is used then 3rd layer up from the leaf hashes is used. Layer
-        hashes which exclusively cover data beyond the end of file, i.e.
-        are only needed to balance the tree, are omitted. All hashes are
-        stored in their binary format. A torrent is not valid if this field is
-        absent, the contained hashes do not match the merkle roots or are
-        not from the correct layer.
+-"piece layers":
+    A dictionary of strings. For each file in the file tree that
+    is larger than the piece size it contains one string value.
+    The keys are the merkle roots while the values consist of concatenated
+    hashes of one layer within that merkle tree. The layer is chosen so
+    that one hash covers piece length bytes. For example if the piece
+    size is 16KiB then the leaf hashes are used. If a piece size of
+    128KiB is used then 3rd layer up from the leaf hashes is used. Layer
+    hashes which exclusively cover data beyond the end of file, i.e.
+    are only needed to balance the tree, are omitted. All hashes are
+    stored in their binary format. A torrent is not valid if this field is
+    absent, the contained hashes do not match the merkle roots or are
+    not from the correct layer.
 
 !!! important
     The file tree root dictionary itself must not be a file,
@@ -129,50 +129,50 @@ Bittorrent V1
 
 ### Version 1 meta-dictionary
 
-    -announce:
-        The URL of the tracker.
+-announce:
+    The URL of the tracker.
 
-    - info:
-        This maps to a dictionary, with keys described below.
+- info:
+    This maps to a dictionary, with keys described below.
 
 
 ## Version 1 info-dictionary
 
-    - `name`:
-        maps to a UTF-8 encoded string which is the suggested name to
-        save the file (or directory) as. It is purely advisory.
+- `name`:
+    maps to a UTF-8 encoded string which is the suggested name to
+    save the file (or directory) as. It is purely advisory.
 
-    - `piece length`:
-        maps to the number of bytes in each piece the file is split
-        into. For the purposes of transfer, files are split into
-        fixed-size pieces which are all the same length except for
-        possibly the last one which may be truncated.
+- `piece length`:
+    maps to the number of bytes in each piece the file is split
+    into. For the purposes of transfer, files are split into
+    fixed-size pieces which are all the same length except for
+    possibly the last one which may be truncated.
 
-    - `piece length`:
-        is almost always a power of two, most commonly 2^18 = 256 K
+- `piece length`:
+    is almost always a power of two, most commonly 2^18 = 256 K
 
-    - `pieces`:
-        maps to a string whose length is a multiple of 20. It is to be
-        subdivided into strings of length 20, each of which is the SHA1
-        hash of the piece at the corresponding index.
+- `pieces`:
+    maps to a string whose length is a multiple of 20. It is to be
+    subdivided into strings of length 20, each of which is the SHA1
+    hash of the piece at the corresponding index.
 
-    - `length`:
-        In the single file case, maps to the length of the file in bytes.
+- `length`:
+    In the single file case, maps to the length of the file in bytes.
 
-    - `files`:
-        If present then the download represents a single file, otherwise it
-        represents a set of files which go in a directory structure.
-        For the purposes of the other keys, the multi-file case is treated
-        as only having a single file by concatenating the files in the order
-        they appear in the files list. The files list is the value `files`
-        maps to, and is a list of dictionaries containing the following keys:
+- `files`:
+    If present then the download represents a single file, otherwise it
+    represents a set of files which go in a directory structure.
+    For the purposes of the other keys, the multi-file case is treated
+    as only having a single file by concatenating the files in the order
+    they appear in the files list. The files list is the value `files`
+    maps to, and is a list of dictionaries containing the following keys:
 
-        `path`:
-            A list of UTF-8 encoded strings corresponding to subdirectory
-            names, the last of which is the actual file name
+    `path`:
+        A list of UTF-8 encoded strings corresponding to subdirectory
+        names, the last of which is the actual file name
 
-        `length`:
-            Maps to the length of the file in bytes.
+    `length`:
+        Maps to the length of the file in bytes.
 
 
 !!! Important
@@ -212,6 +212,8 @@ class MetaFile:
     source : `str`
         Private tracker source. Default: None
     """
+
+    _cb = None
 
     # fmt: off
     def __init__(self, path=None, announce=None, private=False,
