@@ -225,7 +225,7 @@ class MetaFile:
         func : function
             The callback function which accepts a single paramter.
         """
-        if "hasher" in vars(cls):
+        if "hasher" in vars(cls) and vars(cls)["hasher"]:
             cls.hasher.set_callback(func)
 
     # fmt: off
