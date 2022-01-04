@@ -68,7 +68,7 @@ def test_torrentfile_extra(dir2, version):
 def test_torrentfile_single(version, size, piece_length):
     """Test creating a torrent file from a single file contents."""
     tfile = tempfile(exp=size)
-    version.set_callback(lambda x: print(x))
+    version.set_callback(print)
     args = {
         "path": tfile,
         "comment": "somecomment",
