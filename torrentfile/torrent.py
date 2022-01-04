@@ -213,7 +213,20 @@ class MetaFile:
         Private tracker source. Default: None
     """
 
-    _cb = None
+    hasher = None
+
+    @classmethod
+    def set_callback(cls, func):
+        """
+        Assign a callback function for the Hashing class to call for each hash.
+
+        Parameters
+        ----------
+        func : function
+            The callback function which accepts a single paramter.
+        """
+        if "hasher" in vars(cls):
+            cls.hasher.set_callback(func)
 
     # fmt: off
     def __init__(self, path=None, announce=None, private=False,
@@ -339,6 +352,8 @@ class TorrentFile(MetaFile):
         Path to write metfile to.
     """
 
+    hasher = Hasher
+
     def __init__(self, **kwargs):
         """Construct TorrentFile instance with given keyword args.
 
@@ -401,6 +416,8 @@ class TorrentFileV2(MetaFile):
     outfile : `str`
         Path to write metfile to.
     """
+
+    hasher = HasherV2
 
     def __init__(self, **kwargs):
         """Construct `TorrentFileV2` Class instance from given parameters.
@@ -484,6 +501,8 @@ class TorrentFileHybrid(MetaFile):
     piece_length : `int`
         torrentfile data piece length.
     """
+
+    hasher = HasherHybrid
 
     def __init__(self, **kwargs):
         """Create Bittorrent v1 v2 hybrid metafiles."""

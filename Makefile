@@ -86,6 +86,7 @@ docs: ## Regenerate docs from changes
 
 coverage: test ## Get coverage report
 	coverage html
+	coverage xml
 
 push: clean lint docs test ## Push to github
 	git add .
