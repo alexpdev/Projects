@@ -65,10 +65,11 @@ def test_torrentfile_extra(dir2, version):
 @pytest.mark.parametrize("size", list(range(17, 25)))
 @pytest.mark.parametrize("piece_length", [2 ** i for i in range(14, 18)])
 @pytest.mark.parametrize("version", torrents())
-def test_torrentfile_single(version, size, piece_length):
+def test_torrentfile_single(version, size, piece_length, capsys):
     """Test creating a torrent file from a single file contents."""
     tfile = tempfile(exp=size)
-    version.set_callback(lambda x: print(x))
+    with capsys.disabled():
+        version.set_callback(print)
     args = {
         "path": tfile,
         "comment": "somecomment",

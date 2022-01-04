@@ -1,8 +1,10 @@
 #include "sha256.h"
 
 #define TOTAL_LEN_LEN 8
+#ifndef SHA256_H
 #define SHA256_LENGTH 32
 #define SHA256_CHUNK_LENGTH 64
+#endif
 
 #define rrot(val, cnt) ((val >> cnt) | (val << (32 - cnt)))
 
@@ -56,7 +58,7 @@ static inline void consume_chunk(uint32_t *h, const uint8_t *p)
 		h[i] += ah[i];
 }
 
-void SHA256Init(SHA256_CTX *context, uint8_t hash[SHA256_LENGTH])
+void SHA256Init(SHA256_CTX *context, uint8_t *hash)
 {
 	context->hash = hash;
 	context->chunk_pos = context->chunk;
@@ -134,7 +136,7 @@ uint8_t *SHA256Final(SHA256_CTX *context)
 	return context->hash;
 }
 
-void SHA256(uint8_t hash[SHA256_LENGTH], const void *input, size_t len)
+void SHA256(uint8_t *hash, const void *input, size_t len)
 {
 	SHA256_CTX ctx;
 	SHA256Init(&ctx, hash);
