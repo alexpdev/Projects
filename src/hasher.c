@@ -10,107 +10,115 @@
 
 #define BLOCK_SIZE 16384
 
-void showhash(uint8_t *hash, size_t len)
+
+typedef struct {
+    uint8_t *ptr;
+    int size;
+    int allocated;
+    int logical;
+} Hash;
+
+void HashInit(Hash *hash)
+{
+    hash->size = 20;
+    hash->allocated = 2;
+    hash->logical = 0;
+    hash->ptr = (uint8_t *)malloc(40);
+}
+
+void extend_Hash(Hash *hash, uint8_t *output)
+{
+    int index, i, j;
+    if (hash->logical == hash->allocated){
+        int current = hash->allocated * hash->size;
+        uint8_t *seq = (uint8_t *)malloc(current*2);
+        for (i=0; i<current; i++){
+            seq[i] = hash->ptr[i];
+        }
+        hash->allocated *= 2;
+        hash->ptr = seq;
+    }
+    for (j=0; j<20; j++){
+        index = (hash->logical * hash->size) + j;
+        hash->ptr[index] = output[i];
+    }
+    hash->logical += 1;
+    return;
+}
+
+void show_Hash(Hash *hash)
 {
     int i;
+    printf("%d, %d, %d", hash->logical, hash->allocated, hash->size);
+    int size = hash->logical*hash->size;
     printf("\n");
-    if (!len)
+    for (i=0;i<size;i++)
     {
-        for (i = 0; hash[i] != (uint8_t)'\0'; i++)
-            printf("%02X", (unsigned char)hash[i]);
-    } else {
-        for (i = 0; i < len; i++)
-            printf("%02X", (unsigned char)hash[i]);
+        printf("%02X", (unsigned char)hash->ptr[i]);
     }
     printf("\n");
 }
 
-uint8_t *concat(uint8_t *hash, uint8_t *out_hash, size_t len)
+int addpartial(uint8_t *buffer, FILE *fptr, int remains, int piece_length)
 {
-    uint8_t *new_hash = (uint8_t *)malloc(len + 20 + 1);
-    printf("\n");
-    if (hash) {
-        for (int i = 0; i < len; i++){
-            new_hash[i] = hash[i];
-            printf("%02X", (unsigned char)hash[i]);
-        }
-    } else {hash = (uint8_t *)malloc(20);}
-    for (int j = len; j < len + 20; j++){
-        new_hash[j] = out_hash[j];
-        printf("%02X", (unsigned char)out_hash[j]);
-    }
-    new_hash[len+20] = (uint8_t)'\0';
-    printf("\n");
-    return new_hash;
+    int subsize = piece_length - remains;
+    uint8_t *subbuff = (uint8_t *)malloc(subsize);
+    int amount = fread(subbuff, 1, subsize, fptr);
+    for (int i=0; i<amount; i++)
+        buffer[remains + i] = subbuff[i];
+    return amount + remains;
 }
 
-void fillbuff(uint8_t *buffer, uint8_t *subbuf, int buflen, int sublen)
-{
-    for (int i = buflen; i < buflen+sublen; i++)
-        buffer[i] = subbuf[i - buflen];
-}
-
-
-uint8_t *sha1hashfiles(char **filelist, int qty, int piece_length){
-    int i, amount, remLength, sub_length;
-    char *path;
+void sha1HashFiles(char **filelist, int piece_length, Hash *hash){
+    int i, amount;
     FILE *fptr;
-    uint8_t *subbuff;
-    uint8_t *hash = NULL;
-    uint8_t *out_hash = (uint8_t *)malloc(20);
-    uint8_t *buffer = (uint8_t *)malloc(piece_length);
-    size_t hashLength = 0;
-    bool remset = false;
-    for (i = 1; i < qty + 1; i++)
+    bool partial = false;
+    uint8_t *buffer;
+    uint8_t *output;
+    size_t remains;
+    printf("partial: %d\n", partial);
+    for (i=1;filelist[i] != NULL; i++)
     {
-        path = filelist[i];
-        printf("# %d Filename: %s\n", i, path);
-        fptr = fopen(path, "rb");
+        fptr = fopen(filelist[i], "rb");
+        printf("filename: %s\n", filelist[i]);
         while (true)
         {
-            if (remset)
-            {
-                sub_length = piece_length - remLength;
-                subbuff = (uint8_t *)malloc(sub_length);
-                int sub_amount = fread(subbuff, 1, sub_length, fptr);
-                fillbuff(buffer, subbuff, remLength, sub_amount);
-                amount = remLength + sub_amount;
-                remset = false;
-            }
-            else
-            {
-                amount = fread(buffer, i, piece_length, fptr);
+            if (!partial)
+                amount = fread(buffer, 1, piece_length, fptr);
+            else{
+                buffer = (uint8_t *)malloc(piece_length);
+                amount = addpartial(buffer, fptr, remains, piece_length);
+                printf("amount read: %d", amount);
             }
             if (amount < piece_length)
             {
                 fclose(fptr);
-                if (amount)
-                {
-                    remLength = amount;
-                    remset = true;
-                }
+                if (!amount) break;
+                partial = true;
+                remains = amount;
                 break;
             }
-            remset = false;
-            SHA1(out_hash, buffer, amount);
-            hash = concat(hash, out_hash, hashLength);
-            hashLength += 20;
-            printf("%s\n", (char *)hash);
+            output = (uint8_t *)malloc(21);
+            output[20] = (uint8_t)'\0';
+            SHA1(output, buffer, piece_length);
+            printf("piece hash: %s", output);
+            partial = false;
+            extend_Hash(hash, output);
         }
     }
-    if (remset)
-    {
-        SHA1(out_hash, buffer, amount);
-        hash = concat(hash, out_hash, hashLength);
-        hashLength += 20;
+    if (partial){
+        SHA1(output, buffer, amount);
+        extend_Hash(hash, output);
     }
-    return hash;
 }
 
 int main(int argc, char *argv[])
 {
-    // uint8_t *hash;
     int piece_length = BLOCK_SIZE;
-    sha1hashfiles(argv, 1, piece_length);
+    printf("%d\n", BLOCK_SIZE);
+    Hash *hash = malloc(sizeof(Hash));
+    HashInit(hash);
+    sha1HashFiles(argv, piece_length, hash);
+    show_Hash(hash);
     return 0;
 }
