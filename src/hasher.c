@@ -6,7 +6,6 @@
 #include <math.h>
 #include <stdbool.h>
 #include "sha1.h"
-#include "sha256.h"
 
 #define BLOCK_SIZE 16384
 
@@ -34,13 +33,14 @@ void extend_Hash(Hash *hash, uint8_t *output)
         uint8_t *seq = (uint8_t *)malloc(current*2);
         for (i=0; i<current; i++){
             seq[i] = hash->ptr[i];
+            printf("%02X ", (unsigned char)seq[i]);
         }
         hash->allocated *= 2;
         hash->ptr = seq;
     }
     for (j=0; j<20; j++){
         index = (hash->logical * hash->size) + j;
-        hash->ptr[index] = output[i];
+        hash->ptr[index] = output[j];
     }
     hash->logical += 1;
     return;
@@ -69,22 +69,27 @@ int addpartial(uint8_t *buffer, FILE *fptr, int remains, int piece_length)
     return amount + remains;
 }
 
-void sha1HashFiles(char **filelist, int piece_length, Hash *hash){
+Hash *HASHER(char **filelist, int piece_length){
+    Hash *hash = malloc(sizeof(Hash));
+    HashInit(hash);
     int i, amount;
     FILE *fptr;
     bool partial = false;
     uint8_t *buffer;
+    buffer = (uint8_t *)malloc(piece_length);
     uint8_t *output;
     size_t remains;
-    printf("partial: %d\n", partial);
+    // printf("partial: %d\n", partial);
     for (i=1;filelist[i] != NULL; i++)
     {
         fptr = fopen(filelist[i], "rb");
         printf("filename: %s\n", filelist[i]);
         while (true)
         {
-            if (!partial)
+            if (!partial){
                 amount = fread(buffer, 1, piece_length, fptr);
+                printf("amount read: %d", amount);
+            }
             else{
                 buffer = (uint8_t *)malloc(piece_length);
                 amount = addpartial(buffer, fptr, remains, piece_length);
@@ -98,27 +103,25 @@ void sha1HashFiles(char **filelist, int piece_length, Hash *hash){
                 remains = amount;
                 break;
             }
-            output = (uint8_t *)malloc(21);
-            output[20] = (uint8_t)'\0';
+            output = (uint8_t *)malloc(20);
             SHA1(output, buffer, piece_length);
-            printf("piece hash: %s", output);
-            partial = false;
             extend_Hash(hash, output);
+            partial = false;
         }
     }
     if (partial){
+        output = (uint8_t *)malloc(21);
         SHA1(output, buffer, amount);
         extend_Hash(hash, output);
     }
+    return hash;
 }
 
-int main(int argc, char *argv[])
-{
-    int piece_length = BLOCK_SIZE;
-    printf("%d\n", BLOCK_SIZE);
-    Hash *hash = malloc(sizeof(Hash));
-    HashInit(hash);
-    sha1HashFiles(argv, piece_length, hash);
-    show_Hash(hash);
-    return 0;
-}
+// int main(int argc, char **argv)
+// {
+//     int piece_length = BLOCK_SIZE;
+//     printf("%d\n", BLOCK_SIZE);
+//     Hash *hash = Hasher(argv, piece_length);
+//     show_Hash(hash);
+//     return 0;
+// }

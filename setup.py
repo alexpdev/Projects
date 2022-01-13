@@ -18,6 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ############################################################################
 from setuptools import setup
+from setuptools import Extension
 
 
 
@@ -35,6 +36,7 @@ setup(
     ],
     keywords=["hashing"],
     author="alexpdev",
+    ext_modules=[Extension('_hasher',['_sha1.c, hasher.c'])],
     author_email="alexpdev@protonmail.com",
     url="https://github.com/alexpdev/shacffi",
     project_urls={"Source Code": "https://github.com/alexpdev/shacffi"},

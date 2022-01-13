@@ -4,20 +4,19 @@
 #include <stdint.h>
 #include <string.h>
 
-#define SHA256_LENGTH 32
-#define SHA256_CHUNK_LENGTH 64
+typedef uint8_t uint8;
 
 typedef struct {
-	uint8_t *hash;
-	uint8_t chunk[SHA256_CHUNK_LENGTH];
-	uint8_t *chunk_pos;
+	uint8 *hash;
+	uint8 chunk[64];
+	uint8 *chunk_pos;
 	size_t space_left;
 	size_t total_len;
 	uint32_t h[8];
 } SHA256_CTX;
 
-void SHA256(uint8_t *hash, const void *input, size_t len);
-void SHA256Init(SHA256_CTX *context, uint8_t *hash);
+void SHA256(uint8 *hash, const void *input, size_t len);
+void SHA256Init(SHA256_CTX *context, uint8 *hash);
 void SHA256Update(SHA256_CTX *context, const void *data, size_t len);
 void SHA256Final(SHA256_CTX *context);
 
