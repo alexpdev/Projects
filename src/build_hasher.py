@@ -30,7 +30,7 @@ ffi.set_source(
     #include "hasher.h"
     #include "sha.h"
     """,
-    sources=['src/hasher.c', 'src/sha.c'],
+    sources=['hasher.c', 'sha.c'],
 )
 
 if __name__ == "__main__":

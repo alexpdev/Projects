@@ -208,7 +208,7 @@ void SHA1Final(uint8_t digest[20], SHA1_CTX *context)
 void SHA1(uint8_t *hash_out, const uint8_t *str, int len)
 {
     SHA1_CTX ctx;
-    unsigned int ii;
+    int ii;
     SHA1Init(&ctx);
     for (ii=0; ii<len; ii+=1)
         SHA1Update(&ctx, (const uint8_t *)str + ii, 1);
