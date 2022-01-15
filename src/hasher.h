@@ -25,6 +25,7 @@ typedef struct {
 } HASH;
 
 void hexdigest(uint8 *hash);
+void fixedhexdigest(uint8 *hash, int len);
 HASHV2 *HasherV2(char *path, int piece_length);
 HASHHYBRID *HasherHybrid(char *path, int piece_length);
 HASH *Hasher(char **filelist, int piece_length);

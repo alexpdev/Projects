@@ -38,6 +38,14 @@ Layer *newLayer()
 }
 
 
+void fixedhexdigest(uint8 *hash, int len)
+{
+    for (int i = 0; i < len; i++)
+    {
+        printf("%02X", hash[i]);
+    }
+}
+
 void hexdigest(uint8 *hash)
 {
     for (int i = 0; (char) hash[i] != '\0'; i++)
@@ -321,6 +329,7 @@ HASHHYBRID *HasherHybrid(char *path, int piece_length)
 {
     int amount, next_pow2, total, remaining, blocks_per_piece;
     total = 0;
+    bool final = false;
     Layer *layer;
     Layer *layer_hashes = newLayer();
     Layer *layerV1 = newLayer();
@@ -349,6 +358,7 @@ HASHHYBRID *HasherHybrid(char *path, int piece_length)
         if (!layer->count) break;
         if (layer->count < blocks_per_piece)
         {
+            final = true;
             if (!layer_hashes->count)
             {
                 next_pow2 = 1 << (int) floor((log(total)/log(2)) + 1);
@@ -367,6 +377,15 @@ HASHHYBRID *HasherHybrid(char *path, int piece_length)
         }
         uint8 *piece;
         uint8 *hashV1 = (uint8 *)malloc(V1HASHSIZE);
+        if (final)
+        {
+            int remains = piece_length - buffer_pos
+            for (int t = 0; t < remains; t++)
+            {
+                bufferv1[buffer_pos] = NULL;
+                buffer_pos += 1
+            }
+        }
         SHA1(hashV1, bufferV1, buffer_pos);
         piece = merkle_root(layer);
         addNode(layer_hashes, piece);
@@ -374,7 +393,7 @@ HASHHYBRID *HasherHybrid(char *path, int piece_length)
     }
     // showTree(layer_hashes);
     int n2 = layer_hashes->count;
-    int n1 = v1pieces->count;
+    int n1 = layerV1->count;
     uint8 *piece_layer = (uint8 *)malloc(HASHSIZE * n2);
     uint8 *v1pieces = (uint8 *)malloc(V1HASHSIZE * n1);
     fill_hash(piece_layer, layer_hashes, HASHSIZE);
