@@ -17,6 +17,9 @@ nixenv/
 htmlcov/
 *.exe
 *.jpg
+testfile
+_hasher.c
+Release/
 
 # bite-code
 *.pyc

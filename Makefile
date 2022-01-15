@@ -3,3 +3,8 @@ compile: ## compile sources
 
 run:  ## run program
 	./hash.exe testfile
+
+
+clean: ## clean
+	rm -r src/Release
+	rm src/_hasher.py
