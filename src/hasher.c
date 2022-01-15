@@ -42,7 +42,7 @@ void hexdigest(uint8 *hash)
 {
     for (int i = 0; (char) hash[i] != '\0'; i++)
     {
-        printf("%02x", hash[i]);
+        printf("%02X", hash[i]);
     }
 }
 
@@ -175,11 +175,12 @@ HASH *Hasher(char **filelist, int piece_length)
         SHA1(output, buffer, amount);
         addNode(layer, output);
     }
-    showTree(layer);
+    // showTree(layer);
     uint8 *pieces = (uint8 *)malloc(V1HASHSIZE * layer->count);
     fill_hash(pieces, layer, V1HASHSIZE);
     HASH *hash = (HASH *)malloc(sizeof(HASH));
     hash->pieces = pieces;
+    hash->count = layer->count;
     return hash;
 }
 
@@ -240,16 +241,19 @@ uint8 *get_pad_piece(int n)
 HASHV2 *HasherV2(char *path, int piece_length)
 {
     int amount, next_pow2, total, remaining, blocks_per_piece;
+    // printf("243\n");
     Layer *layer;
     Layer *layer_hashes = newLayer();
     FILE *fptr = fopen(path, "rb");
     uint8 *buffer = (uint8 *)malloc(BLOCKSIZE);
     total = 0;
     blocks_per_piece = (int) floor(piece_length / BLOCKSIZE);
+    // printf("250\n");
     while (true)
     {
         layer = newLayer();
         uint8 *piece;
+        // printf("255\n");
         for (int i = 0; i < blocks_per_piece; i++)
         {
             amount = fread(buffer, 1, BLOCKSIZE, fptr);
@@ -278,13 +282,16 @@ HASHV2 *HasherV2(char *path, int piece_length)
                 addNode(layer, padding);
             }
         }
+        // printf("284\n");
         piece = merkle_root(layer);
         addNode(layer_hashes, piece);
+        // printf("287\n");
     }
-    showTree(layer_hashes);
-    uint8 *piece_layer = (uint8 *)malloc(HASHSIZE * layer_hashes->count);
-    fill_hash(piece_layer, layer_hashes, HASHSIZE);
+    // showTree(layer_hashes);
     int n = layer_hashes->count;
+    uint8 *piece_layer = (uint8 *)malloc(HASHSIZE * n);
+    fill_hash(piece_layer, layer_hashes, HASHSIZE);
+    // printf("293\n");
     if (!(n && ((n & (-n))== n)))
     {
         next_pow2 = 1 << (int) floor((log(n)/log(2)) + 1);
@@ -297,12 +304,15 @@ HASHV2 *HasherV2(char *path, int piece_length)
         }
     }
     uint8 *roothash;
+    // printf("306\n");
     roothash = merkle_root(layer_hashes);
     // hexdigest(roothash);
     HASHV2 *result = (HASHV2 *)malloc(sizeof(HASHV2));
     result->piece_layer = piece_layer;
+    result->count = n;
     result->pieces_root = roothash;
     fclose(fptr);
+    // printf("313\n");
     return result;
 }
 
@@ -362,16 +372,17 @@ HASHHYBRID *HasherHybrid(char *path, int piece_length)
         addNode(layer_hashes, piece);
         addNode(layerV1, hashV1);
     }
-    showTree(layer_hashes);
-    uint8 *piece_layer = (uint8 *)malloc(HASHSIZE * layer_hashes->count);
-    uint8 *v1pieces = (uint8 *)malloc(V1HASHSIZE * layerV1->count);
+    // showTree(layer_hashes);
+    int n2 = layer_hashes->count;
+    int n1 = v1pieces->count;
+    uint8 *piece_layer = (uint8 *)malloc(HASHSIZE * n2);
+    uint8 *v1pieces = (uint8 *)malloc(V1HASHSIZE * n1);
     fill_hash(piece_layer, layer_hashes, HASHSIZE);
     fill_hash(v1pieces, layerV1, V1HASHSIZE);
-    int n = layer_hashes->count;
-    if (!(n && ((n & (-n))== n)))
+    if (!(n2 && ((n2 & (-n2))== n2)))
     {
-        next_pow2 =  1 << (int)floor((log(n)/log(2)) + 1);
-        remaining = next_pow2 - n;
+        next_pow2 =  1 << (int)floor((log(n2)/log(2)) + 1);
+        remaining = next_pow2 - n2;
         uint8 *piece;
         for (int l = 0; l < remaining; l++){
             piece = get_pad_piece(blocks_per_piece);
@@ -382,7 +393,9 @@ HASHHYBRID *HasherHybrid(char *path, int piece_length)
     roothash = merkle_root(layer_hashes);
     HASHHYBRID *result = (HASHHYBRID *)malloc(sizeof(HASHHYBRID));
     result->piece_layer = piece_layer;
+    result->count2 = n2;
     result->pieces_root = roothash;
+    result->count1 = n1;
     result->hashv1 = v1pieces;
     fclose(fptr);
     return result;

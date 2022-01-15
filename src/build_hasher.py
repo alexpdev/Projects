@@ -18,6 +18,7 @@ typedef struct {
 typedef struct {
     uint8 *pieces;
 } HASH;
+
 HASHV2 *HasherV2(char *path, int piece_length);
 HASHHYBRID *HasherHybrid(char *path, int piece_length);
 HASH *Hasher(char **filelist, int piece_length);
