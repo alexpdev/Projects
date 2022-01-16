@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <math.h>
+#include <time.h>
 #include "sha.h"
 #include "hasher.h"
 
@@ -137,6 +138,9 @@ void fill_hash(uint8 *seq, Layer *layer, int size)
 
 HASH *Hasher(char **filelist, int piece_length)
 {
+    clock_t start, end;
+    double timeused;
+    start = clock();
     Layer *layer = newLayer();
     int amount;
     FILE *fptr;
@@ -149,6 +153,7 @@ HASH *Hasher(char **filelist, int piece_length)
         fptr = fopen(filelist[i], "rb");
         while (true)
         {
+            start = clock();
             if (!partial)
             {
                 amount = fread(buffer, 1, piece_length, fptr);
@@ -175,8 +180,14 @@ HASH *Hasher(char **filelist, int piece_length)
             SHA1(output, buffer, piece_length);
             addNode(layer, output);
             partial = NULL;
+            end = clock();
+            timeused = ((double)(end - start)) / CLOCKS_PER_SEC;
+            printf("\bEach hash = %f\n\n", timeused);
         }
     }
+    // end = clock();
+    // timeused = ((double)(end - start)) / CLOCKS_PER_SEC;
+    printf("time taken for Primary hashing portion = %f", timeused);
     if (partial)
     {
         output = (uint8 *)malloc(V1HASHSIZE);
@@ -189,6 +200,9 @@ HASH *Hasher(char **filelist, int piece_length)
     HASH *hash = (HASH *)malloc(sizeof(HASH));
     hash->pieces = pieces;
     hash->count = layer->count;
+    // end = clock();
+    // timeused = ((double)(end - start)) / CLOCKS_PER_SEC;
+    // printf("Time taken to intialize hash object and reassign values = %f", timeused);
     return hash;
 }
 
@@ -379,11 +393,11 @@ HASHHYBRID *HasherHybrid(char *path, int piece_length)
         uint8 *hashV1 = (uint8 *)malloc(V1HASHSIZE);
         if (final)
         {
-            int remains = piece_length - buffer_pos
+            int remains = piece_length - buffer_pos;
             for (int t = 0; t < remains; t++)
             {
-                bufferv1[buffer_pos] = NULL;
-                buffer_pos += 1
+                bufferV1[buffer_pos] = 0;
+                buffer_pos += 1;
             }
         }
         SHA1(hashV1, bufferV1, buffer_pos);
@@ -419,24 +433,3 @@ HASHHYBRID *HasherHybrid(char *path, int piece_length)
     fclose(fptr);
     return result;
 }
-
-
-// int main(int argc, char **argv)
-// {
-//     int piece_length = (int)pow(2.0, 16.0);
-//     printf("\npiece length = %d\n", piece_length);
-//     printf("%s\n", argv[1]);
-//     HASH *hash;
-//     hash = Hasher(argv, piece_length);
-//     hexdigest(hash->pieces);
-//     HASHV2* resultv2;
-//     resultv2 = HasherV2(argv[1], piece_length);
-//     hexdigest(resultv2->piece_layer);
-//     hexdigest(resultv2->pieces_root);
-//     HASHHYBRID* resulthybrid;
-//     resulthybrid = HasherHybrid(argv[1], piece_length);
-//     hexdigest(resulthybrid->piece_layer);
-//     hexdigest(resulthybrid->pieces_root);
-//     hexdigest(resulthybrid->hashv1);
-//     return 0;
-// }
