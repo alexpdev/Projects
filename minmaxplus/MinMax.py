@@ -19,115 +19,150 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ############################################################################
 """
-Functions that provide a more robust way obtain min and max.
+# MinMax+
 
-Potential replacement function for the builtin min and max functions.
-Returns the expected value as well as the values index within the sequence.
-Only works on iterables that are indexed i.e. tuple or list.
+A small library of functions that extend python's builtin `min` and `max` function.
+
+
 """
 
 import sys
 
 
 class InputError(Exception):
-    
     """Input Type is not an iterable sequence."""
 
     def __init__(self, value):
-        message = "Input type cannot be indexed"
+        """
+        Initialize Exception for Input Error
+
+        Parameters
+        ----------
+        value : `Any`
+            Uninterpretable input value.
+        """
+        message = f"Input type cannot be indexed.  {value}"
         super().__init__(message)
 
 class EmptySequenceError(Exception):
-
     """Input iterable is empty."""
 
     def __init__(self, value):
-        message = "Input iterable is empty."
+        """
+        Initialize Exception for Sequence Error.
+
+        Parameters
+        ----------
+        value : `Any`
+            Empty sequence value.
+        """
+        message = f"Input iterable is empty.  {value}"
         super().__init__(message)
 
 def maxp(seq):
     """
-    Get array element and index with maximum value.
+    Return the maximum element and it's index within the sequence.
 
-    Args:
-        seq list/tuple: any indexed iterable sequence
+    Parameters
+    ----------
+    seq : `iterable`
+        An iterable sequence that implements the `__getitem__` or `index` method.
 
-    Returns:
-        tuple[any, int] : (max_value, max_index)
+    Returns
+    -------
+    `tuple` :
+        the maximum element, and it's index
     """
     if len(seq) == 0:
-        raise EmptySequenceError
+        return None, None
     if not hasattr(seq, "index"):
         raise InputError
-    max_, max_i, n = -sys.maxsize, 0, len(seq)
-    # checks if seq length is odd
-    if n & 1:
-        n -= 1
+
+    maxn, maxi, n = -sys.maxsize, 0, len(seq)
+    if isinstance(seq[0], str):
+        maxn = chr(0)
+
+    if n & 1: n -= 1  # checks if seq length is odd
     for i in range(0, n, 2):
         if seq[i + 1] > seq[i]:
             maximum, index = seq[i + 1], i + 1
         else:
             maximum, index = seq[i], i
-        if maximum > max_:
-            max_, max_i = maximum, index
+        if maximum > maxn:
+            maxn, maxi = maximum, index
+
     # checks if seq length is odd
     if len(seq) & 1:
-        if seq[n] > max_:
-            max_, max_i = seq[n], n
-    return (max_, max_i)
+        if seq[n] > maxn:
+            maxn, maxi = seq[n], n
+    return (maxn, maxi)
 
 
 def minp(seq):
     """
-    Get array element and index with maximum value.
+    Return the minimum element and it's index within the sequence.
 
-    Args:
-        list/tuple: any indexed iterable sequence.
+    Parameters
+    ----------
+    seq : `iterable`
+        An iterable sequence that implements the `__getitem__` or `index` method.
 
-    Returns:
-        tuple[any,int]: (min_value, min_index)
+    Returns
+    -------
+    `tuple` :
+        the minimum element, and it's index
     """
     if not hasattr(seq, "index"):
         raise InputError
     if len(seq) == 0:
         raise EmptySequenceError
-    min_, min_i, n = sys.maxsize, 0, len(seq)
-    # checks if seq length is odd
-    if n & 1:
-        n -= 1
+
+    minn, mini, n = sys.maxsize, 0, len(seq)
+    if isinstance(seq[0], str):
+        minn = chr(1114111)
+
+    if n & 1: n -= 1   # checks if seq length is odd
     for i in range(0, n, 2):
         if seq[i + 1] < seq[i]:
             minimum, index = seq[i + 1], i + 1
         else:
             minimum, index = seq[i], i
-        if minimum < min_:
-            min_, min_i = minimum, index
+        if minimum < minn:
+            minn, mini = minimum, index
+
     # checks if seq length is odd
     if len(seq) & 1:
-        if seq[n] < min_:
-            min_, min_i = seq[n], n
-    return (min_, min_i)
+        if seq[n] < minn:
+            minn, mini = seq[n], n
+    return (minn, mini)
 
 
-def minmax(seq):
+def minmaxp(seq):
     """
-    Get value and index of maximum element and minimum elements in array.
+    Return the minimum and maximum element and their indexed locations.
 
-    Args:
-        arr ([list/tuple]): Any indexed iterable
+    Parameters
+    ----------
+    seq : `iterable`
+        An iterable sequence that implements the `__getitem__` or `index` method.
 
-    Returns:
-        list[tuple[any, int], tuple[any, int]]: [(max_value,max_index),(min_value,min_index)]
+    Returns
+    -------
+    `tuple` :
+        The minimum element, maximum element and their indexed locations.
     """
     if not hasattr(seq, "index"):
         raise InputError
     if len(seq) == 0:
         raise EmptySequenceError
-    max_, max_i, n = -sys.maxsize, 0, len(seq)
-    min_, min_i = sys.maxsize, 0
-    # checks if seq length is odd
-    if n & 1:
-        n -= 1
+
+    maxn, maxi, n = -sys.maxsize, 0, len(seq)
+    minn, mini = sys.maxsize, 0
+    if isinstance(seq[0], str):
+        maxn = chr(0)
+        minn = chr(1114111)
+
+    if n & 1: n -= 1   # checks if seq length is odd
     for i in range(0, n, 2):
         if seq[i + 1] > seq[i]:
             maximum, maxindex = seq[i + 1], i + 1
@@ -135,14 +170,15 @@ def minmax(seq):
         else:
             minimum, minindex = seq[i + 1], i + 1
             maximum, maxindex = seq[i], i
-        if maximum > max_:
-            max_, max_i = maximum, maxindex
-        if minimum < min_:
-            min_, min_i = minimum, minindex
+        if maximum > maxn:
+            maxn, maxi = maximum, maxindex
+        if minimum < minn:
+            minn, mini = minimum, minindex
+
     # checks if seq length is odd
     if len(seq) & 1:
-        if seq[n] > max_:
-            max_, max_i = seq[n], n
-        if seq[n] < min_:
-            min_, min_i = seq[n], n
-    return [(min_, min_i), (max_, max_i)]
+        if seq[n] > maxn:
+            maxn, maxi = seq[n], n
+        if seq[n] < minn:
+            minn, mini = seq[n], n
+    return [(minn, mini), (maxn, maxi)]

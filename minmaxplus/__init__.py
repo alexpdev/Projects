@@ -20,7 +20,7 @@
 ############################################################################
 """Functions for extending builtin min max functions."""
 
-from minmaxplus.minmax import minp, maxp, minmax
+from minmaxplus.minmax import minp, maxp, minmaxp
 
 __all__ = ["minp", "maxp", "minmax"]
 
