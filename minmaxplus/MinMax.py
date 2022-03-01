@@ -22,8 +22,6 @@
 # MinMax+
 
 A small library of functions that extend python's builtin `min` and `max` function.
-
-
 """
 
 import sys
@@ -59,7 +57,7 @@ class EmptySequenceError(Exception):
         message = f"Input iterable is empty.  {value}"
         super().__init__(message)
 
-def maxp(seq):
+def _maxp(seq):
     """
     Return the maximum element and it's index within the sequence.
 
@@ -98,7 +96,7 @@ def maxp(seq):
     return (maxn, maxi)
 
 
-def minp(seq):
+def _minp(seq):
     """
     Return the minimum element and it's index within the sequence.
 
@@ -137,7 +135,7 @@ def minp(seq):
     return (minn, mini)
 
 
-def minmaxp(seq):
+def _minmaxp(seq):
     """
     Return the minimum and maximum element and their indexed locations.
 
@@ -182,3 +180,28 @@ def minmaxp(seq):
         if seq[n] < minn:
             minn, mini = seq[n], n
     return [(minn, mini), (maxn, maxi)]
+
+
+def minp(seq):
+    """
+    Get minimum value and index.
+    """
+    sm = min(seq)
+    idx = seq.index(sm)
+    return sm, idx
+
+def maxp(seq):
+    """
+    Get maximum value and index.
+    """
+    lg = max(seq)
+    idx = seq.index(lg)
+    return lg, idx
+
+def minmaxp(seq):
+    """
+    Get maximum and minimum values and the index of each.
+    """
+    sm, lg = min(seq), max(seq)
+    smidx, lgidx = seq.index(sm), seq.index(lg)
+    return ((sm, smidx), (lg, lgidx))

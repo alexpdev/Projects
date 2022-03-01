@@ -22,7 +22,5 @@
 
 from minmaxplus.minmax import minp, maxp, minmaxp
 
-__all__ = ["minp", "maxp", "minmax"]
-
 __version__ = "1.0"
 __author__ = "alexpdev"
