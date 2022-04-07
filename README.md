@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Simple-Fun-Tools-and-Games
 
 * These are games and projects I am doing in my leisure time.
@@ -41,7 +40,6 @@ from minmaxplus import minp, maxp, minmaxp
 ## License
 
 GNU Lesser General Public License v3.0
-=======
 # Bitprint
 
 A tiny CLI for converting integers to binary.
@@ -72,4 +70,3 @@ python setup.py install
 ## License
 
 [MIT](https://github.com/alexpdev/bitprint/_todo_)
->>>>>>> b86cdc342b07877bfb9f217c6a103a1ac0a9d694
