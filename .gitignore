@@ -140,3 +140,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+*.pyc
+*.pyo
+__pycache__/
+build/
+dist/
+*egg-info/
