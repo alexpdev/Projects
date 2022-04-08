@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 *.dat
 *.pyc
 __pycache__/
@@ -22,20 +23,74 @@ codacy.sh
 .env
 activate.bat
 >>>>>>> fee9aa0b7d579efb0c85eaff2d35ef9fdd23a235
+=======
+# enviornment packages
+node_modules/
+*.env
+.env
+start.py
+activate.bat
+activate.ps1
+activate
+tests/test_data/
+*.torrent
+repos/
+sites/
+tests/TESTDIR
+runtests.py
+coverage.xml
+nixenv/
+htmlcov/
+
+# bite-code
+*.pyc
+*.bin
+
+# temp files
+bep*
+/tests/tempdir
+testing.py
+temp/
+data/*.json
+data/
+formated.json
+*.pickle
+*.log
+*.db
+
+# user-specific logfiles
+_settings.py
+_testsettings.py
+__settings.py
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+scraper.py
+*$py.class
+WinRAR*/
+>>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
 
 # C extensions
 *.so
 
 # Distribution / packaging
 .Python
+<<<<<<< HEAD
+=======
+codacy.sh
+>>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
 build/
 develop-eggs/
 dist/
 downloads/
 <<<<<<< HEAD
+<<<<<<< HEAD
 .codacy-coverage/
 =======
 >>>>>>> fee9aa0b7d579efb0c85eaff2d35ef9fdd23a235
+=======
+>>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
 eggs/
 .eggs/
 lib/
@@ -45,6 +100,7 @@ sdist/
 var/
 wheels/
 <<<<<<< HEAD
+<<<<<<< HEAD
 pip-wheel-metadata/
 =======
 >>>>>>> fee9aa0b7d579efb0c85eaff2d35ef9fdd23a235
@@ -53,6 +109,11 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+=======
+*.egg-info/
+.installed.cfg
+*.egg
+>>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -67,11 +128,15 @@ pip-delete-this-directory.txt
 # Unit test / coverage reports
 htmlcov/
 .tox/
+<<<<<<< HEAD
 .nox/
+=======
+>>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
 .coverage
 .coverage.*
 .cache
 nosetests.xml
+<<<<<<< HEAD
 coverage.xml
 *.cover
 *.py,cover
@@ -81,6 +146,11 @@ coverage.xml
 =======
 cover/
 >>>>>>> fee9aa0b7d579efb0c85eaff2d35ef9fdd23a235
+=======
+*.cover
+.hypothesis/
+.pytest_cache/
+>>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
 
 # Translations
 *.mo
@@ -89,8 +159,11 @@ cover/
 # Django stuff:
 *.log
 local_settings.py
+<<<<<<< HEAD
 db.sqlite3
 db.sqlite3-journal
+=======
+>>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
 
 # Flask stuff:
 instance/
@@ -100,6 +173,7 @@ instance/
 .scrapy
 
 # Sphinx documentation
+<<<<<<< HEAD
 docs/_build/
 
 # PyBuilder
@@ -107,11 +181,19 @@ docs/_build/
 =======
 .pybuilder/
 >>>>>>> fee9aa0b7d579efb0c85eaff2d35ef9fdd23a235
+=======
+docs/source/
+docs/_build/
+.docs/
+
+# PyBuilder
+>>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
 target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
 
+<<<<<<< HEAD
 # IPython
 profile_default/
 ipython_config.py
@@ -138,10 +220,21 @@ __pypackages__/
 # Celery stuff
 celerybeat-schedule
 celerybeat.pid
+=======
+# pyenv
+.python-version
+
+# coverage codacy
+.codacy-coverage/
+
+# celery beat schedule file
+celerybeat-schedule
+>>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
 
 # SageMath parsed files
 *.sage.py
 
+<<<<<<< HEAD
 # Environments
 .env
 .venv
@@ -150,6 +243,18 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+=======
+# dotenv
+.env
+pydenv.py
+test_pydenv.py
+
+# virtualenv
+.venv
+venv/
+ENV/
+env/
+>>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
 
 # Spyder project settings
 .spyderproject
@@ -158,6 +263,7 @@ venv.bak/
 # Rope project settings
 .ropeproject
 
+<<<<<<< HEAD
 # mkdocs documentation
 /site
 
@@ -180,3 +286,10 @@ dist/
 
 # Cython debug symbols
 cython_debug/
+=======
+# mypy
+.mypy_cache/
+
+# IDE settings
+.vscode/
+>>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2

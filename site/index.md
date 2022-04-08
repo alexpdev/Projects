@@ -1,75 +1,3 @@
-# Simple-Fun-Tools-and-Games
-
-* These are games and projects I am doing in my leisure time.
-# minmaxplus
-
-!["MinMax+"](./assets/minmaxplus.png)
-
-Small library that extends python's built in `min` and `max` functions.
-
-## Installing
-
-`pip install minmaxplus`
-
-## Usage
-
-Import the module into your source code as needed.
-
-```python
-import minmaxplus
-from minmaxplus import minp, maxp, minmaxp
-```
-
-## Functions
-
-- minp
-
-  - requires indexed iterable sequence as arguement
-  - calculates and returns minimum value and it's index
-
-- maxp
-
-  - requires indexed iterable sequence as arguement
-  - calculates and returns maximum value and it's index
-
-- minmax
-
-  - requires an indexed iterable sequence as arguement
-  - calculates and returns minimum and maximum values and their indeces
-
-## License
-
-GNU Lesser General Public License v3.0
-# Bitprint
-
-A tiny CLI for converting integers to binary.
-
-## Dependencies
-
-- Python 3.*
-
-## Installation
-
-```powershell
-git clone https://github.com/alexpdev/bitprint.git
-cd bitprint
-python setup.py install
-```
-
-## Usage
-
-```powershell
-> bitprint 1
-1
-> bitprint 2
-10
-> bitprint 12
-1100
-```
-
-## License
-
-[MIT](https://github.com/alexpdev/bitprint/_todo_)
 # TorrentFile
 
 ![torrentfile](https://github.com/alexpdev/torrentfile/blob/master/assets/torrentfile.png?raw=true)
@@ -84,38 +12,42 @@ python setup.py install
 [![CI](https://github.com/alexpdev/TorrentFile/actions/workflows/python_workflow.yml/badge.svg?branch=master&event=push)](https://github.com/alexpdev/TorrentFile/actions/workflows/python_workflow.yml)
 [![DeepSource](https://deepsource.io/gh/alexpdev/TorrentFile.svg/?label=active+issues&token=16Sl_dF7nTU8YgPilcqhvHm8)](https://deepsource.io/gh/alexpdev/TorrentFile/)
 
-## :globe_with_meridians: Overview
+## Overview
 
-A `simple` and `convenient` tool for creating, reviewing, editing, and/or  
-checking/validating bittorrent meta files (aka torrent files). _`torrentfile`_  
-supports all versions of Bittorrent files, including hybrid meta files.
+A `simple` and `convenient` tool for creating, reviewing, editing, and  
+checking/validating bittorrent meta files (aka torrent files). `torrentfile`  
+support all versions of Bittorrent files, including hybrid meta files.
 
 > A GUI frontend for this project can be found at [https://github.com/alexpdev/TorrentfileQt](https://github.com/alexpdev/TorrentfileQt)
 
-## :white_check_mark: Requirements
+## Requirements
 
 - Python 3.7+
 - Tested on Linux and Windows
 
-## :package: Install
+## Install
 
-__via PyPi:__
+### via PyPi
 
     pip install torrentfile
 
-__via Git:__
+### via Git
 
     git clone https://github.com/alexpdev/torrentfile.git
     python setup.py install
 
-> Download pre-compiled binaries from the [release page](https://github.com/alexpdev/torrentfile/releases).
+> Or download pre-compiled binaries from the Github release page.
+[https://github.com/alexpdev/torrentfile/releases](https://github.com/alexpdev/torrentfile/releases)
 
-## :scroll: Documentation
+## Documentation
 
-Documentation can be found  [here](https://alexpdev.github.io/TorrentFile)
-or in the _`docs`_ directory.
+Documentation is available online at
+[https://alexpdev.github.io/torrentfile](https://alexpdev.github.io/torrentfile)
+ and in the `./docs` directory, or online at.
 
 ## :rocket: Usage
+
+    ~$torrentfile -h
 
 ```bash
 torrentfile [-h] [-i] [-V] [-v]  ...
@@ -127,19 +59,17 @@ Sub-Commands:
     edit             Edit a pre-existing torrent file.
 
 optional arguments:
-  -h, --help         show this help message and exit
   -V, --version      show program version and exit
+  -h, --help         show this help message and exit
   -i, --interactive  select program options interactively
   -v, --verbose      output debug information
 ```
 
-> Usage examples can be found in the project documentation on the [examples page.](https://alexpdev.github.io/TorrentFile/examples)
-
-## :memo: License
+## License
 
 Distributed under the GNU LGPL v3. See `LICENSE` for more information.
 
-## :bug: Issues
+## Issues
 
 If you encounter any bugs or would like to request a new feature please open a new issue.
 

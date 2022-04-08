@@ -29,4 +29,26 @@
   "email": "alexpdev@protonmail.com",
   "readme": "./README.md",
   "license": "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)"
+  "name": "torrentfile",
+  "displayName": "TorrentFile",
+  "version": "0.2.1b",
+  "url": "https://github.com/alexpdev/TorrentFile",
+  "description": "CLI tool for creating, editing, and checking Bittorrent meta files. Support for all Bittorrent versions including hybrid torrent files.",
+  "directories": {
+    "doc": "docs",
+    "test": "tests",
+    "torrentfile": "torrentfile"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexpdev/TorrentFile.git"
+  },
+  "keywords": ["torrent", "Bittorrent"],
+  "author": "alexpdev",
+  "email": "alexpdev@protonmail.com",
+  "license": "GNU LGPLv3",
+  "bugs": {
+    "url": "https://github.com/alexpdev/TorrentFile/issues"
+  },
+  "homepage": "https://github.com/alexpdev/TorrentFile#readme"
 }
