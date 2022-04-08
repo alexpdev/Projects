@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 *.dat
 *.pyc
 __pycache__/
@@ -24,6 +25,8 @@ codacy.sh
 activate.bat
 >>>>>>> fee9aa0b7d579efb0c85eaff2d35ef9fdd23a235
 =======
+=======
+>>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
 # enviornment packages
 node_modules/
 *.env
@@ -41,6 +44,15 @@ runtests.py
 coverage.xml
 nixenv/
 htmlcov/
+<<<<<<< HEAD
+=======
+*.exe
+*.jpg
+testfile
+_hasher.c
+Release/
+testdir
+>>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
 
 # bite-code
 *.pyc
@@ -69,7 +81,10 @@ __pycache__/
 scraper.py
 *$py.class
 WinRAR*/
+<<<<<<< HEAD
 >>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
+=======
+>>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
 
 # C extensions
 *.so
@@ -77,13 +92,18 @@ WinRAR*/
 # Distribution / packaging
 .Python
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 codacy.sh
 >>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
+=======
+codacy.sh
+>>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
 build/
 develop-eggs/
 dist/
 downloads/
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 .codacy-coverage/
@@ -91,6 +111,8 @@ downloads/
 >>>>>>> fee9aa0b7d579efb0c85eaff2d35ef9fdd23a235
 =======
 >>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
+=======
+>>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
 eggs/
 .eggs/
 lib/
@@ -99,6 +121,7 @@ parts/
 sdist/
 var/
 wheels/
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 pip-wheel-metadata/
@@ -114,6 +137,11 @@ MANIFEST
 .installed.cfg
 *.egg
 >>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
+=======
+*.egg-info/
+.installed.cfg
+*.egg
+>>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -129,13 +157,17 @@ pip-delete-this-directory.txt
 htmlcov/
 .tox/
 <<<<<<< HEAD
+<<<<<<< HEAD
 .nox/
 =======
 >>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
+=======
+>>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
 .coverage
 .coverage.*
 .cache
 nosetests.xml
+<<<<<<< HEAD
 <<<<<<< HEAD
 coverage.xml
 *.cover
@@ -151,6 +183,11 @@ cover/
 .hypothesis/
 .pytest_cache/
 >>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
+=======
+*.cover
+.hypothesis/
+.pytest_cache/
+>>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
 
 # Translations
 *.mo
@@ -160,10 +197,13 @@ cover/
 *.log
 local_settings.py
 <<<<<<< HEAD
+<<<<<<< HEAD
 db.sqlite3
 db.sqlite3-journal
 =======
 >>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
+=======
+>>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
 
 # Flask stuff:
 instance/
@@ -174,6 +214,7 @@ instance/
 
 # Sphinx documentation
 <<<<<<< HEAD
+<<<<<<< HEAD
 docs/_build/
 
 # PyBuilder
@@ -182,17 +223,23 @@ docs/_build/
 .pybuilder/
 >>>>>>> fee9aa0b7d579efb0c85eaff2d35ef9fdd23a235
 =======
+=======
+>>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
 docs/source/
 docs/_build/
 .docs/
 
 # PyBuilder
+<<<<<<< HEAD
 >>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
+=======
+>>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
 target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 # IPython
 profile_default/
@@ -221,6 +268,8 @@ __pypackages__/
 celerybeat-schedule
 celerybeat.pid
 =======
+=======
+>>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
 # pyenv
 .python-version
 
@@ -229,11 +278,15 @@ celerybeat.pid
 
 # celery beat schedule file
 celerybeat-schedule
+<<<<<<< HEAD
 >>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
+=======
+>>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
 
 # SageMath parsed files
 *.sage.py
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 # Environments
 .env
@@ -244,6 +297,8 @@ ENV/
 env.bak/
 venv.bak/
 =======
+=======
+>>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
 # dotenv
 .env
 pydenv.py
@@ -254,7 +309,10 @@ test_pydenv.py
 venv/
 ENV/
 env/
+<<<<<<< HEAD
 >>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
+=======
+>>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
 
 # Spyder project settings
 .spyderproject
@@ -263,6 +321,7 @@ env/
 # Rope project settings
 .ropeproject
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 # mkdocs documentation
 /site
@@ -287,9 +346,14 @@ dist/
 # Cython debug symbols
 cython_debug/
 =======
+=======
+>>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
 # mypy
 .mypy_cache/
 
 # IDE settings
 .vscode/
+<<<<<<< HEAD
 >>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
+=======
+>>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00

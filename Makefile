@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .PHONY: clean clean-test clean-pyc clean-build docs help
 .PHONY: clean help lint test docs nixenv
 .DEFAULT_GOAL := help
@@ -206,3 +207,15 @@ nixbuild:
 	cp -rfv ../runner/dist/* ./dist/
 	python3 -c "$$FIX_BIN_VERSION_FILES"
 >>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
+=======
+compile: ## compile sources
+	gcc -Wall -o hash.exe main.c src/hasher.c src/sha.c
+
+run:  ## run program
+	./hash.exe testfile
+
+
+clean: ## clean
+	rm -r src/Release
+	rm src/_hasher.py
+>>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00

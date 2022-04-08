@@ -18,7 +18,6 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ############################################################################
-<<<<<<< HEAD
 
 
 from setuptools import setup, find_packages
@@ -44,7 +43,6 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
-=======
 """Setup for Torrentfile package."""
 
 import json
@@ -80,13 +78,11 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "License :: OSI Approved :: GNU Lesser General Public License v3"
         " (LGPLv3)",
->>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
     ],
     keywords=INFO["keywords"],
     author=INFO["author"],
     author_email=INFO["email"],
     url=INFO["url"],
-<<<<<<< HEAD
     project_urls={"Source Code": "https://github.com/alexpdev/MinMaxObj"},
     license=INFO["license"],
     packages=find_packages(exclude=["tests", "env"]),
@@ -106,7 +102,6 @@ setup(
     packages=["bitprint"],
     entry_points={"console_scripts":["bitprint = bitprint:execute"]},
     description="convert integers to binary",
-=======
     project_urls={"Source Code": "https://github.com/alexpdev/torrentfile"},
     license=INFO["license"],
     packages=find_packages(exclude=["env", "tests"]),
@@ -116,5 +111,4 @@ setup(
     install_requires=["pyben", "tqdm"],
     zip_safe=False,
     test_suite="complete",
->>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
 )
