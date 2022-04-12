@@ -1,0 +1,17 @@
+{
+  "name": "torrentfilejs",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "node .",
+    "test": "nodemon index.js --tracker url1 url2 url3 ---- --private --comment \"some comment\" --source sourcey --metaversion 1 --piecelength 14 -p ./dir"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "argparse": "^2.0.1",
+    "nodemon": "^2.0.15",
+    "yargs": "^17.4.1"
+  }
+}
