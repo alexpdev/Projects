@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "node .",
+    "start": "node index.js --tracker url1 url2 url3 ---- --private --comment \"some comment\" --source sourcey --metaversion 1 --piecelength 14 -p ./dir",
     "test": "nodemon index.js --tracker url1 url2 url3 ---- --private --comment \"some comment\" --source sourcey --metaversion 1 --piecelength 14 -p ./dir"
   },
   "keywords": [],
