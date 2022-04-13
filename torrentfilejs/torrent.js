@@ -2,7 +2,8 @@ const utils = require('./utils');
 const Path = require('path');
 const crypto = require('crypto');
 const fs = require('fs');
-const { Buffer } = require('buffer')
+const {benWrite} = require('./jsben')
+const { Buffer } = require('buffer');
 
 class Torrent{
   constructor(
@@ -47,25 +48,22 @@ class Torrent{
       let info = this.info;
       let {size, files} = utils.fileListTotal(this.path);
       if (utils.isfile(this.path))
-        info["length"] = size;
+        info.set('length', size);
       else {
-        info["files"] = [];
+        info.set('files', []);
         files.forEach((path) => {
-          let obj = {
-            length: utils.getsize(path),
-            path: utils.pathparts(this.path, path)
-          }
-          info.files.push(obj);
+          let obj = new Map();
+          obj.set('length', utils.getsize(path));
+          obj.set('path', utils.pathparts(this.path, path));
+          info.get('files').push(obj);
         })
       }
       let pieces = Buffer.alloc(0);
       let feeder = new Hasher(files, this.info.get("piece length"));
-      for (var piece of feeder.iter()){
-        pieces = Buffer.concat([pieces, piece], pieces.length + piece.length);
-      }
-      info["pieces"] = pieces;
-      this.info = info;
-      this.meta["info"] = this.info;
+      feeder.iter();
+      pieces = utils.bufJoin(feeder.pieces);
+      info.set('pieces', pieces);
+      this.meta.set('info', info);
       return this.meta;
     }
 
@@ -77,6 +75,8 @@ class Torrent{
     }
 
     write(){
+      var path = this.path + ".torrent";
+      benWrite(this.meta, path);
     }
 
 }
@@ -93,6 +93,7 @@ class Hasher {
     this.total = sizes.reduce((a,b) => a + b, 0);
     this.index = 0;
     this.current = fs.openSync(this.files[this.index]);
+    this.pieces = [];
   }
 
   nextFile(){
@@ -117,7 +118,15 @@ class Hasher {
     return buffer;
   }
 
-  *iter() {
+  hash(buffer) {
+    var shasum = crypto.createHash('sha1');
+    shasum.update(buffer);
+    var result = shasum.digest();
+    this.pieces.push(result);
+  }
+
+  iter() {
+    var result = null;
     while (1){
       var buffer = Buffer.alloc(this.pieceLength);
       var consumed = fs.readSync(this.current, buffer, 0, this.pieceLength, null);
@@ -127,12 +136,11 @@ class Hasher {
         }
       }
       else if (consumed < this.pieceLength){
-        yield this.handlePartial(buffer.subarray(0,consumed));
+        buffer = this.handlePartial(buffer.subarray(0,consumed));
+        this.hash(buffer);
       }
       else {
-        var shasum = crypto.createHash('sha1');
-        shasum.update(buffer);
-        yield shasum.digest();
+        this.hash(buffer);
       }
     }
   }

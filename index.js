@@ -29,7 +29,3 @@ function cli(){
     tor.write();
     return tor;
 }
-
-
-
-console.log(cli());

@@ -118,8 +118,16 @@ function pathparts(from, to){
   return arr;
 }
 
+function bufJoin(arr){
+  let total = 0;
+  for (var i = 0; i < arr.length; i++){
+    total += arr[i].length;
+  }
+  return Buffer.concat(arr, total);
+}
+
 module.exports = {nextPow2, pathPieceLength, pathSize,
         fileListTotal, pathStat, getFileList,
         getPieceLength, pathPieceLength,
         normalizePieceLength, exists, isfile, getsize,
-        pathparts};
+        pathparts, bufJoin};
