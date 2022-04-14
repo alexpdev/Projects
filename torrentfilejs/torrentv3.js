@@ -8,7 +8,7 @@ const { Buffer } = require("buffer");
 const BLOCKSIZE = 2 ** 14;
 const HASHSIZE = 32;
 
-class TorrentV2 {
+class TorrentV3 {
   constructor(
     path = "",
     announce = [],
@@ -44,11 +44,14 @@ class TorrentV2 {
     this.info.set("name", this.name);
     this.meta.set("info", this.info);
     this.pieceLayers = new Map();
+    this.files = [];
+    this.pieces = [];
+    this.hashes = [];
   }
 
   assemble() {
     let info = this.info;
-    let { size, files } = utils.fileListTotal(this.path);
+    info.set("meta version", 2);
     if (utils.isfile(this.path)) {
       info.set("length", size);
       var fileTree = new Map();
@@ -56,9 +59,10 @@ class TorrentV2 {
       info.set("file tree", fileTree);
     } else {
       info.set("file tree", this._traverse(this.path));
+      info.set("files", this.files);
     }
-    info.set("meta version", 2);
     this.meta.set("piece layers", this.pieceLayers);
+    info.set("pieces", utils.bufJoin(this.pieces));
     this.info = info;
     this.meta.set("info", this.info);
   }
@@ -66,12 +70,22 @@ class TorrentV2 {
   _traverse(path) {
     if (utils.isfile(path)) {
       let size = utils.getsize(path);
+      let parts = [
+        ["length", size],
+        ["path", utils.pathparts(this.path, path)],
+      ];
+      this.files.push(new Map(parts));
       if (size == 0) {
         return new Map([["", new Map([["length", size]])]]);
       }
       let fhash = new Hasher(path, this.info.get("piece length"));
       if (size > this.info.get("piece length")) {
         this.pieceLayers.set(fhash.root, fhash.pieceLayer);
+      }
+      this.hashes.push(fhash);
+      this.pieces.push(utils.bufJoin(fhash.pieces));
+      if (fhash.paddingFile) {
+        this.files.push(fhash.paddingFile);
       }
       let inner = [
         ["length", size],
@@ -81,7 +95,7 @@ class TorrentV2 {
     } else {
       let fileTree = new Map();
       if (utils.isdir(path)) {
-        for (fd of fs.readdirSync(path)) {
+        for (let fd of fs.readdirSync(path)) {
           const fpath = Path.resolve(path, fd);
           fileTree.set(fd, this._traverse(fpath));
         }
@@ -89,7 +103,6 @@ class TorrentV2 {
       return fileTree;
     }
   }
-
   sortMeta() {
     let info = this.meta.get("info");
     info = new Map([...map].sort());
@@ -98,7 +111,6 @@ class TorrentV2 {
     this.meta = meta;
     return meta;
   }
-
   write() {
     var path = this.path + ".torrent";
     this.sortMeta();
@@ -133,8 +145,12 @@ class Hasher {
   constructor(file, pieceLength) {
     this.pieceLength = pieceLength;
     this.root = null;
+    this.pieces = [];
+    this.paddingPiece = null;
+    this.paddingFile = null;
     this.pieceLayer = null;
     this.layerHashes = [];
+    this.total = utils.getsize(file);
     this.num_blocks = Math.floor(pieceLength / BLOCKSIZE);
     let current = fs.openSync(file);
     this.processFile(current);
@@ -143,14 +159,19 @@ class Hasher {
   processFile(fd) {
     while (1) {
       let blocks = [];
+      let plength = this.pieceLength;
       let leaf = Buffer.alloc(BLOCKSIZE);
+      let piece = crypto.createHash("sha1");
       for (let i = 0; i < this.num_blocks; i++) {
         var consumed = fs.readSync(fd, leaf, 0, BLOCKSIZE, null);
+        this.total -= consumed;
         if (!consumed) break;
         if (consumed < BLOCKSIZE) {
           leaf = leaf.subarray(0, consumed);
         }
+        plength -= consumed;
         blocks.push(this.hash(leaf));
+        piece.update(leaf);
       }
       if (blocks.length == 0) {
         break;
@@ -162,12 +183,20 @@ class Hasher {
           remainder = p2 - blocks.length;
         }
         for (let j = 0; j < remainder; j++) {
-          let padding = Buffer.alloc(32);
+          let padding = Buffer.alloc(HASHSIZE);
           blocks.push(padding);
         }
       }
       let layerHash = merkleRoot(blocks);
       this.layerHashes.push(layerHash);
+      if (plength > 0) {
+        this.paddingFile = new Map();
+        this.paddingFile.set("attr", "p");
+        this.paddingFile.set("length", this.total);
+        this.paddingFile.set("path", [".pad", plength.toString()]);
+        piece.update(Buffer.alloc(plength));
+      }
+      this.pieces.push(piece.digest());
     }
     this._calcRoot();
   }
@@ -179,24 +208,26 @@ class Hasher {
   }
 
   _calcRoot() {
-    this.pieceLayer = utils.bufJoin(this.layerHashes);
-    if (this.layerHashes.length > 1) {
-      let p2 = utils.nextPow2(this.layerHashes.length);
-      let remainder = p2 - this.layerHashes.length;
+    let size = 0;
+    for (let hash of this.layerHashes) {
+      size += hash.length;
+    }
+    this.pieceLayer = Buffer.concat(this.layerHashes, size);
+    let hashes = this.layerHashes.length;
+    if (hashes > 1) {
+      let p2 = utils.nextPow2(hashes);
+      let remainder = p2 - hashes;
       let arr = [];
-      for (let i = 0; i < this.num_blocks; i++){
+      for (let i = 0; i < this.num_blocks; i++) {
         let padding = Buffer.alloc(HASHSIZE);
         arr.push(padding);
       }
-      let result = merkleRoot(arr);
-      for (let j = 0; j < remainder; j++){
-        let buffer = new Buffer.from(result);
-        this.layerHashes.push(buffer);
+      for (let j = 0; j < remainder; j++) {
+        this.layerHashes.push(merkleRoot(arr));
       }
     }
     this.root = merkleRoot(this.layerHashes);
-    console.log(this.root)
   }
 }
 
-module.exports = { TorrentV2 };
+module.exports = { TorrentV3 };

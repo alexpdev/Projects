@@ -23,7 +23,7 @@ class TorrentV1 {
       this.meta.set("announce-list", [announce]);
     } else {
       this.meta.set("announce", "");
-      this.meta.set("announce-list", [[]]);
+      this.meta.set("announce-list", [[""]]);
     }
     if (comment) {
       this.info.set("comment", comment);
@@ -65,14 +65,17 @@ class TorrentV1 {
   }
 
   sortMeta() {
-    let meta = this.meta;
-    meta.info = meta.info.sort();
-    meta = meta.sort();
+    let info = this.meta.get("info");
+    info = new Map([...map].sort());
+    this.meta.set("info", info);
+    meta = new Map([...this.meta].sort());
+    this.meta = meta;
     return meta;
   }
 
   write() {
     var path = this.path + ".torrent";
+    this.sortMeta();
     benWrite(this.meta, path);
   }
 }

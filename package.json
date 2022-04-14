@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "start": "node index.js --tracker url1 url2 url3 ---- --private --comment \"some comment\" --source sourcey --metaversion 1 --piecelength 14 -p ./dir",
-    "test": "nodemon index.js -t url1 url2 url3 --private --comment \"some comment\" --metaversion 2 --piecelength 14 -p ./dir"
+    "test": "nodemon index.js -t url1 url2 url3 --private --comment \"some comment\" --metaversion 3 --piecelength 14 -p ./dir"
   },
   "keywords": [],
   "author": "",

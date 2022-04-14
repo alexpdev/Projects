@@ -3,6 +3,8 @@ const yargs = require("yargs/yargs");
 const { hideBin } = require("yargs/helpers");
 const { TorrentV1 } = require("./torrentfilejs/torrentv1");
 const { TorrentV2 } = require("./torrentfilejs/torrentv2");
+const { TorrentV3 } = require("./torrentfilejs/torrentv3");
+
 
 function execute() {
   var args = yargs(hideBin(process.argv))
@@ -33,14 +35,8 @@ function execute() {
     .number("piecelength")
     .choices("metaversion", [1, 2, 3])
     .parse();
-  console.log(args);
-  let torrent = null;
-  if (args.metaversion == 1) {
-    torrent = TorrentV1;
-  } else if (args.metaversion == 2) {
-    torrent = TorrentV2;
-  }
-  let tor = new torrent(
+
+  const params = [
     args["path"],
     args.announce,
     args.comment,
@@ -48,11 +44,21 @@ function execute() {
     args["private"],
     args.out,
     args.source,
-    args.webseed
-  );
-  tor.assemble();
-  tor.write();
-  return tor;
+    args.webseed,
+  ];
+  let torrent;
+  if (args.metaversion == 1) {
+    torrent = new TorrentV1(...params);
+  }
+  else if (args.metaversion == 2) {
+    torrent = new TorrentV2(...params);
+  }
+  else {
+    torrent = new TorrentV3(...params);
+  }
+  torrent.assemble();
+  torrent.write();
+  return torrent;
 }
 
 execute();
