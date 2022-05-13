@@ -1,17 +1,58 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <TorrentForm/>
+  <form @submit.prevent="searchItunes(searchText)">
+  <input type="text" v-model="searchText" />
+  <button @click="searchItunes(searchText)">Search</button>
+    <div v-if="data.results">
+      <div v-for="album in data.results" :key="album.artistId">
+      <h2>Album Name: {{ album.collectionName}}</h2>
+      <h4>Artwork</h4>
+      <img :src="album.artworkUrl1100" alt="" />
+      <h4>Price: {{ album.collectionPrice }}</h4>
+      <TheShowAlbum :album="album" />
+      </div>
+    </div>
+  </form>
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
+<script lang="ts">
+import { defineComponent, reactive, ref, toRefs } from "vue";
+import { itunesSearch } from "./services/iTunesAPI";
+import { ItunesTypes } from "./types/ItunesTypes.interface";
+import TheShowAlbum from "./components/TheShowAlbum.vue";
+import TorrentForm from "./components/TorrentForm.vue";
 
-export default {
-  name: 'App',
+
+export default defineComponent({
+  name: "App",
   components: {
-    HelloWorld
+    TheShowAlbum,
+    TorrentForm
+  },
+  data: () => {
+    return {
+      data: {} as ItunesTypes,
+      searchText: ""
+    };
+  },
+  methods: {
+    async searchItunes(search: string): Promise<void> {
+      const value = await itunesSearch(search);
+      this.data = value;
+      console.log("data", value);
+    }
+  },
+  setup() {
+    let albums = reactive<{ data: ItunesTypes }>({ data : {} });
+    let searchText = ref("");
+    const searchItunes = async (search: string): Promise<void> => {
+      const value = await itunesSearch(search);
+      albums.data = value;
+      console.log("data", albums);
+    };
+    return { searchItunes, ...toRefs(albums), searchText };
   }
-}
+});
 </script>
 
 <style>

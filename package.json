@@ -1,66 +1,45 @@
 {
   "name": "torrentfilejs",
-  "version": "1.0.0",
+  "appId": "com.torrentfilejs.app",
   "private": true,
-  "description": "",
-  "author": "",
-  "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "electron:build": "vue-cli-service electron:build",
-    "electron:serve": "vue-cli-service electron:serve",
-    "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps",
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "copyright": "Copyright © 2019 ${author}",
+  "version": "0.0.0",
+  "author": "alexpdev",
+  "main": "electron/electron.js",
+  "files": [
+    "dist/**/*",
+    "electron/**/*"
+  ],
+  "directories": {
+    "buildResources": "assets",
+    "output": "dist_electron"
   },
-  "main": "background.js",
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "serve": "vite preview",
+    "electron": "wait-on tcp:3000 && cross-env IS_DEV=true electron .",
+    "electron:pack": "electron-builder --dir",
+    "electron:dev": "concurrently -k \"cross-env BROWSER=none yarn dev\" \"yarn electron\"",
+    "electron:builder": "electron-builder",
+    "app:build": "yarn build:for:electron && yarn electron:builder"
+  },
   "dependencies": {
-    "core-js": "^3.8.3",
-    "vue": "^3.2.13"
+    "vue": "^3.2.25"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
-    "@babel/eslint-parser": "^7.12.16",
-    "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-plugin-eslint": "~5.0.0",
-    "@vue/cli-service": "~5.0.0",
-    "electron": "^13.0.0",
-    "electron-devtools-installer": "^3.1.0",
-    "eslint": "^7.32.0",
-    "eslint-plugin-vue": "^8.0.3",
-    "vue-cli-plugin-electron-builder": "~2.1.1"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser"
-    },
-    "rules": {}
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead",
-    "not ie 11"
-  ],
-  "_id": "torrentfilejs@1.0.0",
-  "bugs": {
-    "url": "https://github.com/alexpdev/torrentfilejs/issues"
-  },
-  "homepage": "https://github.com/alexpdev/torrentfilejs#readme",
-  "keywords": [],
-  "license": "ISC",
-  "readme": "ERROR: No README data found!",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/alexpdev/torrentfilejs.git"
+    "@vitejs/plugin-vue": "^2.3.3",
+    "concurrently": "^7.1.0",
+    "cross-env": "^7.0.3",
+    "electron": "^18.2.3",
+    "electron-builder": "^23.0.3",
+    "typescript": "^4.5.4",
+    "vite": "^2.9.9",
+    "vue-tsc": "^0.34.7",
+    "wait-on": "^6.0.1"
   }
 }
