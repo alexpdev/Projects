@@ -1,122 +1,48 @@
 <template>
-  <section class="section">
-    <div class="container">
-      <div class="columns">
-        <form @sumbit.prevent="submit">
-          <div class="column is-full">
-            <div class="field">
-              <label for="path" class="label">Path</label>
-              <div class="control">
-              <input type="text" v-model="form.path" name="path" id="path" class="form-field input">
-              </div>
-            </div>
-          </div>
-          <div class="column is-full">
-            <div class="field">
-              <label class="label" for="announce">Trackers</label>
-              <div class="control">
-                <textarea class="textarea" v-model="form.announce" name="announce" id="announce" cols="50" rows="6"></textarea>
-              </div>
-            </div>
-          </div>
-          <div class="column is-full">
-            <div class="column is-half">
-              <div class="field">
-                <div class="control">
-                  <label for="priv" class="checkbox">
-                    Private
-                    <input type="checkbox" class="checkbox" v-model="form.priv" id="priv" name="priv">
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div class="column is-half">
-              <div class="field">
-                <div class="control">
-                  <label class="radio">
-                    Meta Version
-                    <label class="radio" >
-                    <input type="radio" name="mversion" v-model="form.mversion">
-                    1
-                    </label>
-                    <label class="radio">
-                    <input type="radio" name="mversion" v-model="form.mversion">
-                    2
-                    </label>
-                    <label class="radio">
-                    <input type="radio" name="mversion" v-model="form.mversion">
-                    hybrid
-                    </label>
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="column is-full">
-            <div class="field">
-              <label for="source" class="label">Source</label>
-              <div class="control">
-              <input type="text" v-model="form.source" name="source" id="source" class="form-field input">
-              </div>
-            </div>
-          </div>
-          <div class="column is-full">
-            <div class="field">
-              <label class="label" for="comment">Comment</label>
-              <div class="control">
-                <textarea class="textarea" v-model="form.comment" name="comment" id="comment" cols="50" rows="6"></textarea>
-              </div>
-            </div>
-          </div>
-          </div>
-          <div class="column is-full">
-            <div class="field">
-              <label for="out" class="label">Save To</label>
-              <div class="control">
-              <input type="text" v-model="form.source" name="source" id="source" class="form-field input">
-              </div>
-            </div>
-          </div>
-          <div class="column">
-            <div class="field">
-              <input type="button"  value="submit">
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </section>
+  <p>{{ title }}</p>
+
+  <input v-model="message">
+<textarea v-model="filenames"></textarea>
+<input type="checkbox" id="checkbox" v-model="checked" />
+<label for="checkbox">{{ checked }}</label>
+<div>Checked names: {{ checkedNames }}</div>
+
+<input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
+<label for="jack">Jack</label>
+
+<input type="checkbox" id="john" value="John" v-model="checkedNames">
+<label for="john">John</label>
+
+<input type="checkbox" id="mike" value="Mike" v-model="checkedNames">
+<label for="mike">Mike</label>
+<div>Picked: {{ picked }}</div>
+
+<input type="radio" id="one" value="One" v-model="picked" />
+<label for="one">One</label>
+
+<input type="radio" id="two" value="Two" v-model="picked" />
+<label for="two">Two</label>
+<div>Selected: {{ selected }}</div>
+
+<select v-model="selected">
+  <option disabled value="">Please select one</option>
+  <option>A</option>
+  <option>B</option>
+  <option>C</option>
+</select>
 </template>
 
-<script>
-import axios from "axios";
-
+<script lang="ts">
 export default {
-  name: "TorrentForm",
   data() {
     return {
-      form: {
-        path: "",
-        announce: "",
-        priv: "",
-        mversion: "",
-        out: "",
-        comment: "",
-        source: "",
-      }
-    };
-  },
-  methods: {
-    async submit() {
-      const { path, announce, priv, mversion, out, comment, source } = this.form;
-      if (!path) {
-        alert("Path field required");
-        return;
-      }
-      const {id} = this.$route.params;
-      if (id) {
-        await axios.put()
-      }
+      title: "Torrent Form",
+      message: '',
+      checked: true,
+      filenames: '',
+      checkedNames: [],
+      picked: 'One',
+      selected: "",
     }
   }
 }
