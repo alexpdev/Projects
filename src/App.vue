@@ -1,5 +1,13 @@
 <template>
-  <TorrentForm/>
+<div class="container">
+  <section class="section">
+    <div class="columns">
+      <div class="column is-9 align-center">
+        <TorrentForm/>
+      </div>
+    </div>
+  </section>
+
   <form @submit.prevent="searchItunes(searchText)">
   <input type="text" v-model="searchText" />
   <button @click="searchItunes(searchText)">Search</button>
@@ -13,6 +21,7 @@
       </div>
     </div>
   </form>
+  </div>
 </template>
 
 <script lang="ts">
@@ -56,12 +65,12 @@ export default defineComponent({
 </script>
 
 <style>
-#app {
+/* #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
-}
+} */
 </style>

@@ -29,6 +29,8 @@
     "app:build": "yarn build:for:electron && yarn electron:builder"
   },
   "dependencies": {
+    "bulma": "^0.9.4",
+    "sass": "^1.51.0",
     "vue": "^3.2.25"
   },
   "devDependencies": {
