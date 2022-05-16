@@ -1,26 +1,12 @@
 <template>
-<div class="container">
-  <section class="section">
-    <div class="columns">
-      <div class="column is-9 align-center">
-        <TorrentForm/>
+  <div id="root" class="container">
+    <section class="section">
+      <div class="columns">
+        <div class="column is-9 align-center">
+          <TorrentForm/>
+        </div>
       </div>
-    </div>
-  </section>
-
-  <form @submit.prevent="searchItunes(searchText)">
-  <input type="text" v-model="searchText" />
-  <button @click="searchItunes(searchText)">Search</button>
-    <div v-if="data.results">
-      <div v-for="album in data.results" :key="album.artistId">
-      <h2>Album Name: {{ album.collectionName}}</h2>
-      <h4>Artwork</h4>
-      <img :src="album.artworkUrl1100" alt="" />
-      <h4>Price: {{ album.collectionPrice }}</h4>
-      <TheShowAlbum :album="album" />
-      </div>
-    </div>
-  </form>
+    </section>
   </div>
 </template>
 
@@ -65,12 +51,20 @@ export default defineComponent({
 </script>
 
 <style>
-/* #app {
+/* @import "bulma/css/bulma.css"; */
+#app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
-} */
+}
+#root {
+  background-color: #555855;
+  color: white;
+}
+.label {
+  color: white;
+}
 </style>

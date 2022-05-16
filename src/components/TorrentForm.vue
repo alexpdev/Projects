@@ -1,12 +1,11 @@
 <template>
-<section class="hero is_primary">
+<section id="torrentform" class="hero is-info">
   <div class="hero-body">
     <div class="container">
-      <span>
-        <h1 class="title">{{ title }}</h1>
-        <h3>{{ date }}</h3>
-      </span>
-      <h2 class="subtitle">{{ description }}</h2>
+        <figure class="image">
+          <img :src="formData.image">
+        </figure>
+      <h3 class="subtitle">{{ description }}</h3>
     </div>
   </div>
 </section>
@@ -46,18 +45,29 @@
     </div>
     <div class="field">
       <label class="label" for="announce">Trackers</label>
-      <textarea name="announce" id="announce" cols="30" rows="10"></textarea>
+      <textarea
+      name="announce"
+      id="announce"
+      class="textarea"
+      cols="80"
+      rows="6">
+      </textarea>
     </div>
-    <div class="field">
-      <label class="label" for="private">Private</label>
+      <div class="columns">
+        <div class="column is-4">
+          <div class="field">
+            <label class="label" for="private">Private</label>
       <input
       type="checkbox"
       name="private"
       id="private"
       v-model="formData.privat">
     </div>
-    <div class="field">
-      <label for="pieceLength" class="label">Piece Length</label>
+    </div>
+    <div class="column is-4">
+
+      <div class="field">
+        <label for="pieceLength" class="label">Piece Length</label>
       <select
       name="pieceLength"
       id="pieceLength"
@@ -65,12 +75,14 @@
       v-model="formData.pieceLength">
         <option
         v-for="size in formData.sizes"
-        :value="formData.pieceLength"
-        :key="size">{{ size }}</option>
+        :value="size.Size"
+        :key="size.Size">{{ size.Size }}</option>
       </select>
     </div>
-    <div class="field">
-        <label for="version" class="label">Bittorrent Version</label>
+      </div>
+      <div class="column is-4">
+        <div class="field">
+          <label for="version" class="label">Bittorrent Version</label>
         <input
         type="radio"
         class="radio"
@@ -92,10 +104,12 @@
         value="hybrid"
         v-model="formData.version">
         <label for="hybrid" class="radio">hybrid</label>
+      </div>
+    </div>
     </div>
     <div class="field">
       <button
-      class="button is-info is-outlined"
+      class="button is-info is-outlined pl-6 pr-6"
       @click="submitFormData" >
         Submit
       </button>
@@ -111,6 +125,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import image from "./../assets/torrentfile.png";
 
 export default defineComponent({
   name: "TorrentForm",
@@ -120,6 +135,7 @@ export default defineComponent({
       description: "Torrent file builder, checker, and reviewer.",
       date: Date(),
       formData: {
+        image: image,
         privat: false,
         source: "",
         comment: "",
@@ -128,7 +144,23 @@ export default defineComponent({
         announce: "",
         version: "",
         pieceLength: "",
-        sizes: ""
+        sizes: [
+          {"ID": 14, "Size": '16 KiB'},
+          {"ID": 15, "Size": '32 KiB'},
+          {"ID": 16, "Size": '64 KiB'},
+          {"ID": 17, "Size": '128 KiB'},
+          {"ID": 18, "Size": '256 KiB'},
+          {"ID": 19, "Size": '512 KiB'},
+          {"ID": 20, "Size": '1 MiB'},
+          {"ID": 21, "Size": '2 MiB'},
+          {"ID": 22, "Size": '4 MiB'},
+          {"ID": 23, "Size": '8 MiB'},
+          {"ID": 24, "Size": '16 MiB'},
+          {"ID": 25, "Size": '32 MiB'},
+          {"ID": 26, "Size": '64 MiB'},
+          {"ID": 27, "Size": '128 MiB'},
+          {"ID": 28, "Size": '256 MiB'}
+        ]
       }
     }
   },
@@ -139,3 +171,24 @@ export default defineComponent({
   }
 })
 </script>
+
+<style>
+.input,
+.textarea,
+.checkbox,
+.select,
+.button{
+  border: #e51 solid 2px;
+  border-radius: 2px;
+  background-color: #404440;
+  color: white;
+}
+.input:hover{
+  border-color: #a51;
+  border-width: 2px;
+}
+.input:active,
+.input:focus {
+  border-color: #a51;
+}
+</style>
