@@ -1,8 +1,8 @@
 <template>
   <div id="root" class="container">
     <section class="section">
-      <div class="columns">
-        <div class="column is-9 align-center">
+      <div class="columns is-centered">
+        <div class="column is-10">
           <TorrentForm/>
         </div>
       </div>
@@ -57,11 +57,10 @@ export default defineComponent({
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  color: #17241f;
 }
 #root {
-  background-color: #555855;
+  background-color: #323532;
   color: white;
 }
 .label {

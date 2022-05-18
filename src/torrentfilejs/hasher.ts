@@ -1,12 +1,12 @@
-const utils = require("./utils");
-const crypto = require("crypto");
-const fs = require("fs");
-const { Buffer } = require("buffer");
+import crypto from "crypto";
+import fs from "fs";
+import {Buffer} from "buffer";
+import {bufJoin, nextPow2, getsize} from "./utils";
 
 const BLOCKSIZE = 2 ** 14;
 const HASHSIZE = 32;
 
-function merkleRoot(blocks) {
+function merkleRoot(blocks: any): any {
   if (blocks.length > 0) {
     while (blocks.length > 1) {
       let arr = [];
@@ -30,7 +30,13 @@ function merkleRoot(blocks) {
 }
 
 class Hasher1 {
-  constructor(files, pieceLength) {
+  pieceLength: number;
+  files: any[];
+  total: number;
+  index: number;
+  current: any;
+  pieces: any[];
+  constructor(files: string[], pieceLength: number) {
     this.pieceLength = pieceLength;
     this.files = files;
     var sizes = files.map((file) => {
@@ -39,7 +45,7 @@ class Hasher1 {
     });
     this.total = sizes.reduce((a, b) => a + b, 0);
     this.index = 0;
-    this.current = fs.openSync(this.files[this.index]);
+    this.current = fs.openSync(this.files[this.index], 'r');
     this.pieces = [];
   }
 
@@ -47,13 +53,13 @@ class Hasher1 {
     this.index += 1;
     if (this.index < this.files.length) {
       fs.close(this.current);
-      this.current = fs.openSync(this.files[this.index]);
+      this.current = fs.openSync(this.files[this.index], 'r');
       return true;
     }
     return false;
   }
 
-  handlePartial(buffer) {
+  handlePartial(buffer: any) {
     while (buffer.length < this.pieceLength && this.nextFile()) {
       var target = this.pieceLength - buffer.length;
       var temp = Buffer.alloc(target);
@@ -64,7 +70,7 @@ class Hasher1 {
     return buffer;
   }
 
-  hash(buffer) {
+  hash(buffer: any) {
     var shasum = crypto.createHash("sha1");
     shasum.update(buffer);
     var result = shasum.digest();
@@ -97,17 +103,23 @@ class Hasher1 {
 }
 
 class Hasher2 {
-  constructor(file, pieceLength) {
+  pieceLength: number;
+  root: any;
+  pieceLayer: any;
+  num_blocks: number;
+  current: any;
+  layerHashes: any[];
+  constructor(file: string, pieceLength: number) {
     this.pieceLength = pieceLength;
     this.root = null;
     this.pieceLayer = null;
     this.layerHashes = [];
     this.num_blocks = Math.floor(pieceLength / BLOCKSIZE);
-    let current = fs.openSync(file);
+    let current = fs.openSync(file, 'r');
     this.processFile(current);
   }
 
-  processFile(fd) {
+  processFile(fd: number) {
     while (1) {
       let blocks = [];
       let leaf = Buffer.alloc(BLOCKSIZE);
@@ -122,10 +134,10 @@ class Hasher2 {
       if (blocks.length == 0) {
         break;
       }
-      if (blocks.length != this.numBlocks) {
-        let remainder = this.numBlocks - blocks.length;
+      if (blocks.length != this.num_blocks) {
+        let remainder = this.num_blocks - blocks.length;
         if (this.layerHashes.length == 0) {
-          let p2 = utils.nextPow2(blocks.length);
+          let p2 = nextPow2(blocks.length);
           remainder = p2 - blocks.length;
         }
         for (let j = 0; j < remainder; j++) {
@@ -139,16 +151,16 @@ class Hasher2 {
     this._calcRoot();
   }
 
-  hash(buffer) {
+  hash(buffer: any) {
     var shasum = crypto.createHash("sha256");
     shasum.update(buffer);
     return shasum.digest();
   }
 
   _calcRoot() {
-    this.pieceLayer = utils.bufJoin(this.layerHashes);
+    this.pieceLayer = bufJoin(this.layerHashes);
     if (this.layerHashes.length > 1) {
-      let p2 = utils.nextPow2(this.layerHashes.length);
+      let p2 = nextPow2(this.layerHashes.length);
       let remainder = p2 - this.layerHashes.length;
       let arr = [];
       for (let i = 0; i < this.num_blocks; i++) {
@@ -157,7 +169,7 @@ class Hasher2 {
       }
       let result = merkleRoot(arr);
       for (let j = 0; j < remainder; j++) {
-        let buffer = new Buffer.from(result);
+        let buffer = new (Buffer.from(result) as any);
         this.layerHashes.push(buffer);
       }
     }
@@ -167,7 +179,17 @@ class Hasher2 {
 }
 
 class Hasher3 {
-  constructor(file, pieceLength) {
+  pieceLength: number;
+  root: any;
+  pieceLayer: any;
+  paddingPiece: any;
+  paddingFile: any;
+  total: number;
+  pieces: any[];
+  num_blocks: number;
+  current: any;
+  layerHashes: any[];
+  constructor(file: string, pieceLength: number) {
     this.pieceLength = pieceLength;
     this.root = null;
     this.pieces = [];
@@ -175,13 +197,13 @@ class Hasher3 {
     this.paddingFile = null;
     this.pieceLayer = null;
     this.layerHashes = [];
-    this.total = utils.getsize(file);
+    this.total = getsize(file);
     this.num_blocks = Math.floor(pieceLength / BLOCKSIZE);
-    let current = fs.openSync(file);
+    let current = fs.openSync(file, 'r');
     this.processFile(current);
   }
 
-  processFile(fd) {
+  processFile(fd: number) {
     while (1) {
       let blocks = [];
       let plength = this.pieceLength;
@@ -201,10 +223,10 @@ class Hasher3 {
       if (blocks.length == 0) {
         break;
       }
-      if (blocks.length != this.numBlocks) {
-        let remainder = this.numBlocks - blocks.length;
+      if (blocks.length != this.num_blocks) {
+        let remainder = this.num_blocks - blocks.length;
         if (this.layerHashes.length == 0) {
-          let p2 = utils.nextPow2(blocks.length);
+          let p2 = nextPow2(blocks.length);
           remainder = p2 - blocks.length;
         }
         for (let j = 0; j < remainder; j++) {
@@ -226,7 +248,7 @@ class Hasher3 {
     this._calcRoot();
   }
 
-  hash(buffer) {
+  hash(buffer: any) {
     var shasum = crypto.createHash("sha256");
     shasum.update(buffer);
     return shasum.digest();
@@ -240,7 +262,7 @@ class Hasher3 {
     this.pieceLayer = Buffer.concat(this.layerHashes, size);
     let hashes = this.layerHashes.length;
     if (hashes > 1) {
-      let p2 = utils.nextPow2(hashes);
+      let p2 = nextPow2(hashes);
       let remainder = p2 - hashes;
       let arr = [];
       for (let i = 0; i < this.num_blocks; i++) {
@@ -255,4 +277,4 @@ class Hasher3 {
   }
 }
 
-module.exports = { Hasher1, Hasher2, Hasher3 };
+export { Hasher1, Hasher2, Hasher3 };

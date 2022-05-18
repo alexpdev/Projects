@@ -1,6 +1,6 @@
-const fs = require("fs");
-const { Buffer } = require("buffer");
-const utils = require("./utils");
+import fs from "fs";
+import { Buffer } from "buffer";
+import { bufJoin } from "./utils";
 
 const D = 100;
 const L = 108;
@@ -8,7 +8,7 @@ const I = 105;
 const E = 101;
 const COLON = 58;
 
-function bencode(data) {
+function bencode(data: any): any {
   if (typeof data == "number") {
     return encodeInt(data);
   } else if (typeof data == "string") {
@@ -22,48 +22,48 @@ function bencode(data) {
   }
 }
 
-function encodeBytes(buffer) {
+function encodeBytes(buffer: any) {
   var sep = Buffer.from(buffer.length + ":", "utf-8");
-  var final = utils.bufJoin([sep, buffer]);
+  var final = bufJoin([sep, buffer]);
   return final;
 }
 
-function encodeString(text) {
+function encodeString(text: any) {
   var buffer = Buffer.from(text);
   var l = buffer.length;
   return Buffer.from(l + ":" + text);
 }
 
-function encodeInt(n) {
+function encodeInt(n: any) {
   return Buffer.from("i" + n + "e", "utf-8");
 }
 
-function encodeList(elems) {
+function encodeList(elems: any) {
   var arr = Buffer.from("l", "utf-8");
   for (elem of elems) {
     var elem = bencode(elem);
-    arr = utils.bufJoin([arr, elem]);
+    arr = bufJoin([arr, elem]);
   }
-  arr = utils.bufJoin([arr, Buffer.from("e", "utf-8")]);
+  arr = bufJoin([arr, Buffer.from("e", "utf-8")]);
   return arr;
 }
 
-function encodeMap(mp) {
+function encodeMap(mp: any) {
   let start = Buffer.from("d", "utf-8");
   for (let key of mp) {
     let buf1 = bencode(key[0]);
     let buf2 = bencode(key[1]);
-    start = utils.bufJoin([start, buf1, buf2]);
+    start = bufJoin([start, buf1, buf2]);
   }
-  start = utils.bufJoin([start, Buffer.from("e", "utf-8")]);
+  start = bufJoin([start, Buffer.from("e", "utf-8")]);
   return start;
 }
 
-function bendecode(data) {
+function bendecode(data: any) {
   return decode(0, data).result;
 }
 
-function decode(i, data) {
+function decode(i: number, data: any): any {
   while (i < data.length) {
     let char = data[i];
     i += 1;
@@ -79,7 +79,7 @@ function decode(i, data) {
   }
 }
 
-function decodeMap(i, data) {
+function decodeMap(i: number, data: any) {
   var map = new Map();
   while (i < data.length) {
     if (data[i] == E) {
@@ -88,13 +88,13 @@ function decodeMap(i, data) {
     }
     let key = decodeString(i, data);
     let val = decode(key.index, data);
-    map[key.result] = val.result;
+    map.set(key.result, val.result);
     i = val.index;
   }
   return { index: i, result: map };
 }
 
-function decodeList(i, data) {
+function decodeList(i: number, data: any) {
   let list = [];
   while (i < data.length) {
     if (data[i] == E) {
@@ -108,7 +108,7 @@ function decodeList(i, data) {
   return { index: i, result: list };
 }
 
-function decodeInt(i, data) {
+function decodeInt(i: number, data: any) {
   let n = "";
   while (i < data.length) {
     if (data[i] == E) {
@@ -121,7 +121,7 @@ function decodeInt(i, data) {
   return { index: i, result: n };
 }
 
-function decodeString(i, data) {
+function decodeString(i: number, data: any) {
   let text = "";
   while (data[i] != COLON) {
     text = text + data[i];
@@ -137,11 +137,11 @@ function decodeString(i, data) {
   return { index: i, result: key };
 }
 
-function benWrite(data, path) {
+function benWrite(data: any, path: any) {
   var fd = fs.openSync(path, "w");
   var bits = bencode(data);
   fs.writeSync(fd, bits);
   return path;
 }
 
-module.exports = { benWrite };
+export { benWrite };
