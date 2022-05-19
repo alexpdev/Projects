@@ -11,25 +11,26 @@
   </section>
   <div class="block">
     <form  id="torrentform">
-      <div class="file has-name is-fullwidth is-primary">
-        <label for="path" class="file-label">
-          <input
-            type="file"
-            id="pathselection"
-            class="file-input"
-            name="contents"
-            v-on:change="openModal()"
-          />
-          <span class="file-cta">
-            <span class="file-icon">
-              <i class="fas fa-upload"></i>
-            </span>
-            <span class="file-label"> Path</span>
-          </span>
-          <span class="file-name">
-            {{ formData.path }}
-          </span>
-        </label>
+      <div class="field">
+        <div class="level">
+          <div class="level-left">
+            <button
+              class="button is-primary"
+              type="button"
+              @click="openModal">
+              Path to torrent...
+            </button>
+          </div>
+          <div class="level-right">
+            <div class="level-item">
+              <input
+              type="text"
+              class="input is-small"
+              v-model="formData.path"
+              readonly>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="field">
         <label for="output" class="label">Save To</label>
@@ -146,12 +147,9 @@
 </template>
 
 <script lang="ts">
+import { ipcRenderer } from "electron";
 import { defineComponent } from "vue";
 import image from "./../assets/torrentfile.png";
-import { TorrentV2, Torrent, TorrentV3 } from "../torrentfilejs/torrent";
-import { dialog } from "@electron/remote";
-
-
 
 export default defineComponent({
   name: "TorrentForm",
@@ -191,41 +189,8 @@ export default defineComponent({
     };
   },
   methods: {
-    openModal() {
-      let pathname = "";
-      if (process.platform !== 'darwin') {
-        dialog.showOpenDialog({
-            title: 'Select the .torrent file...',
-            buttonLabel: 'Upload',
-            filters: [],
-            properties: ['openFile']
-        }).then(file => {
-          let filepath = file.filePaths[0].toString();
-          console.log(file.canceled);
-            if (!file.canceled) {
-              pathname = filepath;
-            }
-        }).catch(err => {
-            console.log(err);
-        });
-    } else {
-        dialog.showOpenDialog({
-            title: 'Select the File to be uploaded',
-            buttonLabel: 'Upload',
-            filters: [],
-            properties: ['openFile', 'openDirectory']
-        }).then(file => {
-            console.log(file.canceled);
-            if (!file.canceled) {
-              let filepath = file.filePaths[0].toString();
-              pathname = filepath;
-            }
-        }).catch(err => {
-            console.log(err);
-        });
-      }
-      this.formData.path = pathname;
-      this.formData.output = pathname + ".torrent";
+    openModal(event: any) {
+      // ipcRenderer.send("getContents");
     },
     submitFormData(event: any) {
       const args = this.$data.formData;
@@ -240,17 +205,6 @@ export default defineComponent({
         args.source,
         args.output,
       ];
-      let torrent;
-      if (args.version === "1") {
-        torrent = new Torrent(...params);
-      } else if (args.version == "2") {
-        torrent = new TorrentV2(...params);
-      } else {
-        torrent = new TorrentV3(...params);
-      }
-      torrent.assemble();
-      torrent.write();
-      return torrent;
     },
   },
 });
