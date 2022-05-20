@@ -1,8 +1,11 @@
 // electron/electron.js
 const path = require('path');
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 
 const isDev = process.env.IS_DEV == "true" ? true : false;
+
+const ipc = ipcMain
+let win, dlog;
 
 function createWindow() {
   // Create the browser window.
@@ -11,12 +14,15 @@ function createWindow() {
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      nodeIntegration: true,
+      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
+      enableRemoteModule: true,
+      contextIsolation: false,
     },
   });
 
   // and load the index.html of the app.
   // win.loadFile("index.html");
+  win = mainWindow;
   mainWindow.loadURL(
     isDev
       ? 'http://localhost:3000'
@@ -48,3 +54,18 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
+
+// ipc.on("getContent",(event, payload) => {
+//   console.log(win);
+//   console.log("some text");
+//   console.log(dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] }));
+// } )
+
+
+const getFileFromUser = () => {
+  const files = dialog.showOpenDialog({
+    properties: ['openFile']
+  });
+  if (!files) {return;}
+  console.log(files);
+}

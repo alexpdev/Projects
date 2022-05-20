@@ -11,6 +11,7 @@
 </template>
 
 <script lang="ts">
+
 import { defineComponent, reactive, ref, toRefs } from "vue";
 import TorrentForm from "./components/TorrentForm.vue";
 
@@ -31,11 +32,17 @@ export default defineComponent({
 </script>
 
 <style>
+body {
+  background-color: #39434d;
+}
+.label {
+  color: white;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #17241f;
+  color: #fff;
 }
 </style>

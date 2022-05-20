@@ -147,9 +147,13 @@
 </template>
 
 <script lang="ts">
-import { ipcRenderer } from "electron";
+
 import { defineComponent } from "vue";
 import image from "./../assets/torrentfile.png";
+import {Torrent, TorrentV2, TorrentV3} from "../torrentfilejs/torrent";
+const { remote, ipcRenderer } = require("electron");
+const mainProcess = remote.require("../../electron/electron");
+
 
 export default defineComponent({
   name: "TorrentForm",
@@ -190,7 +194,7 @@ export default defineComponent({
   },
   methods: {
     openModal(event: any) {
-      // ipcRenderer.send("getContents");
+      mainProcess.getFileFromUser();
     },
     submitFormData(event: any) {
       const args = this.$data.formData;
