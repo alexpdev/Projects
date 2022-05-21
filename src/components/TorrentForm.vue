@@ -12,24 +12,26 @@
   <div class="block">
     <form  id="torrentform">
       <div class="field">
-        <div class="level">
-          <div class="level-left">
+        <div class="file has-name">
+          <label for="torrent" class="file-label">
             <button
-              class="button is-primary"
-              type="button"
-              @click="openModal">
-              Path to torrent...
-            </button>
-          </div>
-          <div class="level-right">
-            <div class="level-item">
-              <input
-              type="text"
-              class="input is-small"
-              v-model="formData.path"
-              readonly>
-            </div>
-          </div>
+            name="torrent"
+            class="button"
+            @click="openModal()"
+
+            >openfile</button>
+            <span class="file-cta">
+              <span class="file-icon">
+                <i class="fas fa-upload"></i>
+              </span>
+              <span class="file-label">
+                choose a file..
+              </span>
+            </span>
+            <span class="file-name">
+              {{ formData.path }}
+            </span>
+          </label>
         </div>
       </div>
       <div class="field">
@@ -151,8 +153,6 @@
 import { defineComponent } from "vue";
 import image from "./../assets/torrentfile.png";
 import {Torrent, TorrentV2, TorrentV3} from "../torrentfilejs/torrent";
-const { remote, ipcRenderer } = require("electron");
-const mainProcess = remote.require("../../electron/electron");
 
 
 export default defineComponent({
@@ -167,7 +167,7 @@ export default defineComponent({
         privat: false,
         source: "",
         comment: "",
-        path: "",
+        path: "...",
         output: "",
         announce: "",
         version: "",
@@ -193,8 +193,14 @@ export default defineComponent({
     };
   },
   methods: {
-    openModal(event: any) {
-      mainProcess.getFileFromUser();
+    openModal() {
+      // console.log(window.ipc, window.ipcrender)
+      console.log(window);
+      window.ipc.send("openFileExplorer",[]);
+      let reader = new FileReader();
+      reader.onload = () => {
+        this.formData.path = (reader.result as string);
+      };
     },
     submitFormData(event: any) {
       const args = this.$data.formData;

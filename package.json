@@ -1,6 +1,7 @@
 {
   "name": "torrentfilejs",
   "appId": "com.torrentfilejs.app",
+  "description": "torrentfile electron app",
   "private": true,
   "copyright": "Copyright © 2019 ${author}",
   "version": "0.1.0",
@@ -11,10 +12,7 @@
     "dist/**/*",
     "electron/**/*"
   ],
-  "directories": {
-    "buildResources": "assets",
-    "output": "dist_electron"
-  },
+  "build": {},
   "nsis": {
     "oneClick": false,
     "allowToChangeInstallationDirectory": true
@@ -40,7 +38,11 @@
     "font-awesome": "^4.7.0",
     "prettier": "^2.6.2",
     "sass": "^1.51.0",
-    "vue": "^3.2.25"
+    "vue": "^3.2.25",
+    "vue-electron": "^1.0.6",
+    "vue-loader": "^17.0.0",
+    "vue-router": "^4.0.15",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.3.3",

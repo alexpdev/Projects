@@ -1,8 +1,13 @@
 // electron/electron.js
 const path = require('path');
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { protocol, app, BrowserWindow, ipcMain, dialog } = require('electron');
+
 
 const isDev = process.env.IS_DEV == "true" ? true : false;
+
+protocol.registerSchemesAsPrivileged([
+  { scheme: 'app', privileges: { secure: true, standard: true } }
+])
 
 const ipc = ipcMain
 let win, dlog;
@@ -15,10 +20,11 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
-      enableRemoteModule: true,
-      contextIsolation: false,
+      contextIsolation: true,
+      webSecurity: false
     },
   });
+  console.log(mainWindow);
 
   // and load the index.html of the app.
   // win.loadFile("index.html");
@@ -26,12 +32,8 @@ function createWindow() {
   mainWindow.loadURL(
     isDev
       ? 'http://localhost:3000'
-      : `file://${path.join(__dirname, '../dist/index.html')}`
+      : `file://${path.join(__dirname, '../index.html')}`
   );
-  // Open the DevTools.
-  if (isDev) {
-    mainWindow.webContents.openDevTools();
-  }
 }
 
 // This method will be called when Electron has finished
@@ -46,6 +48,12 @@ app.whenReady().then(() => {
   })
 });
 
+app.on('activate', () => {
+  if (win === null) {
+    createWindow();
+  }
+});
+
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
@@ -55,11 +63,9 @@ app.on('window-all-closed', () => {
   }
 });
 
-// ipc.on("getContent",(event, payload) => {
-//   console.log(win);
-//   console.log("some text");
-//   console.log(dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] }));
-// } )
+ipc.on("openFileExplorer",(event, payload) => {
+  dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] });
+})
 
 
 const getFileFromUser = () => {
@@ -68,4 +74,19 @@ const getFileFromUser = () => {
   });
   if (!files) {return;}
   console.log(files);
+}
+
+// Exit cleanly on request from parent process in development mode.
+if (isDev) {
+  if (process.platform === 'win32') {
+    process.on('message', (data) => {
+      if (data === 'graceful-exit') {
+        app.quit()
+      }
+    })
+  } else {
+    process.on('SIGTERM', () => {
+      app.quit()
+    })
+  }
 }
