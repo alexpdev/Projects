@@ -16,5 +16,21 @@ contextBridge.exposeInMainWorld('ipc', {
   },
   receive: (channel, func) => {
     ipcRenderer.on(channel, (event, ...args) => func(...args));
-  }
+  },
+  once: (channel, func) => {
+    ipcRenderer.once(channel, (event, ...args) => {
+      func(...args);
+    })
+  },
+  invoke: (channel, arg) => {
+    ipcRenderer.invoke(channel, arg).then((result) => {
+      return result;
+    })
+  },
+  sendSync: (channel, func) => {
+    ipcRenderer.sendSync(channel, (event, ...args) => {
+      func(...args);
+    })
+  },
+
 })

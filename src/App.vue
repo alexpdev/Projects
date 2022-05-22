@@ -11,8 +11,7 @@
 </template>
 
 <script lang="ts">
-
-import { defineComponent, reactive, ref, toRefs } from "vue";
+import { defineComponent } from "vue";
 import TorrentForm from "./components/TorrentForm.vue";
 
 

@@ -10,50 +10,70 @@
     </div>
   </section>
   <div class="block">
-    <form  id="torrentform">
+    <form id="torrentform">
       <div class="field">
-        <div class="file has-name">
-          <label for="torrent" class="file-label">
+        <label for="path" class="label">Path</label>
+        <div class="columns">
+          <div class="column is-6">
+            <input class="input" type="text" v-model="formData.path"/>
+          </div>
+          <div class="column is-1">
             <button
-            name="torrent"
-            class="button"
-            @click="openModal()"
-
-            >openfile</button>
-            <span class="file-cta">
-              <span class="file-icon">
-                <i class="fas fa-upload"></i>
-              </span>
-              <span class="file-label">
-                choose a file..
-              </span>
+              name="torrent"
+              class="button is-primary"
+              type="button"
+              @click="selectFolder()"
+            >
+            <span class="icon">
+              <i class="fas fa-folder-open"></i>
             </span>
-            <span class="file-name">
-              {{ formData.path }}
+            <span>
+              select folder
             </span>
-          </label>
+            </button>
+          </div>
+          <div class="column is-2"></div>
+          <div class="column is-1">
+            <button
+              name="torrent"
+              class="button is-primary"
+              type="button"
+              @click="selectFile()"
+            >
+            <span class="icon">
+              <i class="fas fa-file-import"></i>
+            </span>
+            <span>
+              select file..
+            </span>
+            </button>
+          </div>
         </div>
       </div>
       <div class="field">
         <label for="output" class="label">Save To</label>
-        <input
-          type="text"
-          class="input"
-          v-model="formData.output"
-          id="output"
-          name="output"
-          placeholder="/path/to/save/location.torrent"
-        />
+        <p class="control">
+          <input
+            type="text"
+            class="input"
+            v-model="formData.output"
+            id="output"
+            name="output"
+            placeholder="/path/to/save/location.torrent"
+          />
+        </p>
       </div>
       <div class="field">
         <label for="comment">Comment</label>
-        <input
-          type="text"
-          class="input"
-          v-model="formData.comment"
-          name="comment"
-          id="comment"
-        />
+        <p class="control">
+          <input
+            type="text"
+            class="input"
+            v-model="formData.comment"
+            name="comment"
+            id="comment"
+          />
+        </p>
       </div>
       <div class="field">
         <label class="label" for="source">Source</label>
@@ -149,11 +169,10 @@
 </template>
 
 <script lang="ts">
-
 import { defineComponent } from "vue";
 import image from "./../assets/torrentfile.png";
-import {Torrent, TorrentV2, TorrentV3} from "../torrentfilejs/torrent";
-
+import { PathReturn } from "../types/windowType";
+import { Torrent, TorrentV2, TorrentV3 } from "../torrentfilejs/torrent";
 
 export default defineComponent({
   name: "TorrentForm",
@@ -193,14 +212,13 @@ export default defineComponent({
     };
   },
   methods: {
-    openModal() {
-      // console.log(window.ipc, window.ipcrender)
-      console.log(window);
-      window.ipc.send("openFileExplorer",[]);
-      let reader = new FileReader();
-      reader.onload = () => {
-        this.formData.path = (reader.result as string);
-      };
+    selectFile() {
+      let result = window.ipc.invoke("openFileExplorer", {});
+      this.formData.path = result;
+    },
+    selectFolder() {
+      let result = window.ipc.invoke("openFolderExplorer", {});
+      this.formData.path = result;
     },
     submitFormData(event: any) {
       const args = this.$data.formData;
