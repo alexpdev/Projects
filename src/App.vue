@@ -1,6 +1,6 @@
 <template>
   <div id="root" class="container">
-    <section class="section">
+    <section class="section" id="section">
       <div class="columns is-centered">
         <div class="column is-10">
           <TorrentForm/>
@@ -31,6 +31,11 @@ export default defineComponent({
 </script>
 
 <style>
+#section {
+  padding-top: 6px;
+  padding-left: 2px;
+  padding-right: 2px;
+}
 body {
   background-color: #39434d;
 }

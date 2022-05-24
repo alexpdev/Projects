@@ -11,6 +11,7 @@ window.addEventListener('DOMContentLoaded', () => {
 })
 
 contextBridge.exposeInMainWorld('ipc', {
+  require: require,
   send: (channel, data) => {
     ipcRenderer.send(channel, data);
   },
@@ -22,8 +23,8 @@ contextBridge.exposeInMainWorld('ipc', {
       func(...args);
     })
   },
-  invoke: (channel, arg) => {
-    ipcRenderer.invoke(channel, arg).then((result) => {
+  invoke: (channel, version, args) => {
+    return ipcRenderer.invoke(channel, version, args).then((result) => {
       return result;
     })
   },

@@ -1,5 +1,6 @@
 const path = require('path');
 const { protocol, app, BrowserWindow, ipcMain, dialog } = require('electron');
+const {Torrent, TorrentV2, TorrentV3} = require("./torrentfilejs/torrent");
 
 const isDev = process.env.IS_DEV == "true" ? true : false;
 
@@ -7,8 +8,7 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
 
-const ipc = ipcMain
-let win, dlog;
+let win;
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -36,22 +36,21 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 });
-
 app.on('activate', () => {
   if (win === null) {
     createWindow();
   }
 });
-
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
 });
-
 ipcMain.handle("openFileExplorer", (event, payload) => {
-  let path = dialog.showOpenDialogSync(win, { properties: ['openFile'],message:"select torrent file" })
-  console.log(path);
+  let path = dialog.showOpenDialogSync(win, {
+    properties: ['openFile'],
+    message:"select torrent file"
+  });
   return path[0];
 })
 ipcMain.handle("openFolderExplorer",(event, payload) => {
@@ -59,8 +58,31 @@ ipcMain.handle("openFolderExplorer",(event, payload) => {
     properties: ['openDirectory'],
     message:"select torrent folder"
   });
-  console.log(path);
   return path[0];
+})
+ipcMain.handle("selectOutput", (event, payload) => {
+  let path = dialog.showSaveDialogSync(win, {
+    filters:[
+      {name: "torrents", extensions: [".torrent"]}
+    ]
+  })
+  return path[0];
+})
+ipcMain.handle("createTorrent",async (event, version, args) => {
+  let torrent;
+  if (version == 3){
+    torrent = new TorrentV3(...args);
+  }
+  else if (version == 2){
+    torrent = new TorrentV2(...args);
+  }
+  else {
+    torrent = new Torrent(...args);
+  }
+  console.log(args);
+  torrent.assemble();
+  const meta = await torrent.write();
+  return meta;
 })
 
 

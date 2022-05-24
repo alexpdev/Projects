@@ -1,21 +1,21 @@
-import fs from "fs";
-import Path from "path";
+const fs = require("fs");
+const Path = require("path");
 
-function exists(path: string) {
-  return fs.access(path, (err: any) => {
+function exists(path) {
+  return fs.access(path, (err) => {
     if (err) return false;
     return true;
   });
 }
 
-function humanizeBytes(amount: number) {
+function humanizeBytes(amount) {
   if (amount < 1024) return new String(amount);
   if (1024 <=  amount && amount < 1048576) return amount / 1024 + " KiB";
   if (1048576 <= amount && amount < 1073741824) return amount / 1048567 + " MiB";
   return amount / 1073741824 + " GiB";
 }
 
-function normalizePieceLength(pieceLength: any) {
+function normalizePieceLength(pieceLength) {
   if (typeof pieceLength === "string") pieceLength = parseInt(pieceLength);
   if (13 < pieceLength && pieceLength <= 27) return Math.pow(2, pieceLength);
   if (pieceLength > 28) {
@@ -25,23 +25,16 @@ function normalizePieceLength(pieceLength: any) {
   throw "Incorrect input for `pieceLength`. Acceptable values include numbers 14 - 27 or any perfect power of 2 between 2^14 and 2^27.";
 }
 
-function getPieceLength(size: number) {
+function getPieceLength(size) {
   let exp = 14;
   while (size / Math.pow(2, exp) > 200 && exp < 25) exp += 1;
   return Math.pow(2, exp);
 }
 
-interface fstats {
-  type?: string,
-  files?: string[],
-  file?: string,
-  path?: string,
-}
-
-const traverse = (path: string, result: any[] = []) => {
+const traverse = (path, result = []) => {
   fs.readdirSync(path).forEach((file) => {
     const fpath = Path.resolve(path, file);
-    const stats: fstats = { file, path: fpath };
+    const stats = { file, path: fpath };
     if (fs.statSync(fpath).isDirectory()) {
       stats.type = "dir";
       stats.files = [];
@@ -54,16 +47,12 @@ const traverse = (path: string, result: any[] = []) => {
   return result;
 };
 
-interface fileList {
-  size: number,
-  files: string[]
-}
 
-function fileListTotal(path: string): fileList {
+function fileListTotal(path) {
   const stats = fs.statSync(path);
   if (stats.isFile()) return { files: [path], size: stats.size };
   let total = 0;
-  let file_list: string[] = [];
+  let file_list = [];
   for (let fd of fs.readdirSync(path)) {
     const fpath = Path.resolve(path, fd);
     var result = fileListTotal(fpath);
@@ -73,33 +62,30 @@ function fileListTotal(path: string): fileList {
   return { size: total, files: file_list };
 }
 
-function pathSize(path: string): number {
+function pathSize(path) {
   const file_list = fileListTotal(path);
   return file_list.size;
 }
 
-function getFileList(path: string): string[] {
+function getFileList(path) {
   const result = fileListTotal(path);
   return result.files;
 }
 
-interface fileProps extends fileList {
-    pieceLength: number;
-}
 
-function pathStat(path: string): fileProps {
+function pathStat(path) {
   const { size, files } = fileListTotal(path);
   const pieceLength = getPieceLength(size);
   return { files: files, size: size, pieceLength: pieceLength };
 }
 
-function pathPieceLength(path: string): number {
+function pathPieceLength(path) {
   const size = pathSize(path);
   return getPieceLength(size);
 }
 
-function nextPow2(value: any) {
-  if (<any>!value & (value - 1) && value) {
+function nextPow2(value) {
+  if (!value & (value - 1) && value) {
     return value;
   }
   let start = 1;
@@ -109,25 +95,25 @@ function nextPow2(value: any) {
   return start;
 }
 
-function isfile(path: string): boolean {
+function isfile(path) {
   return fs.statSync(path).isFile();
 }
 
-function isdir(path: string): boolean {
+function isdir(path) {
   return fs.statSync(path).isDirectory();
 }
 
-function getsize(path: string): number {
+function getsize(path) {
   return fs.statSync(path).size;
 }
 
-function pathparts(from: string, to: string) {
+function pathparts(from, to) {
   let rel = Path.relative(from, to);
   let arr = rel.split(Path.sep);
   return arr;
 }
 
-function bufJoin(arr: any) {
+function bufJoin(arr) {
   let total = 0;
   for (var i = 0; i < arr.length; i++) {
     total += arr[i].length;
@@ -135,7 +121,7 @@ function bufJoin(arr: any) {
   return Buffer.concat(arr, total);
 }
 
-export {
+module.exports = {
   nextPow2,
   pathPieceLength,
   pathSize,

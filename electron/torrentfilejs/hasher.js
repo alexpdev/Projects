@@ -1,12 +1,12 @@
-import crypto from "crypto";
-import fs from "fs";
-import {Buffer} from "buffer";
-import {bufJoin, nextPow2, getsize} from "./utils";
+const crypto = require("crypto");
+const fs = require("fs");
+const {Buffer} = require("buffer");
+const {bufJoin, nextPow2, getsize} = require("./utils");
 
 const BLOCKSIZE = 2 ** 14;
 const HASHSIZE = 32;
 
-function merkleRoot(blocks: any): any {
+function merkleRoot(blocks) {
   if (blocks.length > 0) {
     while (blocks.length > 1) {
       let arr = [];
@@ -30,13 +30,7 @@ function merkleRoot(blocks: any): any {
 }
 
 class Hasher1 {
-  pieceLength: number;
-  files: any[];
-  total: number;
-  index: number;
-  current: any;
-  pieces: any[];
-  constructor(files: string[], pieceLength: number) {
+  constructor(files, pieceLength) {
     this.pieceLength = pieceLength;
     this.files = files;
     var sizes = files.map((file) => {
@@ -59,7 +53,7 @@ class Hasher1 {
     return false;
   }
 
-  handlePartial(buffer: any) {
+  handlePartial(buffer) {
     while (buffer.length < this.pieceLength && this.nextFile()) {
       var target = this.pieceLength - buffer.length;
       var temp = Buffer.alloc(target);
@@ -70,7 +64,7 @@ class Hasher1 {
     return buffer;
   }
 
-  hash(buffer: any) {
+  hash(buffer) {
     var shasum = crypto.createHash("sha1");
     shasum.update(buffer);
     var result = shasum.digest();
@@ -103,13 +97,7 @@ class Hasher1 {
 }
 
 class Hasher2 {
-  pieceLength: number;
-  root: any;
-  pieceLayer: any;
-  num_blocks: number;
-  current: any;
-  layerHashes: any[];
-  constructor(file: string, pieceLength: number) {
+  constructor(file, pieceLength) {
     this.pieceLength = pieceLength;
     this.root = null;
     this.pieceLayer = null;
@@ -119,7 +107,7 @@ class Hasher2 {
     this.processFile(current);
   }
 
-  processFile(fd: number) {
+  processFile(fd) {
     while (1) {
       let blocks = [];
       let leaf = Buffer.alloc(BLOCKSIZE);
@@ -151,7 +139,7 @@ class Hasher2 {
     this._calcRoot();
   }
 
-  hash(buffer: any) {
+  hash(buffer) {
     var shasum = crypto.createHash("sha256");
     shasum.update(buffer);
     return shasum.digest();
@@ -169,7 +157,7 @@ class Hasher2 {
       }
       let result = merkleRoot(arr);
       for (let j = 0; j < remainder; j++) {
-        let buffer = new (Buffer.from(result) as any);
+        let buffer = new Buffer.from(result);
         this.layerHashes.push(buffer);
       }
     }
@@ -179,17 +167,7 @@ class Hasher2 {
 }
 
 class Hasher3 {
-  pieceLength: number;
-  root: any;
-  pieceLayer: any;
-  paddingPiece: any;
-  paddingFile: any;
-  total: number;
-  pieces: any[];
-  num_blocks: number;
-  current: any;
-  layerHashes: any[];
-  constructor(file: string, pieceLength: number) {
+  constructor(file, pieceLength) {
     this.pieceLength = pieceLength;
     this.root = null;
     this.pieces = [];
@@ -203,7 +181,7 @@ class Hasher3 {
     this.processFile(current);
   }
 
-  processFile(fd: number) {
+  processFile(fd) {
     while (1) {
       let blocks = [];
       let plength = this.pieceLength;
@@ -248,7 +226,7 @@ class Hasher3 {
     this._calcRoot();
   }
 
-  hash(buffer: any) {
+  hash(buffer) {
     var shasum = crypto.createHash("sha256");
     shasum.update(buffer);
     return shasum.digest();
@@ -277,4 +255,4 @@ class Hasher3 {
   }
 }
 
-export { Hasher1, Hasher2, Hasher3 };
+module.exports =  { Hasher1, Hasher2, Hasher3 };

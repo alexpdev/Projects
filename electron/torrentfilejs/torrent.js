@@ -1,28 +1,20 @@
-import Path from "path";
-import fs from "fs";
-import {benWrite} from "./jsben";
-import { isdir, normalizePieceLength, pathPieceLength, fileListTotal, isfile, getsize, bufJoin, pathparts } from "./utils";
-import { Buffer } from "buffer";
-import { Hasher1, Hasher2, Hasher3 } from "./hasher";
+const Path = require("path");
+const fs = require("fs");
+const {benWrite} = require("./jsben");
+const { isdir, normalizePieceLength, pathPieceLength, fileListTotal, isfile, getsize, bufJoin, pathparts } = require("./utils");
+const { Buffer } = require( "buffer");
+const { Hasher1, Hasher2, Hasher3 } = require("./hasher");
 
 class TorrentFile {
-  info: any;
-  meta: any;
-  name: string;
-  path: string;
-  piecelength: number;
-  outfile: string;
   constructor(
-    path: string = "",
-    announce: string[] = [],
-    httpseed: string[] = [],
-    urllist: string[] = [],
-    piecelength: number = 0,
-    priv: boolean = false,
-    comment: string = '',
-    source: string = '',
-    outfile: string = '',
-    cwd: string = '',
+    path = "",
+    announce = [],
+    piecelength = 0,
+    priv = false,
+    comment = "",
+    source = "",
+    outfile = "",
+    cwd = ""
   ) {
     this.meta = new Map();
     this.info = new Map();
@@ -30,10 +22,7 @@ class TorrentFile {
     this.name = Path.basename(Path.resolve(this.path));
     this.meta.set("created by", "torrentfilejs");
     this.info.set("name", this.name);
-    if (urllist) this.meta.set("url-list", urllist);
-    if (httpseed) this.meta.set("httpseeds", httpseed)
     if (comment) this.info.set("comment", comment);
-    if (httpseed) this.meta.set("url-list", httpseed);
     if (source) this.info.set("source", source);
     if (priv) this.info.set("private", 1);
     if (announce && announce.length > 0) {
@@ -66,11 +55,12 @@ class TorrentFile {
     if (this.outfile) path = this.outfile;
     else  path = this.path + ".torrent";
     benWrite(this.meta, path);
+    return this.meta;
   }
 }
 
 class Torrent extends TorrentFile {
-  constructor(...args: any[]){
+  constructor(...args){
     super(...args)
   }
 
@@ -98,8 +88,7 @@ class Torrent extends TorrentFile {
 }
 
 class TorrentV2 extends TorrentFile{
-  pieceLayers?: any;
-  constructor(...args: any[]){
+  constructor(...args){
     super(...args);
     this.pieceLayers = new Map();
 
@@ -122,7 +111,7 @@ class TorrentV2 extends TorrentFile{
     this.meta.set("info", this.info);
   }
 
-  _traverse(path: string) {
+  _traverse(path) {
     if (isfile(path)) {
       let size = getsize(path);
       if (size == 0) {
@@ -132,7 +121,7 @@ class TorrentV2 extends TorrentFile{
       if (size > this.info.get("piece length")) {
         this.pieceLayers.set(fhash.root, fhash.pieceLayer);
       }
-      let inner: any = [
+      let inner = [
         ["length", size],
         ["pieces root", fhash.root],
       ];
@@ -151,11 +140,7 @@ class TorrentV2 extends TorrentFile{
 }
 
 class TorrentV3 extends TorrentFile{
-  files: any[];
-  pieceLayers: any;
-  pieces: any;
-  hashes: any;
-  constructor(...args: any){
+  constructor(...args){
     super(...args);
     this.files = [];
     this.pieceLayers = [];
@@ -182,10 +167,10 @@ class TorrentV3 extends TorrentFile{
     this.meta.set("info", this.info);
   }
 
-  _traverse(path: string) {
+  _traverse(path) {
     if (isfile(path)) {
       let size = getsize(path);
-      let parts: any[] = [
+      let parts = [
         ["length", size],
         ["path", pathparts(this.path, path)],
       ];
@@ -202,7 +187,7 @@ class TorrentV3 extends TorrentFile{
       if (fhash.paddingFile) {
         this.files.push(fhash.paddingFile);
       }
-      let inner: any[] = [
+      let inner = [
         ["length", size],
         ["pieces root", fhash.root],
       ];
@@ -220,4 +205,4 @@ class TorrentV3 extends TorrentFile{
   }
 }
 
-export { Torrent, TorrentV2, TorrentV3 };
+module.exports = { Torrent, TorrentV2, TorrentV3 };
