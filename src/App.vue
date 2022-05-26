@@ -1,7 +1,7 @@
 <template>
   <div id="root" class="container">
     <section class="section" id="section">
-      <div class="tabs is-medium">
+      <div class="tabs is-medium is-primary">
         <ul>
           <li class="is-active"><a>Pictures</a></li>
           <li><a>Music</a></li>
