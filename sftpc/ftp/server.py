@@ -4,7 +4,6 @@ import socket
 import time
 import struct
 import logging
-from ftp.dotenv import LOAD_ENVARS
 
 logger = logging.getLogger(__name__)
 fh = logging.FileHandler('./srvdbg.log')
@@ -15,13 +14,11 @@ fh.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
 ch.setFormatter(formatter)
-PORT = 25611
-IP = "127.0.0.1"
 BUFF_SIZE = 1024
 
 class Server:
 
-    def __init__(self,host=None,port=PORT):
+    def __init__(self,host=None,port=None):
         if not host:
             host = socket.gethostname()
         self.host = host
@@ -120,12 +117,3 @@ class Server:
             if data in commands:
                 commands.get(data)()
             data = None
-
-if __name__ == '__main__':
-    LOAD_ENVARS()
-    args = sys.argv[1:]
-    if args:
-        server = Server(port=args[0])
-    else:
-        server = Server()
-    server.run()

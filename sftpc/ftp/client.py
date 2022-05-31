@@ -3,7 +3,6 @@
 
 import os
 from ftplib import FTP
-import logging
 
 class Client:
     """
