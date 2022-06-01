@@ -23,7 +23,7 @@ export PRINT_HELP_PYSCRIPT
 
 
 BROWSER := python -c "$$BROWSER_PYSCRIPT"
-PROJECTNAME = {{projectname}}
+PROJECTNAME = emptyfile
 help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
@@ -57,37 +57,14 @@ lint: ## check style with flake8
 	pydocstyle ${PROJECTNAME} tests
 	pyroma .
 	bandit ${PROJECTNAME}/*
-	pep257 ${PROJECTNAME}
-	prospector ${PROJECTNAME}
-	prospector tests
 
 test: ## run tests quickly with the default Python
-	pytest tests
-	pytest tests --cov
-	pytest tests --pylint
+	tox
 
-coverage: ## check code coverage quickly with the default Python
-	coverage run -m pytest tests --cov --pylint
-	coverage xml -o coverage.xml
-
-push: lint docs clean test coverage
+push: lint clean test ## push to remote github repo
 	git add .
 	git commit -m "generic message"
 	git push
 
-docs: ## generate Sphinx HTML documentation, including API docs
-	rm -rf docs
-	mkdocs build
-
-release: dist ## package and upload a release
+release: clean lint test ## package and upload a release
 	twine upload dist/*
-
-dist: clean ## builds source and wheel package
-	python setup.py build
-	python setup.py sdist
-	python setup.py bdist_wheel
-	python setup.py bdist_egg
-	ls -l dist
-
-install: clean ## install the package to the active Python's site-packages
-	python setup.py install
