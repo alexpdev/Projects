@@ -3,7 +3,7 @@ import argparse
 from pathlib import Path
 from emptyfile.remover import Remover
 
-def execute(args):
+def execute(args=None):
     if not args:
         if not sys.argv[1:]:
             args = ["-h"]
