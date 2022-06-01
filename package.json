@@ -1,7 +1,7 @@
 {
   "name": "emptyfile",
-  "version": "0.1.0",
-  "description": "empty file remover.",
+  "version": "0.1.1",
+  "description": "empty file/folder remover.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/alexpdev/emptyfile.git"

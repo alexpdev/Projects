@@ -1,9 +1,9 @@
+import os
 import json
 from setuptools import setup, find_packages
 
-
-params = json.load(open("package.json"))
-
+pkg = os.path.join(os.path.dirname(os.path.abspath(__file__)), "package.json")
+params = json.load(open(pkg))
 
 setup(
     name=params["name"],
@@ -14,5 +14,7 @@ setup(
     license=open("LICENSE", "rt").read(),
     zip_safe=False,
     entry_points={"console_scripts": ["emptyfile=emptyfile.__main__:main"]},
-    packages=find_packages()
+    packages=find_packages(),
+    requires=(),
+    include_package_data=True
 )
