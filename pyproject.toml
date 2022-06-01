@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 skips = ["B101"]
 
 [tool.black]
-line-length = 80
+line-length = 79
 
 [tool.autopep8]
 max_line_length = 80
@@ -19,7 +19,7 @@ aggressive = 3
 [tool.pytest.ini_options]
 testpaths = [
     "tests",
-    "torrentfile",
+    "emptyfile",
 ]
 console_output_style = "progress"
 addopts = "--maxfail=5"

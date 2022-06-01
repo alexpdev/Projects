@@ -24,8 +24,8 @@ Module containing the core functionality for the emptyfile program.
 
 import os
 import shutil
-from pathlib import Path
 from argparse import Namespace
+from pathlib import Path
 
 
 class Remover:
@@ -42,7 +42,7 @@ class Remover:
 
     def __init__(self, args: Namespace):
         """
-        Constructor the the Remover class.
+        Construct the the Remover class.
 
         Acts as an entrypoint to the Removal process.
 
@@ -78,13 +78,13 @@ class Remover:
         """
         if os.path.isfile(path):
             return self.removed
-        elif os.path.isdir(path):
+        if os.path.isdir(path):
             if os.path.basename(path) in self.ex_names:
                 print(f"Ignoring {str(path)}...")
                 return self.removed
             try:
                 contents = os.listdir(path)
-            except PermissionError:
+            except PermissionError:  # pragma: nocover
                 print(f"Access denied: {str(path)}")
                 return self.removed
             if len(contents) == 0:
@@ -97,7 +97,8 @@ class Remover:
                 self.remove_empty_dirs(full)
         return self.removed
 
-    def remove(self, path: os.PathLike):
+    @staticmethod
+    def remove(path: os.PathLike):
         """
         Delete files and folders in an unrecoverable way.
 
@@ -140,6 +141,6 @@ class Remover:
             try:
                 for item in path.iterdir():
                     self.remove_empty_files(item)
-            except PermissionError:
+            except PermissionError:  # pragma: nocover
                 print(f"Access denied: {str(path)}")
         return self.removed

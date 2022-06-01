@@ -22,10 +22,12 @@
 Constructor module for the package and cli logic.
 """
 
+import argparse
 import os
 import sys
-import argparse
+
 from emptyfile.remover import Remover
+
 
 def execute(args: list = None) -> argparse.Namespace:
     """
@@ -56,7 +58,7 @@ def execute(args: list = None) -> argparse.Namespace:
         "path",
         help="base directory and starting point.",
         nargs="*",
-        action="store"
+        action="store",
     )
 
     parser.add_argument(
@@ -64,13 +66,13 @@ def execute(args: list = None) -> argparse.Namespace:
         "--dir",
         help="remove empty directories instead of empty files.",
         dest="folders",
-        action="store_true"
+        action="store_true",
     )
 
     parser.add_argument(
         "--exclude-names",
         help="one or more file/directory names that will be ignored while "
-             "searching for items to remove.",
+        "searching for items to remove.",
         nargs="+",
         dest="ex_names",
         default=[],
@@ -78,11 +80,11 @@ def execute(args: list = None) -> argparse.Namespace:
 
     parser.add_argument(
         "--exclude-ext",
-        help="one or more file extensions to ignore while searching for items to "
-             "remove.",
+        help="one or more file extensions to be ignored during "
+        "file/directory analysis.",
         nargs="+",
         dest="ex_ext",
-        default=[]
+        default=[],
     )
     exists = os.path.exists
     isdir = os.path.isdir
@@ -92,9 +94,9 @@ def execute(args: list = None) -> argparse.Namespace:
         extfilt = [x for x in ns.ex_ext if exists(x) and isdir(x)]
         if len(extfilt) > 0:
             ns.path = extfilt
-            ns.ex_ext = ns.ex_ext[:-len(extfilt)]
+            ns.ex_ext = ns.ex_ext[: -len(extfilt)]
         else:
             ns.path = [x for x in ns.ex_names if exists(x) and isdir(x)]
-            ns.ex_names = ns.ex_names[:-len(ns.path)]
+            ns.ex_names = ns.ex_names[: -len(ns.path)]
     Remover(nspace)
     return nspace

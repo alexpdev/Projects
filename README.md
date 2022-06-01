@@ -19,13 +19,15 @@
 
 To install EmptyFile, follow these steps:
 
+from __git__
+
 ```bash
-git clone https://github.com/alexpdev/EmptyFiles
+git clone https://github.com/alexpdev/emptyfiles.git
 cd emptyfiles
 pip install .
 ```
 
-or you can find it on PyPi
+from __PyPi__
 
 ```bash
 pip install emptyfile
