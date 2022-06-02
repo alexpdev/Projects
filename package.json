@@ -2,6 +2,9 @@
   "name": "games",
   "version": "1.0.0",
   "description": "* These are games and projects I am doing in my leisure time.",
+  "name": "aftp4me",
+  "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -51,4 +54,7 @@
     "url": "https://github.com/alexpdev/TorrentFile/issues"
   },
   "homepage": "https://github.com/alexpdev/TorrentFile#readme"
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

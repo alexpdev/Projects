@@ -1,6 +1,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 *.dat
 *.pyc
 __pycache__/
@@ -85,6 +86,47 @@ WinRAR*/
 >>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
 =======
 >>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
+=======
+# Byte-compiled / optimized / DLL files
+activate.bat
+autorun.bat
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+>>>>>>> 68defe2c13b2c88af091f0318f6c1558e81de1b0
 
 # C extensions
 *.so
@@ -93,16 +135,20 @@ WinRAR*/
 .Python
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 codacy.sh
 >>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
 =======
 codacy.sh
 >>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
+=======
+>>>>>>> 68defe2c13b2c88af091f0318f6c1558e81de1b0
 build/
 develop-eggs/
 dist/
 downloads/
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -113,6 +159,8 @@ downloads/
 >>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
 =======
 >>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
+=======
+>>>>>>> 68defe2c13b2c88af091f0318f6c1558e81de1b0
 eggs/
 .eggs/
 lib/
@@ -124,13 +172,18 @@ wheels/
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 pip-wheel-metadata/
 =======
 >>>>>>> fee9aa0b7d579efb0c85eaff2d35ef9fdd23a235
+=======
+pip-wheel-metadata/
+>>>>>>> 68defe2c13b2c88af091f0318f6c1558e81de1b0
 share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+<<<<<<< HEAD
 MANIFEST
 =======
 *.egg-info/
@@ -142,11 +195,18 @@ MANIFEST
 .installed.cfg
 *.egg
 >>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
+=======
+# MANIFEST
+>>>>>>> 68defe2c13b2c88af091f0318f6c1558e81de1b0
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
+<<<<<<< HEAD
 *.manifest
+=======
+# *.manifest
+>>>>>>> 68defe2c13b2c88af091f0318f6c1558e81de1b0
 *.spec
 
 # Installer logs
@@ -158,22 +218,30 @@ htmlcov/
 .tox/
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 .nox/
 =======
 >>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
 =======
 >>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
+=======
+.nox/
+>>>>>>> 68defe2c13b2c88af091f0318f6c1558e81de1b0
 .coverage
 .coverage.*
 .cache
 nosetests.xml
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 68defe2c13b2c88af091f0318f6c1558e81de1b0
 coverage.xml
 *.cover
 *.py,cover
 .hypothesis/
 .pytest_cache/
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 cover/
@@ -188,6 +256,8 @@ cover/
 .hypothesis/
 .pytest_cache/
 >>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
+=======
+>>>>>>> 68defe2c13b2c88af091f0318f6c1558e81de1b0
 
 # Translations
 *.mo
@@ -198,12 +268,17 @@ cover/
 local_settings.py
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 db.sqlite3
 db.sqlite3-journal
 =======
 >>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
 =======
 >>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
+=======
+db.sqlite3
+db.sqlite3-journal
+>>>>>>> 68defe2c13b2c88af091f0318f6c1558e81de1b0
 
 # Flask stuff:
 instance/
@@ -213,6 +288,7 @@ instance/
 .scrapy
 
 # Sphinx documentation
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 docs/_build/
@@ -234,6 +310,11 @@ docs/_build/
 >>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
 =======
 >>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
+=======
+docs/_build/
+
+# PyBuilder
+>>>>>>> 68defe2c13b2c88af091f0318f6c1558e81de1b0
 target/
 
 # Jupyter Notebook
@@ -241,11 +322,15 @@ target/
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 68defe2c13b2c88af091f0318f6c1558e81de1b0
 # IPython
 profile_default/
 ipython_config.py
 
 # pyenv
+<<<<<<< HEAD
 <<<<<<< HEAD
 .python-version
 =======
@@ -253,6 +338,9 @@ ipython_config.py
 #   intended to run in multiple environments; otherwise, check them in:
 # .python-version
 >>>>>>> fee9aa0b7d579efb0c85eaff2d35ef9fdd23a235
+=======
+.python-version
+>>>>>>> 68defe2c13b2c88af091f0318f6c1558e81de1b0
 
 # pipenv
 #   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
@@ -267,6 +355,7 @@ __pypackages__/
 # Celery stuff
 celerybeat-schedule
 celerybeat.pid
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
@@ -290,12 +379,23 @@ celerybeat-schedule
 <<<<<<< HEAD
 # Environments
 .env
+=======
+
+# SageMath parsed files
+*.sage.py
+scraper.py
+# Environments
+.env
+_env.py
+_.env
+>>>>>>> 68defe2c13b2c88af091f0318f6c1558e81de1b0
 .venv
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
@@ -313,6 +413,8 @@ env/
 >>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
 =======
 >>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
+=======
+>>>>>>> 68defe2c13b2c88af091f0318f6c1558e81de1b0
 
 # Spyder project settings
 .spyderproject
@@ -323,6 +425,9 @@ env/
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 68defe2c13b2c88af091f0318f6c1558e81de1b0
 # mkdocs documentation
 /site
 
@@ -333,6 +438,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+<<<<<<< HEAD
 *.pyc
 *.pyo
 __pycache__/
@@ -357,3 +463,5 @@ cython_debug/
 >>>>>>> a987bef42cd0e88ec6a5fdcb5327e72946e49de2
 =======
 >>>>>>> ef23a12bae97dfb3a50b44fc52ddd31a32eb4e00
+=======
+>>>>>>> 68defe2c13b2c88af091f0318f6c1558e81de1b0

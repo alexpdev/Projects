@@ -144,3 +144,10 @@ Distributed under the GNU LGPL v3. See `LICENSE` for more information.
 If you encounter any bugs or would like to request a new feature please open a new issue.
 
 [https://github.com/alexpdev/TorrentFile/issues](https://github.com/alexpdev/TorrentFile/issues)
+# FTP
+
+Will fill in later.
+
+TODO:
+add logging
+finish client commands

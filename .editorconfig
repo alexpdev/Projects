@@ -33,11 +33,14 @@ charset = utf-8
 [*.md]
 trim_trailing_whitespace = false
 insert_final_newline = true
+<<<<<<< HEAD
 indent_size = 4
 
 [*.c]
 indent_style = space
 indent_size = 2
+=======
+>>>>>>> 68defe2c13b2c88af091f0318f6c1558e81de1b0
 
 
 [*.{py,c,cpp,java}]
@@ -48,7 +51,11 @@ indent_size = 4
 trim_trailing_whitespace = true
 indent_style = space
 
+<<<<<<< HEAD
 [*.{js,ts,json}]
+=======
+[*.{js,ts}]
+>>>>>>> 68defe2c13b2c88af091f0318f6c1558e81de1b0
 indent_style = space
 indent_size = 2
 

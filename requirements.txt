@@ -1,2 +1,4 @@
 pyben
 tqdm
+pyftpdlib==1.5.6
+pytest==6.2.4
