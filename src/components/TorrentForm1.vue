@@ -1,6 +1,6 @@
 <template>
-  <div class="container p-5 bg-dark text-light">
-    <div class="text-center mb-5">
+  <section id="torrentform" class="hero is-info">
+    <div class="hero-body">
       <div class="container">
         <figure class="image">
           <img :src="image" />
@@ -8,41 +8,42 @@
         <h3 class="subtitle">{{ description }}</h3>
       </div>
     </div>
-    <div class="mt-5">
-      <form id="torrentform" >
-        <div class="row">
-          <div class="col-12 col-lg-4 mb-4">
-            <label for="path" class="label">Path</label>
-            <input
-              class="input"
-              type="text"
-              id="path"
-              v-model="formData.path"
-              readonly/>
-            <button
-            name="torrent"
-            class="button is-info"
-            type="button"
-            @click="selectFolder()">
-            <span class="icon">
-              <i class="fas fa-folder-open"></i>
-            </span>
-            <span> Select Folder</span>
-            </button>
-            <button
-            name="torrent"
-            class="button is-primary"
-            type="button"
-            @click="selectFile()">
-            <span class="icon">
-              <i class="fas fa-file-import"></i>
-            </span>
-            <span>Select File</span>
-            </button>
-        </div>
-      <div class="col-12 col-lg-4">
-        <label for="output" class="label">Save To</label>
+  </section>
+    <form id="torrentform">
+      <label for="path" class="label">Path</label>
+      <div class="field has-addons">
         <input
+        class="input"
+        type="text"
+        id="path"
+        v-model="formData.path"
+        readonly/>
+        <button
+          name="torrent"
+          class="button is-info"
+          type="button"
+          @click="selectFolder()"
+        >
+          <span class="icon">
+            <i class="fas fa-folder-open"></i>
+          </span>
+          <span> Select Folder</span>
+        </button>
+        <button
+          name="torrent"
+          class="button is-primary"
+          type="button"
+          @click="selectFile()"
+        >
+          <span class="icon">
+            <i class="fas fa-file-import"></i>
+          </span>
+           <span>Select File</span>
+        </button>
+      </div>
+      <label for="output" class="label">Save To</label>
+      <div class="field has-addons">
+          <input
             type="text"
             class="input"
             v-model="formData.output"
@@ -61,7 +62,6 @@
           </span>
           <span>Select File</span>
         </button>
-
       </div>
       <div class="field">
         <label for="comment">Comment</label>
@@ -161,10 +161,7 @@
           Submit
         </button>
       </div>
-      </div>
     </form>
-      </div>
-    </div>
     <section class="section">
       <div id='filler' class="box">
         {{element}}
