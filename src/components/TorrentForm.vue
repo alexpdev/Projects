@@ -1,130 +1,148 @@
 <template>
-  <div class="container p-5 bg-dark text-light">
-    <div class="text-center mb-5">
-      <div class="container">
-        <figure class="image">
-          <img :src="image" />
-        </figure>
-        <h3 class="subtitle">{{ description }}</h3>
-      </div>
-    </div>
-    <div class="mt-5">
-      <form id="torrentform" >
-        <div class="row">
-          <div class="col-12 col-lg-4 mb-4">
-            <label for="path" class="label">Path</label>
-            <input
-              class="input"
-              type="text"
-              id="path"
-              v-model="formData.path"
-              readonly/>
+  <div class="container mt-5">
+    <form id="torrentform">
+      <div class="row">
+        <div class="col-10 form-floating">
+          <input
+            class="form-control inp"
+            type="text"
+            id="path"
+            placeholder="*.torrent"
+            v-model="formData.path"
+          />
+          <label for="path">Path</label>
+        </div>
+        <div class="col-2 ">
+          <div class="btn-group-vertical mt-3">
             <button
-            name="torrent"
-            class="button is-info"
-            type="button"
-            @click="selectFolder()">
-            <span class="icon">
-              <i class="fas fa-folder-open"></i>
-            </span>
-            <span> Select Folder</span>
+              name="torrent"
+              class="btn button px-4 py-0"
+              type="button"
+              @click="selectFolder()"
+            >
+              <span class="icon">
+                <i class="fas fa-folder-open"></i>
+              </span>
+              <span> Folder</span>
             </button>
             <button
+              name="torrent"
+              class="btn button px-4 py-0"
+              type="button"
+              @click="selectFile()"
+            >
+              <span class="icon">
+                <i class="fas fa-file-import"></i>
+              </span>
+              <span> &nbsp;File</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-10">
+          <div class="form-floating">
+            <input
+              type="text"
+              class="form-control inp"
+              v-model="formData.output"
+              id="output"
+              name="output"
+              placeholder="path/to/content"
+            />
+            <label for="output">Save To</label>
+          </div>
+        </div>
+        <div class="col-2">
+          <button
             name="torrent"
-            class="button is-primary"
+            class="btn button mt-3 py-2 px-4"
             type="button"
-            @click="selectFile()">
+            @click="selectFile()"
+          >
             <span class="icon">
               <i class="fas fa-file-import"></i>
             </span>
-            <span>Select File</span>
-            </button>
+            <span>File</span>
+          </button>
         </div>
-      <div class="col-12 col-lg-4">
-        <label for="output" class="label">Save To</label>
-        <input
-            type="text"
-            class="input"
-            v-model="formData.output"
-            id="output"
-            name="output"
-            readonly
-          />
-        <button
-          name="torrent"
-          class="button is-primary"
-          type="button"
-          @click="selectFile()"
-        >
-          <span class="icon">
-            <i class="fas fa-file-import"></i>
-          </span>
-          <span>Select File</span>
-        </button>
-
       </div>
-      <div class="field">
-        <label for="comment">Comment</label>
-        <p class="control">
-          <input
-            type="text"
-            class="input"
-            v-model="formData.comment"
-            name="comment"
-            id="comment"
-          />
-        </p>
+      <div class="row">
+        <div class="col-12">
+          <div class="form-floating">
+            <input
+              type="text"
+              class="form-control inp"
+              v-model="formData.comment"
+              name="comment"
+              placeholder="optional"
+              id="comment"
+            />
+            <label for="comment">Comment</label>
+          </div>
+        </div>
       </div>
-      <div class="field">
-        <label class="label" for="source">Source</label>
-        <input type="text" class="input" name="source" id="source" />
+      <div class="row">
+        <div class="col-12">
+          <div class="form-floating">
+            <input
+              type="text"
+              class="form-control inp"
+              placeholder="optional"
+              name="source"
+              id="source"
+            />
+            <label for="source">Source</label>
+          </div>
+        </div>
       </div>
-      <div class="field">
-        <label class="label" for="announce">Trackers</label>
-        <textarea
-          name="announce"
-          id="announce"
-          class="textarea"
-          cols="80"
-          rows="4"
-          v-model="formData.announce"
-        >
-        </textarea>
+      <div class="row">
+        <div class="col-12">
+          <div class="form-floating">
+            <textarea
+              name="announce"
+              id="announce"
+              class="form-control inp"
+              placeholder="https://example..."
+              style="height: 100px"
+              v-model="formData.announce"
+            >
+            </textarea>
+            <label for="announce">Trackers</label>
+          </div>
+        </div>
       </div>
-      <div class="columns">
-        <div class="column is-4">
-          <div class="field">
-            <label class="label" for="private">Private</label>
+      <div class="row">
+        <div class="col-2">
+          <div class="form-check">
             <input
               type="checkbox"
               name="private"
+              class="form-check-input inp"
               id="private"
               v-model="formData.privat"
             />
+            <label class="form-check-label" for="private">Private</label>
           </div>
         </div>
-        <div class="column is-4">
-          <div class="field">
-            <label for="pieceLength" class="label">Piece Length</label>
+        <div class="col-6">
+          <div class="form-floating">
             <select
               name="pieceLength"
               id="pieceLength"
-              class="select"
+              class="form-control inp"
+              placeholder="..."
               v-model="formData.pieceLength"
             >
-              <option
-                v-for="size in sizes"
-                :value="size.Size"
-                :key="size.ID"
-              >
+              <label for="pieceLength" class="label">Piece Length</label>
+              <option v-for="size in sizes" :value="size.Size" :key="size.ID">
                 {{ size.Size }}
               </option>
             </select>
           </div>
         </div>
-        <div class="column is-4">
-          <div class="field">
-            <label for="version" class="label">Meta-Version</label>
+        <div class="col-4">
+          <div class="btn-group-vertical">
             <input
               type="radio"
               class="radio"
@@ -132,7 +150,6 @@
               value="1"
               v-model="formData.version"
             />
-            <label for="1" class="radio">1</label>
             <input
               type="radio"
               class="radio"
@@ -140,7 +157,7 @@
               value="2"
               v-model="formData.version"
             />
-            <label for="2" class="radio">2</label>
+            <label for="1" class="radio">1</label>
             <input
               type="radio"
               class="radio"
@@ -148,33 +165,28 @@
               value="hybrid"
               v-model="formData.version"
             />
+            <label for="2" class="radio">2</label>
             <label for="hybrid" class="radio">hybrid</label>
           </div>
         </div>
       </div>
       <div class="field">
-        <button
-          class="button is-info is-outlined pl-6 pr-6"
-          @click="submitFormData()"
-          type="button"
-        >
+        <button class="button btn" @click="submitFormData()" type="button">
           Submit
         </button>
       </div>
-      </div>
     </form>
-      </div>
+  </div>
+  <section class="section">
+    <div id="filler" class="box">
+      {{ element }}
     </div>
-    <section class="section">
-      <div id='filler' class="box">
-        {{element}}
-      </div>
-    </section>
-    <section class="section">
-      <div class="box">
-        <p>{{ JSON.stringify(formData, null, 2) }}</p>
-      </div>
-    </section>
+  </section>
+  <section class="section">
+    <div class="box">
+      <p>{{ JSON.stringify(formData, null, 2) }}</p>
+    </div>
+  </section>
 </template>
 
 <script lang="ts">
@@ -222,29 +234,30 @@ export default defineComponent({
   methods: {
     fillElement() {
       let element: any = document.getElementById("filler");
-      element.innerHTML = '<progress class="progress is-danger" max="100">30%</progress>';
-      this.element = element
+      element.innerHTML =
+        '<progress class="progress is-danger" max="100">30%</progress>';
+      this.element = element;
     },
     selectFile() {
-      let self:any = this;
+      let self: any = this;
       window.ipc.invoke("openFileExplorer", {}).then((result: string) => {
         self.formData.path = result;
-        self.formData.output = result + '.torrent'
-      })
+        self.formData.output = result + ".torrent";
+      });
     },
     selectFolder() {
       let self: any = this;
       window.ipc.invoke("openFolderExplorer", {}).then((result: string) => {
         self.formData.path = result;
-        self.formData.output = result + '.torrent';
-      })
+        self.formData.output = result + ".torrent";
+      });
     },
     async submitFormData() {
       const args = this.$data.formData;
       // console.log(size, args, pieceLength, version, announce)
       let pieceLength = 0;
-      for (let i = 0; i < this.$data.sizes.length; i++){
-        if (this.$data.sizes[i].Size == args.pieceLength){
+      for (let i = 0; i < this.$data.sizes.length; i++) {
+        if (this.$data.sizes[i].Size == args.pieceLength) {
           pieceLength = this.$data.sizes[i].ID;
           break;
         }
@@ -261,37 +274,25 @@ export default defineComponent({
         args.output,
       ];
       this.fillElement();
-      const result = await window.ipc.invoke(
-        "createTorrent", version, params
-        ).then((result: any) => {
-        return result;
-      })
+      const result = await window.ipc
+        .invoke("createTorrent", version, params)
+        .then((result: any) => {
+          return result;
+        });
     },
   },
 });
 </script>
 
 <style>
-#torrentform {
-  margin-top: 12px;
+.form-control {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
-.file-name,
-.input,
-.textarea,
-.checkbox,
-.select,
+.inp {
+  background: #389;
+}
 .button {
-  border: #e51 solid 2px;
-  border-radius: 2px;
-  background-color: #404440;
-  color: white;
-}
-.input:hover {
-  border-color: #a51;
-  border-width: 2px;
-}
-.input:active,
-.input:focus {
-  border-color: #a51;
+  border: 1px solid #f64;
 }
 </style>

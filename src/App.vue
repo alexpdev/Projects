@@ -1,40 +1,27 @@
 <template>
-  <div id="root" class="container">
-    <section class="section" id="section">
-      <div class="tabs is-medium is-primary">
-        <ul>
-          <li class="is-active"><a>Pictures</a></li>
-          <li><a>Music</a></li>
-          <li><a>Videos</a></li>
-          <li><a>Documents</a></li>
-        </ul>
-      </div>
-      <div class="columns is-centered">
-        <div class="column is-10">
-          <TorrentForm/>
-        </div>
-      </div>
-    </section>
-  </div>
+  <TabBar />
+  <HeroTitle />
+  <TorrentForm />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import TorrentForm from "./components/TorrentForm.vue";
-
+import HeroTitle from "./components/HeroTitle.vue";
+import TabBar from "./components/TabBar.vue";
 
 export default defineComponent({
   name: "App",
   components: {
-    TorrentForm
+    HeroTitle,
+    TorrentForm,
+    TabBar,
   },
   data: () => {
     return {};
   },
-  methods: {
-  },
-  setup() {
-  }
+  methods: {},
+  setup() {},
 });
 </script>
 
