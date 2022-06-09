@@ -1,7 +1,6 @@
 <template>
-  <TabBar />
   <HeroTitle />
-  <TorrentForm />
+  <TabBar />
 </template>
 
 <script lang="ts">

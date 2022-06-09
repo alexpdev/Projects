@@ -1,6 +1,6 @@
 <template>
   <nav class="nav justify-content-center nav-fill" id="tabbar">
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs current">
       <li class="nav-item">
         <a id="create" class="nav-link active" aria-current="page" @click="createTab()">Create</a>
       </li>
@@ -21,14 +21,19 @@
       </li>
     </ul>
   </nav>
+  <TorrentForm/>
 </template>
 
 
 <script lang="ts">
 import {defineComponent} from "vue";
+import TorrentForm from "./TorrentForm.vue"
 
 export default defineComponent({
   name: "TabBar",
+  components: {
+    TorrentForm
+  },
   data() {
     return {
       title: "tabs"
@@ -66,3 +71,10 @@ export default defineComponent({
   },
 })
 </script>
+
+<style>
+.current .nav-link.active{
+  background-color: rgb(90, 48, 48);
+  color: red;
+}
+</style>
