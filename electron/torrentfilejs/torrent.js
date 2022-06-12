@@ -19,6 +19,7 @@ class TorrentFile {
     this.meta = new Map();
     this.info = new Map();
     this.path = path;
+    console.log("setting up attributes");
     this.name = Path.basename(Path.resolve(this.path));
     this.meta.set("created by", "torrentfilejs");
     this.info.set("name", this.name);
@@ -38,10 +39,12 @@ class TorrentFile {
     if (!outfile && cwd) this.outfile = "./" + this.name + ".torrent";
     else this.outfile = outfile;
     this.meta.set("info", this.info);
+    console.log("attributes set up");
   }
 
   sortMeta() {
     let info = this.meta.get("info");
+    console.log("sorting .torrent internals")
     info = new Map([...this.info].sort());
     this.meta.set("info", info);
     let meta = new Map([...this.meta].sort());
@@ -55,6 +58,7 @@ class TorrentFile {
     if (this.outfile) path = this.outfile;
     else  path = this.path + ".torrent";
     benWrite(this.meta, path);
+    console.log("writting to file.")
     return this.meta;
   }
 }

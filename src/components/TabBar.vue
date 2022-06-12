@@ -21,7 +21,7 @@
       </li>
     </ul>
   </nav>
-  <TorrentForm/>
+
 </template>
 
 
@@ -71,10 +71,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style>
-.current .nav-link.active{
-  background-color: rgb(90, 48, 48);
-  color: red;
-}
-</style>

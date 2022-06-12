@@ -1,6 +1,6 @@
 <template>
   <HeroTitle />
-  <TabBar />
+  <TorrentForm/>
 </template>
 
 <script lang="ts">
@@ -8,6 +8,7 @@ import { defineComponent } from "vue";
 import TorrentForm from "./components/TorrentForm.vue";
 import HeroTitle from "./components/HeroTitle.vue";
 import TabBar from "./components/TabBar.vue";
+import ProgressBar from "./components/ProgressBar.vue";
 
 export default defineComponent({
   name: "App",
@@ -15,6 +16,7 @@ export default defineComponent({
     HeroTitle,
     TorrentForm,
     TabBar,
+    ProgressBar
   },
   data: () => {
     return {};

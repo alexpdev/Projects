@@ -13,15 +13,18 @@ let win;
 function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 800,
-    height: 600,
+    height: 700,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
       contextIsolation: true,
-      webSecurity: false
+      webSecurity: true
     },
   });
 
+  if (process.env.IS_DEV){
+    require('vue-devtools').install();
+  }
   win = mainWindow;
   mainWindow.loadURL(
     isDev

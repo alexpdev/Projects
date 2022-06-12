@@ -3121,6 +3121,18 @@ verror@^1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
+vite-plugin-electron@^0.4.8:
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/vite-plugin-electron/-/vite-plugin-electron-0.4.8.tgz#fe1bea0ed5ddd13e3953241bccc63422210e3d3a"
+  integrity sha512-KIwTgTPGACl1Wbip9StuYY4x5qY13PByzHLk4dPJ8INgILsYGzoMPdsHs4F3sHo0NFX7t0t3WJELlq5PhrpKPQ==
+  dependencies:
+    vite-plugin-optimizer "^1.3.3"
+
+vite-plugin-optimizer@^1.3.3:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/vite-plugin-optimizer/-/vite-plugin-optimizer-1.3.3.tgz#c47b5bef3b124c3ed764f8cf7cb07554de40a7d4"
+  integrity sha512-CsVJBGULVhdK5lFgY2DBRWdYDQzpxHNAcqQb4GSSPih8YY/UmBOtLy4+rU8kForAhbkzqH5ahnomJbrbzC/MhQ==
+
 vite@^2.9.9:
   version "2.9.10"
   resolved "https://registry.yarnpkg.com/vite/-/vite-2.9.10.tgz#f574d96655622c2e0fbc662edd0ed199c60fe91a"
@@ -3132,6 +3144,11 @@ vite@^2.9.9:
     rollup "^2.59.0"
   optionalDependencies:
     fsevents "~2.3.2"
+
+vue-devtools@^5.1.4:
+  version "5.1.4"
+  resolved "https://registry.yarnpkg.com/vue-devtools/-/vue-devtools-5.1.4.tgz#265a7458ade2affb291739176964256b597fa302"
+  integrity sha512-EBAEXvAHUinsPzoSiElps0JgtLXUnJXKIJbP6nfdz/R63VdKBMfJ34/rFip+4iT7iMbVS5lA4W6N1jq4Hj4LCg==
 
 vue-electron@^1.0.6:
   version "1.0.6"

@@ -45,7 +45,7 @@
           name="torrent"
           class="btn button text-nowrap"
           type="button"
-          @click="selectFile()"
+          @click="selectOutput()"
         >
           <span class="icon">
             <i class="fas fa-file-import"></i>
@@ -66,7 +66,7 @@
           class="form-select"
           v-model="formData.pieceLength"
         >
-          <option v-for="size in sizes" :value="size.Size" :key="size.ID">
+        <option v-for="size in sizes" :value="size.Size" :key="size.ID">
             {{ size.Size }}
           </option>
         </select>
@@ -77,14 +77,13 @@
             name="private"
             class="form-check-input inp"
             id="private"
-            v-model="formData.privat"
+            v-model="formData.private_"
           />
           <label class="form-check-label" for="private">Private</label>
         </div>
       </div>
       <div class="hstack gap-4 my-4">
         <label>Meta Version</label>
-
           <div class="form-check mx-3">
             <input
             type="radio"
@@ -124,6 +123,7 @@
             class="form-control inp"
             aria-describedby="inputGroup-sizing-sm"
             placeholder="optional"
+            v-model="formData.source"
             name="source"
             id="source"
           />
@@ -161,24 +161,41 @@
           Submit
         </button>
       </div>
+      <div class="row">
+        <div class="col-12 col">
+          <p>{{ complete }}</p>
+        </div>
+      </div>
     </form>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import image from "./../assets/torrentfile.png";
+
+interface SelectSize {
+  ID: number;
+  Size: string;
+}
 
 export default defineComponent({
   name: "TorrentForm",
   data() {
+    var sizes: SelectSize[] = [];
+    for (let i = 14; i < 29; i++){
+      let value = Math.pow(2,i);
+      let num = value / Math.pow(2,10);
+      let text: string;
+      if (num >= 1000){
+        text =  value / Math.pow(2,20) + " MiB";
+      } else {
+        text = num + " KiB";
+      }
+      sizes.push({ID: i, Size: text});
+    }
     return {
-      title: "torrentfile",
-      description: "Torrent file builder, checker, and reviewer.",
-      date: Date(),
-      image: image,
       formData: {
-        privat: false,
+        private_: false,
         source: "",
         comment: "",
         path: "",
@@ -188,38 +205,23 @@ export default defineComponent({
         pieceLength: "",
       },
       element: "",
-      sizes: [
-        { ID: 14, Size: "16 KiB" },
-        { ID: 15, Size: "32 KiB" },
-        { ID: 16, Size: "64 KiB" },
-        { ID: 17, Size: "128 KiB" },
-        { ID: 18, Size: "256 KiB" },
-        { ID: 19, Size: "512 KiB" },
-        { ID: 20, Size: "1 MiB" },
-        { ID: 21, Size: "2 MiB" },
-        { ID: 22, Size: "4 MiB" },
-        { ID: 23, Size: "8 MiB" },
-        { ID: 24, Size: "16 MiB" },
-        { ID: 25, Size: "32 MiB" },
-        { ID: 26, Size: "64 MiB" },
-        { ID: 27, Size: "128 MiB" },
-        { ID: 28, Size: "256 MiB" },
-      ],
+      sizes: sizes,
+      complete: ""
     };
   },
   methods: {
-    fillElement() {
-      let element: any = document.getElementById("filler");
-      element.innerHTML =
-        '<progress class="progress is-danger" max="100">30%</progress>';
-      this.element = element;
-    },
     selectFile() {
       let self: any = this;
       window.ipc.invoke("openFileExplorer", {}).then((result: string) => {
         self.formData.path = result;
         self.formData.output = result + ".torrent";
       });
+    },
+    selectOutput() {
+      let self: any = this;
+      window.ipc.invoke("openFileExplorer", {}).then((result: string) => {
+        self.formData.ouput = result;
+      })
     },
     selectFolder() {
       let self: any = this;
@@ -230,7 +232,6 @@ export default defineComponent({
     },
     async submitFormData() {
       const args = this.$data.formData;
-      // console.log(size, args, pieceLength, version, announce)
       let pieceLength = 0;
       for (let i = 0; i < this.$data.sizes.length; i++) {
         if (this.$data.sizes[i].Size == args.pieceLength) {
@@ -244,20 +245,28 @@ export default defineComponent({
         args.path,
         announce,
         pieceLength,
-        args.privat,
+        args.private_,
         args.comment,
         args.source,
         args.output,
       ];
-      this.fillElement();
       const result = await window.ipc
         .invoke("createTorrent", version, params)
         .then((result: any) => {
           return result;
         });
+        console.log(result);
+        this.complete = "complete";
     },
   },
 });
 </script>
 
-<style></style>
+<style>
+.button {
+  background-color: rgb(2, 77, 124);
+  color: rgb(219, 208, 144);
+  border: 1px solid #E63;
+}
+
+</style>
