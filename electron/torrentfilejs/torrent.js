@@ -81,11 +81,15 @@ class Torrent extends TorrentFile {
         info.get("files").push(obj);
       });
     }
+    console.log(info);
     let pieces = Buffer.alloc(0);
     let feeder = new Hasher1(files, this.info.get("piece length"));
     feeder.iter();
+    console.log(feeder);
     pieces = bufJoin(feeder.pieces);
+    console.log(pieces);
     info.set("pieces", pieces);
+    console.log(info);
     this.meta.set("info", info);
     return this.meta;
   }
@@ -110,6 +114,7 @@ class TorrentV2 extends TorrentFile{
       info.set("file tree", this._traverse(this.path));
     }
     info.set("meta version", 2);
+    console.log(info);
     this.meta.set("piece layers", this.pieceLayers);
     this.info = info;
     this.meta.set("info", this.info);
@@ -168,6 +173,7 @@ class TorrentV3 extends TorrentFile{
     this.meta.set("piece layers", this.pieceLayers);
     info.set("pieces", bufJoin(this.pieces));
     this.info = info;
+    console.log(info);
     this.meta.set("info", this.info);
   }
 

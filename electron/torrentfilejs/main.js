@@ -64,5 +64,3 @@ function execute() {
   torrent.write();
   return torrent;
 }
-
-execute();

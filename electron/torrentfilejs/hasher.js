@@ -49,7 +49,6 @@ class Hasher1 {
       var stats = fs.statSync(file);
       return stats.size;
     });
-
     this.total = sizes.reduce((a, b) => a + b, 0);
     this.current = fs.openSync(this.files[this.index], 'r');
   }
@@ -99,18 +98,14 @@ class Hasher1 {
         this.current, buffer, 0, this.pieceLength, null
       );
 
-      if (!consumed)
-        if (!this.nextFile())
+      if (!consumed){
+        if (!this.nextFile()){
           return;
-
-      else if (consumed < this.pieceLength) {
+        }
+      } else if (consumed < this.pieceLength) {
         buffer = this.handlePartial(buffer.subarray(0, consumed));
         this.hash(buffer);
-      }
-
-      else
-        this.hash(buffer);
-
+      } else {this.hash(buffer);}
     }
   }
 }
@@ -132,7 +127,7 @@ class Hasher2 {
       let leaf = Buffer.alloc(BLOCKSIZE);
       for (let i = 0; i < this.num_blocks; i++) {
         var consumed = fs.readSync(fd, leaf, 0, BLOCKSIZE, null);
-        if (!consumed) break;
+        if (!consumed) {break;}
         if (consumed < BLOCKSIZE) {
           leaf = leaf.subarray(0, consumed);
         }
@@ -209,7 +204,7 @@ class Hasher3 {
       for (let i = 0; i < this.num_blocks; i++) {
         var consumed = fs.readSync(fd, leaf, 0, BLOCKSIZE, null);
         this.total -= consumed;
-        if (!consumed) break;
+        if (!consumed) {break;}
         if (consumed < BLOCKSIZE) {
           leaf = leaf.subarray(0, consumed);
         }

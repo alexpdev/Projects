@@ -141,6 +141,7 @@ function benWrite(data, path) {
   var fd = fs.openSync(path, "w");
   var bits = bencode(data);
   fs.writeSync(fd, bits);
+  fs.closeSync(fd);
   return path;
 }
 
