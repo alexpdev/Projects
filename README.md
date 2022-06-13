@@ -21,9 +21,8 @@ level of cutomization for each, including hybrids.
 - nodejs
 - electronjs
 - vue 3
-- bulma css
+- bootstrap
 - typescript
-- sass
 
 ## Installation
 
