@@ -19,6 +19,7 @@ class TorrentFile {
     this.meta = new Map();
     this.info = new Map();
     this.path = path;
+    console.log("setting up attributes");
     this.name = Path.basename(Path.resolve(this.path));
     this.meta.set("created by", "torrentfilejs");
     this.info.set("name", this.name);
@@ -38,10 +39,12 @@ class TorrentFile {
     if (!outfile && cwd) this.outfile = "./" + this.name + ".torrent";
     else this.outfile = outfile;
     this.meta.set("info", this.info);
+    console.log("attributes set up");
   }
 
   sortMeta() {
     let info = this.meta.get("info");
+    console.log("sorting .torrent internals")
     info = new Map([...this.info].sort());
     this.meta.set("info", info);
     let meta = new Map([...this.meta].sort());
@@ -55,6 +58,7 @@ class TorrentFile {
     if (this.outfile) path = this.outfile;
     else  path = this.path + ".torrent";
     benWrite(this.meta, path);
+    console.log("writting to file.")
     return this.meta;
   }
 }
@@ -77,11 +81,15 @@ class Torrent extends TorrentFile {
         info.get("files").push(obj);
       });
     }
+    console.log(info);
     let pieces = Buffer.alloc(0);
     let feeder = new Hasher1(files, this.info.get("piece length"));
     feeder.iter();
+    console.log(feeder);
     pieces = bufJoin(feeder.pieces);
+    console.log(pieces);
     info.set("pieces", pieces);
+    console.log(info);
     this.meta.set("info", info);
     return this.meta;
   }
@@ -106,6 +114,7 @@ class TorrentV2 extends TorrentFile{
       info.set("file tree", this._traverse(this.path));
     }
     info.set("meta version", 2);
+    console.log(info);
     this.meta.set("piece layers", this.pieceLayers);
     this.info = info;
     this.meta.set("info", this.info);
@@ -164,6 +173,7 @@ class TorrentV3 extends TorrentFile{
     this.meta.set("piece layers", this.pieceLayers);
     info.set("pieces", bufJoin(this.pieces));
     this.info = info;
+    console.log(info);
     this.meta.set("info", this.info);
   }
 

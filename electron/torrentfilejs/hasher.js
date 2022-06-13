@@ -7,91 +7,105 @@ const BLOCKSIZE = 2 ** 14;
 const HASHSIZE = 32;
 
 function merkleRoot(blocks) {
+
   if (blocks.length > 0) {
+
     while (blocks.length > 1) {
       let arr = [];
       while (blocks.length > 1) {
+
         let block1 = blocks.shift();
         let block2 = blocks.shift();
         let block = Buffer.concat(
           [block1, block2],
           block1.length + block2.length
         );
+
         var shasum = crypto.createHash("sha256");
         shasum.update(block);
         block = shasum.digest();
         arr.push(block);
       }
+
       blocks = arr;
     }
+
     return blocks[0];
   }
+
   return null;
 }
 
 class Hasher1 {
+
   constructor(files, pieceLength) {
+
     this.pieceLength = pieceLength;
     this.files = files;
+    this.index = 0;
+    this.pieces = [];
+
     var sizes = files.map((file) => {
       var stats = fs.statSync(file);
       return stats.size;
     });
     this.total = sizes.reduce((a, b) => a + b, 0);
-    this.index = 0;
     this.current = fs.openSync(this.files[this.index], 'r');
-    this.pieces = [];
   }
 
   nextFile() {
     this.index += 1;
+
     if (this.index < this.files.length) {
+
       fs.close(this.current);
       this.current = fs.openSync(this.files[this.index], 'r');
       return true;
+
     }
     return false;
   }
 
   handlePartial(buffer) {
+
     while (buffer.length < this.pieceLength && this.nextFile()) {
       var target = this.pieceLength - buffer.length;
       var temp = Buffer.alloc(target);
       var size = fs.readSync(this.current, temp, 0, target, -1);
+
       buffer = Buffer.concat([buffer, temp], buffer.length + size);
-      if (size == target) break;
+      if (size == target)
+        break;
     }
+
     return buffer;
   }
 
   hash(buffer) {
     var shasum = crypto.createHash("sha1");
     shasum.update(buffer);
+
     var result = shasum.digest();
     this.pieces.push(result);
   }
 
   iter() {
     var result = null;
-    while (1) {
+
+    while (true) {
       var buffer = Buffer.alloc(this.pieceLength);
       var consumed = fs.readSync(
-        this.current,
-        buffer,
-        0,
-        this.pieceLength,
-        null
+        this.current, buffer, 0, this.pieceLength, null
       );
-      if (!consumed) {
-        if (!this.nextFile()) {
+
+      if (!consumed){
+        if (!this.nextFile()){
           return;
         }
       } else if (consumed < this.pieceLength) {
         buffer = this.handlePartial(buffer.subarray(0, consumed));
         this.hash(buffer);
-      } else {
-        this.hash(buffer);
-      }
+      } else {this.hash(buffer);}
     }
   }
 }
@@ -113,7 +127,7 @@ class Hasher2 {
       let leaf = Buffer.alloc(BLOCKSIZE);
       for (let i = 0; i < this.num_blocks; i++) {
         var consumed = fs.readSync(fd, leaf, 0, BLOCKSIZE, null);
-        if (!consumed) break;
+        if (!consumed) {break;}
         if (consumed < BLOCKSIZE) {
           leaf = leaf.subarray(0, consumed);
         }
@@ -190,7 +204,7 @@ class Hasher3 {
       for (let i = 0; i < this.num_blocks; i++) {
         var consumed = fs.readSync(fd, leaf, 0, BLOCKSIZE, null);
         this.total -= consumed;
-        if (!consumed) break;
+        if (!consumed) {break;}
         if (consumed < BLOCKSIZE) {
           leaf = leaf.subarray(0, consumed);
         }
