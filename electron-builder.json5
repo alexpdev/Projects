@@ -1,5 +1,5 @@
 {
-    "appId": "com.torrentfilejs.app",
+    "appId": "com.electrontorrentfile.app",
     "icon": "src/assets/torrentfile.ico",
     "asar": true,
     "directories": {

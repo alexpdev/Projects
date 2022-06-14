@@ -1,13 +1,13 @@
-# torrentfilejs
+# ElectronTorrentfile
 
 ![torrentfileJS](https://github.com/alexpdev/torrentfilejs/blob/master/public/torrentfilejs.png)
 
 ----
 
-![GitHub repo size](https://img.shields.io/github/repo-size/alexpdev/torrentfilejs?color=purple&logo=electron&logoColor=orange&style=plastic)
-![GitHub](https://img.shields.io/github/license/alexpdev/torrentfilejs?color=maroon&logo=apache&logoColor=skyblue&style=plastic)
-![GitHub package.json dependency version (dev dep on branch)](https://img.shields.io/github/package-json/dependency-version/alexpdev/torrentfilejs/dev/electron?logo=electron&logoColor=orangered&style=plastic)
-![GitHub last commit](https://img.shields.io/github/last-commit/alexpdev/torrentfilejs?color=skyblue&logo=github&logoColor=orange&style=plastic)
+![GitHub repo size](https://img.shields.io/github/repo-size/alexpdev/electrontorrentfile?color=purple&logo=electron&logoColor=orange&style=plastic)
+![GitHub](https://img.shields.io/github/license/alexpdev/electrontorrentfile?color=maroon&logo=apache&logoColor=skyblue&style=plastic)
+![GitHub package.json dependency version (dev dep on branch)](https://img.shields.io/github/package-json/dependency-version/alexpdev/electrontorrentfile/dev/electron?logo=electron&logoColor=orangered&style=plastic)
+![GitHub last commit](https://img.shields.io/github/last-commit/alexpdev/electrontorrentfile?color=skyblue&logo=github&logoColor=orange&style=plastic)
 
 A Desktop GUI form for creating Bittorrent Meta Files of any content in your local filesystem.  
 
@@ -27,8 +27,8 @@ level of cutomization for each, including hybrids.
 ## Installation
 
 ```bash
-git clone https://github.com/alexpdev/torrentfilejs.git
-cd torrentfilejs
+git clone https://github.com/alexpdev/electrontorrentfile.git
+cd electrontorrentfile
 npm install .
 # or
 yarn add .
@@ -45,7 +45,7 @@ npm run production
 
 ## License
 
-TorrentfileJs is liscensed under the Apache 2.0 Open Source Software License
+ElectronTorrentfile is liscensed under the Apache 2.0 Open Source Software License
 see the LICENSE file in the root directory for more details.
 
 ## Related Projects
