@@ -1,0 +1,98 @@
+{
+    "agpl": {
+        "title": "GNU AFFERO GENERAL PUBLIC LICENSE",
+        "filename": "agpl.txt"
+    },
+    "apache": {
+        "title": "Apache License",
+        "filename": "apache.txt"
+    },
+    "artistic": {
+        "title": "The Artistic License 2.0",
+        "filename": "artistic.txt"
+    },
+    "bsd1": {
+        "title": "BSD License (1-clause)",
+        "filename": "bsd1.txt"
+    },
+    "bsd2": {
+        "title": "BSD License (2-clause)",
+        "filename": "bsd2.txt"
+    },
+    "bsd3": {
+        "title": "BSD License (3-clause)",
+        "filename": "bsd3.txt"
+    },
+    "cc1": {
+        "title": "Creative Commons 1.0 Universal",
+        "filename": "cc1.txt"
+    },
+    "cc4": {
+        "title": "Creative Commons Attribution 4.0 International Public License",
+        "filename": "cc4.txt"
+    },
+    "commons-clause": {
+        "title": "\u201cCommons Clause\u201d License Condition v1.0",
+        "filename": "commons-clause.txt"
+    },
+    "eclipse1": {
+        "title": "Eclipse Public License - v 1.0",
+        "filename": "eclipse1.txt"
+    },
+    "eclipse2": {
+        "title": "Eclipse Public License 2.0",
+        "filename": "eclipse2.txt"
+    },
+    "gpl1": {
+        "title": "GNU GENERAL PUBLIC LICENSE",
+        "filename": "gpl1.txt"
+    },
+    "gpl2": {
+        "title": "GNU GENERAL PUBLIC LICENSE",
+        "filename": "gpl2.txt"
+    },
+    "gpl3": {
+        "title": "GNU GENERAL PUBLIC LICENSE",
+        "filename": "gpl3.txt"
+    },
+    "hyppocratic": {
+        "title": "Hyppocratic Public License",
+        "filename": "hyppocratic.txt"
+    },
+    "isc": {
+        "title": "ISC License",
+        "filename": "isc.txt"
+    },
+    "ldap": {
+        "title": "The OpenLDAP Public License",
+        "filename": "ldap.txt"
+    },
+    "lgpl2": {
+        "title": "GNU LESSER GENERAL PUBLIC LICENSE",
+        "filename": "lgpl2.txt"
+    },
+    "lgpl3": {
+        "title": "GNU LESSER GENERAL PUBLIC LICENSE",
+        "filename": "lgpl3.txt"
+    },
+    "mit": {
+        "title": "MIT License",
+        "filename": "mit.txt"
+    },
+    "mozilla": {
+        "title": "Mozilla Public License",
+        "filename": "mozilla.txt"
+    },
+    "unlicense": {
+        "title": "Unlicense Licenese",
+        "filename": "unlicense.txt"
+    },
+    "upl": {
+        "title": "Universal Public License",
+        "filename": "upl.txt"
+    },
+    "zope": {
+        "title": "Zope Public License (ZPL) Version 2.1",
+        "filename": "zope.txt"
+    }
+}

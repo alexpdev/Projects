@@ -1,6 +1,8 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
+    <div class="container-fluid bg-dark">
+      <h1>{{ msg }}</h1>
+    </div>
     <p>
       For a guide and recipes on how to configure / customize this project,<br>
       check out the
