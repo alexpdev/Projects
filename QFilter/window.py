@@ -1,252 +1,287 @@
-import sys
 import os
+import sys
 import json
+import webbrowser
 from PySide6.QtWidgets import *
-from PySide6.QtGui import *
 from PySide6.QtCore import *
+from PySide6.QtGui import *
 
-DATADIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+class Item:
 
-class TableWidget(QTableWidget):
+    def __init__(self, value=0, text="0"):
+        self.value = value
+        self.text = text
 
-    setHidden = Signal([int, bool])
-    itemReady = Signal([int, int, QTableWidgetItem])
-    loadReady = Signal([list])
-    rowReady = Signal([list])
-    resizeReady = Signal()
+    def setValue(self, value):
+        self.value = value
+
+    def setText(self, text):
+        self.text = text
+
+class TableModel(QAbstractTableModel):
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self.headers = ["Title", "Count", "Views", "Added", "Url"]
+        self.grid = []
+        self.bluepen = QBrush()
+        self.bluepen.setColor("#0000FF")
+
+    def rowCount(self, index=QModelIndex()):
+        return len(self.grid)
+
+    def columnCount(self, index=QModelIndex()):
+        return len(self.headers)
+
+    def headerData(self, section, orientation, role=Qt.DisplayRole):
+        if orientation == Qt.Orientation.Horizontal and role == Qt.DisplayRole:
+            return self.headers[section]
+
+    def data(self, index, role=Qt.DisplayRole):
+        row, column = index.row(), index.column()
+        item = self.grid[row][column]
+        if role == Qt.DisplayRole or role == Qt.EditRole:
+            return item.text
+        elif role == Qt.TextAlignmentRole:
+            return Qt.AlignVCenter | Qt.AlignRight
+        elif role == Qt.ToolTipRole:
+            return str(item.value)
+        elif role == Qt.ForegroundRole:
+            if column == self.columnCount() - 1:
+                return self.bluepen
+
+    def setData(self, index, value, role=Qt.EditRole):
+        if not index.isValid():
+            return False
+        if role == Qt.EditRole:
+            row, column = index.row(), index.column()
+            item = self.grid[row][column]
+            item.setValue(value)
+            self.dataChanged.emit(self.index(0,0), self.index(self.rowCount() - 1, self.columnCount() - 1))
+            return True
+        return False
+
+    def insertRow(self, rownum, index=QModelIndex()):
+        return self.insertRows(rownum, 1, index)
+
+    def insertRows(self, rownum, count, index=QModelIndex()):
+        self.beginInsertRows(index, rownum, rownum + count - 1)
+        for _ in range(count):
+            row = [Item() for _ in range(self.columnCount())]
+            self.grid.insert(rownum, row)
+        self.endInsertRows()
+        return True
+
+    def setRow(self, index, data):
+        for i in range(len(self.grid[index])):
+            self.grid[index][i] = data[i]
+        self.dataChanged.emit(self.index(0,0), self.index(self.rowCount()-1,self.columnCount()-1))
+
+    def flags(self, index):
+        if index.column() == self.columnCount() - 1:
+            return Qt.ItemIsEnabled | Qt.ItemIsSelectable
+        else:
+            return Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsEditable
+
+    def column(self,index):
+        return [self.grid[i][index] for i in range(self.rowCount())]
+
+
+class TableView(QTableView):
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-        self.setStyleSheet("font-size: 9pt;")
-        self.setColumnCount(5)
-        self.setRowCount(0)
-        self.labels = ["TITLE", "VIEWS", "COUNT", "ADDED", "URL"]
-        self.verticalHeader().setHidden(True)
-        self.data = []
-        self.setHorizontalHeaderLabels(self.labels)
-        self.setHidden.connect(self.hide)
-        self.itemReady.connect(self.addItem)
-        self.resizeReady.connect(self.resizeColumnsToContents)
+        self.window = parent
+        self.model_ = TableModel()
+        self.setModel(self.model_)
+        self.verticalHeader().hide()
+        for i, label in enumerate(self.model_.headers):
+            self.model_.setHeaderData(i, Qt.Orientation.Horizontal, label, Qt.DisplayRole)
+        self.horizontalHeader().stretchLastSection()
+        self.doubleClicked.connect(self.launchpage)
 
-    def setRow(self, items):
-        index = self.rowCount()
-        self.insertRow(index)
-        for i, val in enumerate(items):
-            item = QTableWidgetItem(str(val), 0)
-            item.value = val
-            self.setItem(index, i, item)
+    def rowCount(self):
+        return self.model_.rowCount()
 
-    def hide(self, row, truth):
-        self.setRowHidden(row, truth)
+    def columnCount(self):
+        return self.model_.columnCount()
 
-    def addItem(self, row, col, item):
-        self.setItem(row, col, item)
-
-    def lookup(self,text):
-        for row in range(self.rowCount()):
-            s = self.item(row,0).text()
-            if text not in s:
-                self.setRowHidden(row, True)
+    def addRow(self, row):
+        rownum = self.rowCount()
+        self.model_.insertRow(rownum)
+        self.model_.setRow(rownum, row)
+        if rownum % 5000 == 0:
+            if rownum % 10000 == 0:
+                self.resizeColumnToContents(0)
+                self.resizeColumnToContents(1)
+            elif rownum % 15000 == 0:
+                self.resizeColumnToContents(2)
+                self.resizeColumnToContents(3)
             else:
-                self.setRowHidden(row, False)
+                self.resizeColumnToContents(4)
+                self.resizeColumnToContents(5)
+            processEvents()
 
-class Worker(QObject):
+    def item(self, row, col):
+        return self.model_.grid[row][col]
 
-    finished = Signal()
-    rowReady = Signal([list])
-    limitsChanged = Signal([str,set])
-
-    def __init__(self, widget, table):
-        super().__init__()
-        self.widget = widget
-        self.table = table
-        self.data = []
-        self.files = [os.path.join(DATADIR,i) for i in os.listdir(DATADIR)]
-        self.timemap = {
-            "second": 1,
-            "minute": 60,
-            "hour": 60*60,
-            "day": 60*60*24,
-            "week": 60*60*24*7,
-            "month": 60*60*24*30,
-            "year": 60*60*24*365
-        }
-        self.labels = ["title", "views", "count", "added","url"]
-        self.ranges = {i:set() for i in self.labels if i not in ["title", "url"]}
-
-    def run(self):
-        for file in self.files:
-            if not file.endswith(".json"):
-                continue
-            with open(os.path.join(DATADIR,file),"rt",encoding="utf-8") as js:
-                contents = json.load(js)
-                self.data += contents
-        times = self.timemap
-        for entry in self.data:
-            items = [None for _ in range(len(self.labels))]
-            for k,v in entry.items():
-                if k in ["count", "views"]:
-                    parts = v.split()[:-1]
-                    v = int("".join(parts))
-                if k == "added":
-                    parts = v.split()
-                    denom = parts[1]
-                    val = 0
-                    for t in times:
-                        if t in denom:
-                            val = times[t]
-                            break
-                    total = int(parts[0]) * val
-                    v = total
-                if k in self.ranges:
-                    self.ranges[k].add(v)
-                i = self.labels.index(k)
-                items[i] = v
-            self.rowReady.emit(items)
-        for k,v in self.ranges.items():
-            self.limitsChanged.emit(k,v)
-        self.table.resizeReady.emit()
-        self.finished.emit()
-
-    def run2(self):
-        addedval = int(self.widget.addedbox.value())
-        text = list(self.widget.keywords.text())
-        print(text)
-        mapping = {
-            1: int(self.widget.viewbox.value()),
-            2: int(self.widget.countbox.value()),
-        }
-        for i in range(self.table.rowCount()):
-            hidden = False
-            for k,v in mapping.items():
-                if self.table.item(i, k).value < v:
-                    hidden = True
-                    self.table.setHidden.emit(i, True)
-                    break
-            if hidden: continue
-            if self.table.item(i, 3).value > addedval:
-                self.table.setHidden.emit(i,True)
-                continue
-            title = self.table.item(i,0).text().lower()
-            text = [i for i in text if i.isalpha()]
-            if len([i for i in text if i not in title]):
-                self.table.setHidden.emit(i, True)
-                continue
-            self.table.setHidden.emit(i, False)
-        self.finished.emit()
-
-
-class LineFilter(QSpinBox):
-
-    validated = Signal()
-
-    def __init__(self, parent=None) -> None:
-        super().__init__(parent=parent)
-        # self.setReadOnly(True)
-        # self.setButtonSymbols(self.PlusMinus)
-        self.setAccelerated(True)
-        self.setCorrectionMode(self.CorrectToNearestValue)
-        self.valueChanged.connect(self.validateInput)
-
-    def setRange(self, mn, mx):
-        self.setMinimum(mn)
-        self.setMaximum(mx)
-        self.setValue(mn)
-
-    def validateInput(self):
-        self.validated.emit()
-
-
+    def launchpage(self, index):
+        row, col = index.row(), index.column()
+        if col == self.columnCount() - 1:
+            item = self.item(row, col)
+            webbrowser.open(item.text)
 
 class Window(QMainWindow):
-
-    def __init__(self, parent=None, app=None):
+    def __init__(self, parent=None):
         super().__init__(parent=parent)
-        self.app = app
-        self.resize(800,700)
+        self.resize(1000,700)
         self.central = QWidget()
         self.layout = QVBoxLayout()
         self.central.setLayout(self.layout)
-        self.viewlabel = QLabel(parent=self)
-        self.countlabel = QLabel(parent=self)
-        self.addedlabel = QLabel(parent=self)
-        self.keywordlabel = QLabel(parent=self)
-        self.viewlabel.setText("Minimum Views")
-        self.addedlabel.setText("Maximum Time")
-        self.countlabel.setText("Minimum Count")
-        self.keywordlabel.setText("Keywords")
-        self.countbox = LineFilter(parent=self)
-        self.addedbox = LineFilter(parent=self)
-        self.viewbox = LineFilter(parent=self)
-        self.keywords = QLineEdit(parent=self)
-        self.titleslabel = QLabel(parent=self)
-        self.table = TableWidget(parent=self)
-        self.button = QPushButton("Load Data", parent=self)
-        self.filtergrid = QGridLayout()
-        self.filtergrid.addWidget(self.addedlabel, 0,0,1,1)
-        self.filtergrid.addWidget(self.addedbox, 0,1,1,1)
-        self.filtergrid.addWidget(self.viewlabel, 0,2,1,1)
-        self.filtergrid.addWidget(self.viewbox, 0,3,1,1)
-        self.filtergrid.addWidget(self.countlabel, 0,4,1,1)
-        self.filtergrid.addWidget(self.countbox, 0,5,1,1)
-        self.filtergrid.addWidget(self.keywordlabel,1,0,1,1)
-        self.filtergrid.addWidget(self.keywords, 1,1,-1,-1)
-        self.layout.addLayout(self.filtergrid)
-        self.layout.addWidget(self.titleslabel)
-        self.layout.addWidget(self.table)
-        self.layout.addWidget(self.button)
-        self.setCentralWidget(self.central)
-        self.button.clicked.connect(self.loadData)
-        self.viewbox.validated.connect(self.filter)
-        self.countbox.validated.connect(self.filter)
-        self.addedbox.validated.connect(self.filter)
-        self.keywords.textChanged.connect(self.lookup)
-        self.threads = []
+        self.setWindowTitle("QFilters")
+        self.table = TableView()
+        self.hlayout = QHBoxLayout()
+        self.button = QPushButton("push")
+        self.button.clicked.connect(self.table.addRow)
+        self.button2 = QPushButton("load")
+        self.button2.clicked.connect(self.loadData)
+        self.hlayout.addWidget(self.button)
+        self.hlayout.addWidget(self.button2)
+        self.grid = QGridLayout()
+        self.viewbox = QComboBox()
+        self.addedbox = QComboBox()
+        self.countbox = QComboBox()
+        self.addedLabel = QLabel()
+        self.countLabel = QLabel()
+        self.viewLabel = QLabel()
+        [i.setAlignment(Qt.AlignRight) for i in [self.addedLabel, self.countLabel, self.viewLabel]]
+        self.addedLabel.setText("Added")
+        self.viewLabel.setText("Views")
+        self.countLabel.setText("Count")
+        self.keywordsLabel = QLabel()
+        self.keywordsLabel.setText("KeyWords")
+        self.hlayout2 = QHBoxLayout()
 
-    def setLimits(self, label, seq):
-        widgets = {"added": self.addedbox,
-                   "views": self.viewbox,
-                   "count": self.countbox,
-                   }
-        box = widgets[label]
-        mn,mx = min(seq), max(seq)
-        if box == "rating":
-            mn ,mx = mn*100, mx*100
-        box.setRange(mn, mx)
+        self.grid.addWidget(self.countLabel, 0,0,1,1)
+        self.grid.addWidget(self.countbox, 0,1,1,1)
+        self.grid.addWidget(self.viewLabel, 0,2,1,1)
+        self.grid.addWidget(self.viewbox, 0,3,1,1)
+        self.grid.addWidget(self.addedLabel, 0,4,1,1)
+        self.grid.addWidget(self.addedbox, 0,5,1,1)
+        self.layout.addLayout(self.grid)
+        self.edit = QLineEdit()
+        self.hlayout2.addWidget(self.keywordsLabel)
+        self.hlayout2.addWidget(self.edit)
+        self.layout.addLayout(self.hlayout2)
+        self.layout.addWidget(self.table)
+        self.layout.addLayout(self.hlayout)
+        self.setCentralWidget(self.central)
+        self.edit.editingFinished.connect(self.filter)
+
+    def setFilters(self):
+        labels = [self.countbox, self.viewbox, self.addedbox]
+        for i in range(1,4):
+            data = self.table.model_.column(i)
+            options = set()
+            for item in data:
+                options.add((item.value, item.text))
+            if i == 3:
+                options = {b:a for a,b in sorted(options, reverse=True)}
+            else:
+                options = {b:a for a,b in sorted(options)}
+            box = labels[i-1]
+            box.options = options
+            box.addItems(options.keys())
+            box.setEditable(False)
+            box.currentIndexChanged.connect(self.filter)
 
     def filter(self):
-        worker = Worker(self, self.table)
-        thread = QThread()
-        self.threads.append((thread, worker))
-        worker.moveToThread(thread)
-        thread.started.connect(worker.run2)
-        worker.finished.connect(thread.quit)
-        thread.finished.connect(self.destroyThread)
-        thread.start()
-
-    def destroyThread(self):
-        for i, thread in enumerate(self.threads):
-            if thread[0].isFinished():
-                thread[0].deleteLater()
-                del self.threads[i]
+        count = self.countbox
+        countvalue = count.options[count.currentText()]
+        view = self.viewbox
+        viewvalue = view.options[view.currentText()]
+        added = self.addedbox
+        addedvalue = added.options[added.currentText()]
+        kws = self.edit.text().split()
+        for i, row in enumerate(self.table.model_.grid):
+            if row[1].value < countvalue or row[2].value < viewvalue:
+                self.table.hideRow(i)
+                continue
+            if row[3].value > addedvalue:
+                self.table.hideRow(i)
+                continue
+            for word in kws:
+                if word not in row[0].text:
+                    self.table.hideRow(i)
+                    break
+            else:
+                self.table.showRow(i)
+            processEvents()
 
     def loadData(self):
-        thread = QThread()
-        worker = Worker(self, self.table)
-        self.threads.append((thread, worker))
-        worker.moveToThread(thread)
-        worker.limitsChanged.connect(self.setLimits)
-        worker.rowReady.connect(self.table.setRow)
-        thread.started.connect(worker.run)
-        worker.finished.connect(thread.quit)
-        thread.finished.connect(self.destroyThread)
-        thread.start()
+        self.worker = Worker(self.table)
+        self.thread = QThread()
+        self.worker.moveToThread(self.thread)
+        self.worker.setRow.connect(self.table.addRow)
+        self.worker.finished.connect(self.thread.quit)
+        self.worker.finished.connect(self.thread.deleteLater)
+        self.thread.started.connect(self.worker.run)
+        self.thread.start()
+        self.thread.finished.connect(self.setFilters)
+        self.worker.run()
 
-    def lookup(self, text):
-        self.table.lookup(text)
+class Worker(QObject):
+
+    setRow = Signal([list])
+    finished = Signal()
+
+    def __init__(self, table):
+        super().__init__()
+        self.table = table
+        datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)),"data")
+        self.paths = [os.path.join(datadir, i) for i in os.listdir(datadir)]
+        self.timeTable = {
+            "second": 1,
+            "minute": 60,
+            "hour": 60 * 60,
+            "day": 60 * 60 * 24,
+            "week": 60 * 60 * 24 * 7,
+            "month": 60 * 60 * 24 * 30,
+            "year": 60 * 60 * 24 * 365
+        }
+
+    def getTime(self, added):
+        for k,v in self.timeTable.items():
+            if k in added:
+                val = int(added.split(' ')[0])
+                return val * v
+        return 0
+
+    def run(self):
+        for path in self.paths:
+            if not path.lower().endswith(".json"):
+                continue
+            data = json.load(open(path,"rt",encoding="utf-8"))
+            out = []
+            for row in data:
+                count = int("".join(row["count"].split()[:-1]))
+                views = int("".join(row["views"].split()[:-1]))
+                countitem = Item(value=count, text=row["count"])
+                viewsitem = Item(value=views, text=row["views"])
+                added = self.getTime(row["added"])
+                addeditem = Item(value=added, text=row["added"])
+                titleitem = Item(value=row["title"], text=row["title"])
+                urlitem = Item(value=row["url"], text=row["url"])
+                out = [titleitem, countitem, viewsitem, addeditem, urlitem]
+                # self.table.addRow(out)
+                self.setRow.emit(out)
+        self.finished.emit()
+
+
+def processEvents():
+    app.processEvents()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    win = Window(parent=None, app=app)
+    win = Window()
     win.show()
     sys.exit(app.exec())
