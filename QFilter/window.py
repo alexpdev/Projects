@@ -5,6 +5,8 @@ import webbrowser
 from PySide6.QtWidgets import *
 from PySide6.QtCore import *
 from PySide6.QtGui import *
+from PySide6.QtWebEngineCore import *
+from PySide6.QtWebEngineWidgets import *
 
 class Item:
 
@@ -134,6 +136,7 @@ class Window(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.resize(1000,700)
+        self.initialUrl = "https://github.com"
         self.central = QWidget()
         self.layout = QVBoxLayout()
         self.central.setLayout(self.layout)
@@ -141,7 +144,6 @@ class Window(QMainWindow):
         self.table = TableView()
         self.hlayout = QHBoxLayout()
         self.button = QPushButton("push")
-        self.button.clicked.connect(self.table.addRow)
         self.button2 = QPushButton("load")
         self.button2.clicked.connect(self.loadData)
         self.hlayout.addWidget(self.button)
@@ -176,6 +178,7 @@ class Window(QMainWindow):
         self.layout.addLayout(self.hlayout)
         self.setCentralWidget(self.central)
         self.edit.editingFinished.connect(self.filter)
+
 
     def setFilters(self):
         labels = [self.countbox, self.viewbox, self.addedbox]
