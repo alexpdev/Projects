@@ -47,23 +47,12 @@ clean-build: ## remove build artifacts
 	rm -f coverage.xml
 	rm -fr .codacy-coverage
 
-lint: ## check style with flake8
-	...
-
 test: ## run tests quickly with the default Python
-	...
+	tox
 
-coverage: ## check code coverage quickly with the default Python
-	...
+push: clean test ## push to github
+	git commit -a -m "$m"
+	git push
 
-push: lint docs clean test coverage
-	...
-
-docs: ## generate Sphinx HTML documentation, including API docs
-	...
-
-dist: clean ## builds source and wheel package
-	...
-
-install: clean ## install the package to the active Python's site-packages
-	...
+dist: clean test ## builds source and wheel package
+	twine upload dist/*
