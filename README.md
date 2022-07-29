@@ -9,10 +9,10 @@
 [![CI](https://github.com/alexpdev/scralenium/actions/workflows/windows.yml/badge.svg?branch=master&event=push)](https://github.com/alexpdev/scralenium/actions/workflows/windows.yml)
 [![CI](https://github.com/alexpdev/scralenium/actions/workflows/mac.yml/badge.svg?branch=master&event=push)](https://github.com/alexpdev/scralenium/actions/workflows/mac.yml)
 ![GitHub repo size](https://img.shields.io/github/repo-size/alexpdev/scralenium)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/1e7fc4df9f66443daa887c740b05335d)](https://www.codacy.com/gh/alexpdev/scralenium/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=alexpdev/scralenium&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/3b12aa2268684d349d5d47cbf0ac1b53)](https://www.codacy.com/gh/alexpdev/scralenium/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=alexpdev/scralenium&amp;utm_campaign=Badge_Grade)
 [![codecov](https://codecov.io/gh/alexpdev/scralenium/branch/main/graph/badge.svg?token=jpj9Rgriqi)](https://codecov.io/gh/alexpdev/scralenium)
 
-Project name is a `scralenium` that allows _use selenium webdriver with scrapy_ to do scrape web data from dynamic web pages.
+Project name is a `scralenium` that allows _use selenium webdriver with scrapy_ to do scrape web data from dynamic web pages.  The name is actually really clever, if you didn't notice it is `scrapy` + `selenium` = `scralenium`.  Genius right? :)
 
 ## Prerequisites
 
@@ -35,6 +35,72 @@ git clone https://github.com/alexpdev/scralenium.git
 cd scralenium
 pip install .
 ```
+From PyPi
+
+```bash
+pip install scralenium
+```
+
 ## License
 
 This project uses the following license: [Apache 2.0](./LICENSE).
+
+
+## Usage
+
+Using `scralenium` is really simple.
+
+In your scrappy settings set the `SELENIUM_DRIVER_NAME` and  
+`SELENIUM_DRIVER_EXECUTABLE` fields.  `scralenium` currently supports
+firfox, chrome, and remote as values in the SELENIUM_DRIVER_NAME field. If  
+the webdriver executable is already on `path` then it can be omitted. You 
+also need to enable the `ScraleniumDownloaderMiddleware` in the 
+`DOWNLOADER_MIDDLEWARES` feed.
+
+```python
+from shutil import which
+
+SELENIUM_DRIVER_EXECUTABLE = which("chromedriver")
+SELENIUM_DRIVER_NAME = "chrome"
+
+DOWNLOADER_MIDDLEWARES {
+    "scralenium.ScraleniumDownloaderMiddleware" : 950
+}
+```
+
+Once you have added the settings to the `settings.py` file or in the 
+spider's `custom_settings` attribute all that is needed is to use 
+`ScraleniumRequest` when yielding from the `start_requests` method or
+from your parse callback methods. The `pause` argument can be used to set
+the webdrivers implicit wait value.  And the `response` argument in the 
+parse callback methods gives you full access to the normal scrapy response 
+as well as all the features of the webdriver.
+
+```
+from scralenium import ScraleniumRequest
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+
+class MySpider(scrapy.Spider):
+
+    def start_requests(self):
+        for url in self.start_urls:
+            ScreleniumRequest(url, callback=self.parse, pause=4)
+    
+    def parse(self, response):
+        html = response.text
+        title = response.xpath("//title/text()").get()
+        element = response.find_element(By.ID, "submit-button")
+        element.send_keys(Keys.Return)
+        next_page = response.xpath("//a[@class='next-page-link']/@href").get()
+        next_url = response.urljoin(next_page)
+        yield ScraleniumRequest(next_url, callback=self.parse, pause=4)
+        yield {"title": title}
+```
+
+I am have added some additional features but am behind on documenting them.
+
+## TODO
+
+[x] add features
+[] document them
