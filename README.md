@@ -9,7 +9,7 @@
 [![CI](https://github.com/alexpdev/scralenium/actions/workflows/windows.yml/badge.svg?branch=master&event=push)](https://github.com/alexpdev/scralenium/actions/workflows/windows.yml)
 [![CI](https://github.com/alexpdev/scralenium/actions/workflows/mac.yml/badge.svg?branch=master&event=push)](https://github.com/alexpdev/scralenium/actions/workflows/mac.yml)
 ![GitHub repo size](https://img.shields.io/github/repo-size/alexpdev/scralenium)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/1e7fc4df9f66443daa887c740b05335d)](https://www.codacy.com/gh/alexpdev/scralenium/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=alexpdev/scralenium&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/3b12aa2268684d349d5d47cbf0ac1b53)](https://www.codacy.com/gh/alexpdev/scralenium/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=alexpdev/scralenium&amp;utm_campaign=Badge_Grade)
 [![codecov](https://codecov.io/gh/alexpdev/scralenium/branch/main/graph/badge.svg?token=jpj9Rgriqi)](https://codecov.io/gh/alexpdev/scralenium)
 
 Project name is a `scralenium` that allows _use selenium webdriver with scrapy_ to do scrape web data from dynamic web pages.

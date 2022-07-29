@@ -53,6 +53,9 @@ test: ## run tests quickly with the default Python
 push: clean test ## push to github
 	git commit -a -m "$m"
 	git push
+	bash <(curl -Ls https://coverage.codacy.com/get.sh)
 
 dist: clean test ## builds source and wheel package
+	pip install build
+	python -m build .
 	twine upload dist/*
