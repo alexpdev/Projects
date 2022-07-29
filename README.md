@@ -1,79 +1,40 @@
-# SCRELENIUMPY
+# Scralenium
 
 <!--- These are examples. See https://shields.io for others or to customize this set of shields. You might want to include dependencies, project status and licence info here --->
 
-![GitHub repo size](https://img.shields.io/github/repo-size/alexpdev/dotfiles)
-![GitHub contributors](https://img.shields.io/github/contributors/alexpdev/dotfiles)
-![GitHub stars](https://img.shields.io/github/stars/alexpdev/dotfiles?style=social)
-![GitHub forks](https://img.shields.io/github/forks/alexpdev/dotfiles?style=social)
-![Twitter Follow](https://img.shields.io/badge/dotfiles-.files-green)
+![GitHub repo size](https://img.shields.io/github/repo-size/alexpdev/scralenium?color=orange)
+![GitHub License](https://img.shields.io/github/license/alexpdev/scralenium?color=red&logo=apache)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/scralenium?color=brown)
+![GitHub Last Commit](https://badgen.net/github/last-commit/alexpdev/scralenium?color=blue&icon=github)
+[![CI](https://github.com/alexpdev/scralenium/actions/workflows/windows.yml/badge.svg?branch=master&event=push)](https://github.com/alexpdev/scralenium/actions/workflows/windows.yml)
+[![CI](https://github.com/alexpdev/scralenium/actions/workflows/mac.yml/badge.svg?branch=master&event=push)](https://github.com/alexpdev/scralenium/actions/workflows/mac.yml)
+![GitHub repo size](https://img.shields.io/github/repo-size/alexpdev/scralenium)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/1e7fc4df9f66443daa887c740b05335d)](https://www.codacy.com/gh/alexpdev/scralenium/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=alexpdev/scralenium&amp;utm_campaign=Badge_Grade)
+[![codecov](https://codecov.io/gh/alexpdev/scralenium/branch/main/graph/badge.svg?token=jpj9Rgriqi)](https://codecov.io/gh/alexpdev/scralenium)
 
-Project name is a `<utility/tool/feature>` that allows `<insert_target_audience>` to do `<action/task_it_does>`.
-
-Additional line of information text about what the project does. Your introduction should be around 2 or 3 sentences. Don't go overboard, people won't read it.
+Project name is a `scralenium` that allows _use selenium webdriver with scrapy_ to do scrape web data from dynamic web pages.
 
 ## Prerequisites
 
 Before you begin, ensure you have met the following requirements:
 
-<!--- These are just example requirements. Add, duplicate or remove as required --->
+* You have installed the latest version of `python 3`
+* You are familiar with the scrapy framework
 
-* You have installed the latest version of `<coding_language/dependency/requirement>`
-* You have a `<Windows/Linux/Mac>` machine. State which OS is supported/which is not.
-* You have read `<guide/link/documentation_related_to_project>`.
+Requirements:
 
-## Installing <project_name>
+* scrapy
+* selenium
 
-To install <project_name>, follow these steps:
+## Installing
 
-Linux and macOS:
-
-```bash
-echo <install_command>
-```
-
-Windows:
+To install `scralenium`, follow these steps:
 
 ```bash
-echo <install_command>
+git clone https://github.com/alexpdev/scralenium.git
+cd scralenium
+pip install .
 ```
-
-## Using <project_name>
-
-To use <project_name>, follow these steps:
-
-```bash
-echo <usage_example>
-```
-
-Add run commands and examples you think users will find useful. Provide an options reference for bonus points!
-
-## Contributing to <project_name>
-<!--- If your README is long or you have some specific process or steps you want contributors to follow, consider creating a separate CONTRIBUTING.md file--->
-To contribute to <project_name>, follow these steps:
-
-1. Fork this repository.
-2. Create a branch: `git checkout -b <branch_name>`.
-3. Make your changes and commit them: `git commit -m '<commit_message>'`
-4. Push to the original branch: `git push origin <project_name>/<location>`
-5. Create the pull request.
-
-Alternatively see the GitHub documentation on [creating a pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
-
-## Contributors
-
-Thanks to the following people who have contributed to this project:
-
-* [@me](https://github.com/alexpdev) 🐛
-
-You might want to consider using something like the [All Contributors](https://github.com/all-contributors/all-contributors) specification and its [emoji key](https://allcontributors.org/docs/en/emoji-key).
-
-## Contact
-
-If you want to contact me you can reach me at <your_email@address.com>.
-
 ## License
 
-<!--- If you're not sure which open license to use see https://choosealicense.com/--->
-
-This project uses the following license: [<license_name>](<link>).
+This project uses the following license: [Apache 2.0](./LICENSE).
