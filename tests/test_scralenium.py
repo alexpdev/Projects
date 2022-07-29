@@ -41,17 +41,18 @@ class Driver:
 
     def execute_cdp_cmd(self, thing1, thing2):
         """Do Nothing with thing1 and thing2."""
-        assert thing1
-        assert thing2
+        self.thing1 = thing1
+        self.thing2 = thing2
 
     def get(self, url):
         """Do nothing with url."""
-        assert url
+        self.url = url
 
     def implicitly_wait(self, value):
         """Wait till value is 0."""
         while value > 0:
             value -= 1
+        self.value = value
 
     def execute_script(self, script):
         """Execute script."""
@@ -59,7 +60,8 @@ class Driver:
 
     def get_screenshot_as_png(self):
         """Return a screenshot"""
-        return [[0, 0, 0] * 4]
+        self.shot = [0, 0, 0]
+        return self.shot
 
     def add_cookie(self, mapp):
         """Add cookie to cookies."""
@@ -67,6 +69,7 @@ class Driver:
 
     def quit(self):
         """Do nothing."""
+        self.closed = True
 
 
 middlewares.DRIVERS = {"chrome": Driver}
@@ -94,7 +97,9 @@ def test_request():
     """Test scraleniumrequest object."""
     url = "https://some.url.com"
     pause = 12
-    request = ScraleniumRequest(url, pause=pause, callback=lambda x: print(x))
+    request = ScraleniumRequest(
+        url, pause=pause, callback=lambda x: str(x) + "l"
+    )
     assert request.pause == pause
     assert request.url == url
 
@@ -103,14 +108,14 @@ def test_request():
 def req():
     """Return a ScraleniumRequest"""
     return ScraleniumRequest(
-        "https://some.url.com", pause=10, callback=lambda x: print(x)
+        "https://some.url.com", pause=10, callback=lambda x: str(x) + "s"
     )
 
 
 @pytest.fixture
 def req2():
     """Return regular scrapy request."""
-    return Request("https://some.url.com", callback=lambda: print())
+    return Request("https://some.url.com", callback=lambda x: str(x) + "s")
 
 
 def test_response(req):
@@ -127,15 +132,15 @@ def test_response(req):
 
 
 def test_response_error(req):
-    """Test ScraleniumResponse object."""
-    dummy = {"unittest": "test_response"}
+    """Test ScraleniumResponse object errors."""
+    dummy = {"unittest": "fail"}
     images = []
-    body = b"<html><body><h1>Test</h1></body></html>"
+    body = b"<html><body><h1>Fail</h1></body></html>"
     resp = ScraleniumResponse(
         dummy, req.url, request=req, images=images, body=body, encoding="utf8"
     )
     assert resp.images == images
-    assert resp.xpath("//h1/text()").get() == "Test"
+    assert resp.xpath("//h1/text()").get() == "Fail"
     try:
         assert resp.over("")
     except AttributeError:

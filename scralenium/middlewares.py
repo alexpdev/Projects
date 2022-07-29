@@ -76,7 +76,7 @@ class ScraleniumDownloaderMiddleware:
                 self._driver = driverclass()
         return self._driver
 
-    def _set_user_agent(self, driver, request, spider):
+    def _set_user_agent(self, request, spider):
         """
         Set the user agent for the webdriver.
 
@@ -93,7 +93,7 @@ class ScraleniumDownloaderMiddleware:
             user_agent = request.headers["User-Agent"].decode("utf-8")
             if "scrapy" in user_agent:
                 return
-            driver.execute_cdp_cmd(
+            self.driver.execute_cdp_cmd(
                 "Network.setUserAgentOverride", {"userAgent": user_agent}
             )
         except KeyError:
@@ -116,8 +116,8 @@ class ScraleniumDownloaderMiddleware:
             the response created from the request received.
         """
         if isinstance(request, ScraleniumRequest):
+            self._set_user_agent(request, spider)
             driver = self.driver
-            self._set_user_agent(driver, request, spider)
             driver.get(request.url)
             for name, value in request.cookies.items():
                 driver.add_cookie({"name": name, "value": value})

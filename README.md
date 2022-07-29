@@ -9,7 +9,7 @@
 [![CI](https://github.com/alexpdev/scralenium/actions/workflows/windows.yml/badge.svg?branch=master&event=push)](https://github.com/alexpdev/scralenium/actions/workflows/windows.yml)
 [![CI](https://github.com/alexpdev/scralenium/actions/workflows/mac.yml/badge.svg?branch=master&event=push)](https://github.com/alexpdev/scralenium/actions/workflows/mac.yml)
 ![GitHub repo size](https://img.shields.io/github/repo-size/alexpdev/scralenium)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/3b12aa2268684d349d5d47cbf0ac1b53)](https://www.codacy.com/gh/alexpdev/scralenium/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=alexpdev/scralenium&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/3b12aa2268684d349d5d47cbf0ac1b53)](https://www.codacy.com/gh/alexpdev/scralenium/dashboard?utm_source=github.com&utm_medium=referral&utm_content=alexpdev/scralenium&utm_campaign=Badge_Grade)
 [![codecov](https://codecov.io/gh/alexpdev/scralenium/branch/main/graph/badge.svg?token=jpj9Rgriqi)](https://codecov.io/gh/alexpdev/scralenium)
 
 Project name is a `scralenium` that allows _use selenium webdriver with scrapy_ to do scrape web data from dynamic web pages.  The name is actually really clever, if you didn't notice it is `scrapy` + `selenium` = `scralenium`.  Genius right? :)
@@ -18,13 +18,13 @@ Project name is a `scralenium` that allows _use selenium webdriver with scrapy_ 
 
 Before you begin, ensure you have met the following requirements:
 
-* You have installed the latest version of `python 3`
-* You are familiar with the scrapy framework
+-   You have installed the latest version of `python 3`
+-   You are familiar with the scrapy framework
 
 Requirements:
 
-* scrapy
-* selenium
+-   scrapy
+-   selenium
 
 ## Installing
 
@@ -35,6 +35,7 @@ git clone https://github.com/alexpdev/scralenium.git
 cd scralenium
 pip install .
 ```
+
 From PyPi
 
 ```bash
@@ -44,7 +45,6 @@ pip install scralenium
 ## License
 
 This project uses the following license: [Apache 2.0](./LICENSE).
-
 
 ## Usage
 
@@ -76,7 +76,7 @@ the webdrivers implicit wait value.  And the `response` argument in the
 parse callback methods gives you full access to the normal scrapy response 
 as well as all the features of the webdriver.
 
-```
+```python
 from scralenium import ScraleniumRequest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -103,4 +103,4 @@ I am have added some additional features but am behind on documenting them.
 ## TODO
 
 [x] add features
-[] document them
+\[] document them
