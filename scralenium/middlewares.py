@@ -1,18 +1,11 @@
-# Define here the models for your spider middleware
-#
-# See documentation in:
-# https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+"""Module contains the middleware controller for Scralenium Middleware."""
 
 import time
-import selenium
-from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
-from .http import ScraleniumRequest, ScraleniumResponse
+
 from scrapy import signals
+from selenium import webdriver
 
-# useful for handling different item types with a single interface
-from itemadapter import is_item, ItemAdapter
-
+from scralenium.http import ScraleniumRequest, ScraleniumResponse
 
 DRIVERS = {
     "chrome": webdriver.Chrome,
@@ -21,78 +14,58 @@ DRIVERS = {
 }
 
 
-class ScraleniumSpiderMiddleware:
-    # Not all methods need to be defined. If a method is not defined,
-    # scrapy acts as if the spider middleware does not modify the
-    # passed objects.
-
-
-
-    @classmethod
-    def from_crawler(cls, crawler):
-        # This method is used by Scrapy to create your spiders.
-        s = cls()
-        crawler.signals.connect(s.spider_opened, signal=signals.spider_opened)
-        return s
-
-    def process_spider_input(self, response, spider):
-        # Called for each response that goes through the spider
-        # middleware and into the spider.
-
-        # Should return None or raise an exception.
-        return None
-
-    def process_spider_output(self, response, result, spider):
-        # Called with the results returned from the Spider, after
-        # it has processed the response.
-
-        # Must return an iterable of Request, or item objects.
-        for i in result:
-            yield i
-
-    def process_spider_exception(self, response, exception, spider):
-        # Called when a spider or process_spider_input() method
-        # (from other spider middleware) raises an exception.
-
-        # Should return either None or an iterable of Request or item objects.
-        pass
-
-    def process_start_requests(self, start_requests, spider):
-        # Called with the start requests of the spider, and works
-        # similarly to the process_spider_output() method, except
-        # that it doesn’t have a response associated.
-
-        # Must return only requests (not items).
-        for r in start_requests:
-            yield r
-
-    def spider_opened(self, spider):
-        spider.logger.info('Spider opened: %s' % spider.name)
-
-
 class ScraleniumDownloaderMiddleware:
+    """
+    Middleware for controling initiating the webdriver.
+    """
 
     @classmethod
     def from_crawler(cls, crawler):
-        headless = crawler.settings.get('HEADLESS', True)
-        executable = crawler.settings.get('SELENIUM_DRIVER_EXECUTABLE')
-        name = crawler.settings.get('SELENIUM_DRIVER_NAME')
-        timeout = crawler.settings.get('TIMEOUT')
-        s = cls(headless, executable, name, timeout)
+        """
+        Create the middleware instance.
+
+        Parameters
+        ----------
+        crawler : scrapy.Crawler
+            the url crawler process.
+
+        Returns
+        -------
+        ScraleniumDownloaderMiddleware
+            instance of this class
+        """
+        executable = crawler.settings.get("SELENIUM_DRIVER_EXECUTABLE")
+        name = crawler.settings.get("SELENIUM_DRIVER_NAME")
+        s = cls(executable, name)
         crawler.signals.connect(s.spider_closed, signal=signals.spider_closed)
         return s
 
-    def __init__(self, headless, executable, name, timeout):
-        self.headless = headless
+    def __init__(self, executable, name):
+        """
+        Construct the ScraleniumDownloaderMiddleware class.
+
+        Parameters
+        ----------
+        executable : str
+            path to webdriver executable.
+        name : str
+            the name of the browser.
+        """
         self.executable = executable
         self.name = name
-        self.timeout = timeout
         self._driver = None
         self.images = []
 
-
     @property
     def driver(self):
+        """
+        Create and return selenium webdriver object.
+
+        Returns
+        -------
+        selenium.WebDriver
+            the webdriver browser controller.
+        """
         if not self._driver:
             if not self.name:
                 self.name = "chrome"
@@ -103,55 +76,109 @@ class ScraleniumDownloaderMiddleware:
                 self._driver = driverclass()
         return self._driver
 
+    def _set_user_agent(self, driver, request, spider):
+        """
+        Set the user agent for the webdriver.
+
+        Parameters
+        ----------
+        driver : selenium.WebDriver
+            the web driver.
+        request : ScraleniumRequest
+            the request being processed
+        spider : scrapy.Spider
+            the current spider class.
+        """
+        try:
+            user_agent = request.headers["User-Agent"].decode("utf-8")
+            if "scrapy" in user_agent:
+                return
+            driver.execute_cdp_cmd(
+                "Network.setUserAgentOverride", {"userAgent": user_agent}
+            )
+        except KeyError:
+            spider.logger.info("Couldn't apply User Agent.")
 
     def process_request(self, request, spider):
-        if not isinstance(request, ScraleniumRequest):
-            return None
-        driver = self.driver
-        # try:
-        #     user_agent = request.headers['User-Agent'].decode('utf-8')
-        #     driver.execute_cdp_cmd(
-        #         'Network.setUserAgentOverride',{"userAgent": user_agent}
-        #     )
-        # except AttributeError:
-        #     pass
-        driver.get(request.url)
-        for name, value in request.cookies.items():
-            driver.add_cookie({
-                'name': name,
-                'value': value
-            })
-        if request.pause:
-            time.sleep(request.pause)
-        if request.screenshot:
-            if request.screenshot_count:
-                self._screenshots(request.screenshot_count,
-                                  request.screenshot_duration)
-            else:
-                self._screenshot()
-        request.images = self.images
-        if request.script:
-            driver.execute_script(request.script)
-        body = driver.page_source
-        response = ScraleniumResponse(
-            driver,
-            driver.current_url,
-            request=request,
-            body=body.encode('utf-8'),
-            encoding='utf-8',
-        )
-        return response
+        """
+        Process the current request.
+
+        Parameters
+        ----------
+        request : ScraleniumRequest
+            the current request
+        spider : scrapy.Spider
+            the current spider in use.
+
+        Returns
+        -------
+        ScraleniumResponse
+            the response created from the request received.
+        """
+        if isinstance(request, ScraleniumRequest):
+            driver = self.driver
+            self._set_user_agent(driver, request, spider)
+            driver.get(request.url)
+            for name, value in request.cookies.items():
+                driver.add_cookie({"name": name, "value": value})
+            if request.pause:
+                spider.logger.info("Implicitly Waiting...")
+                driver.implicitly_wait(request.pause)
+            if request.script:
+                spider.logger.info("Runnin Script...")
+                driver.execute_script(request.script)
+            if request.screenshot:
+                spider.logger.info("Making Screenshot(s)...")
+                if request.screenshot_count:
+                    self._screenshots(
+                        request.screenshot_count, request.screenshot_duration
+                    )
+                else:
+                    self._screenshot()
+            request.images = self.images
+            body = driver.page_source
+            response = ScraleniumResponse(
+                driver,
+                driver.current_url,
+                images=self.images,
+                request=request,
+                body=body.encode("utf-8"),
+                encoding="utf-8",
+            )
+            return response
+        return None
 
     def _screenshot(self):
+        """
+        Take screenshot of webpage.
+        """
         image = self.driver.get_screenshot_as_png()
         self.images.append(image)
 
     def _screenshots(self, qty, duration):
-        for _ in range(qty-1):
+        """
+        Take screenshots of webpage.
+
+        Parameters
+        ----------
+        qty : int
+            number of screenshots
+        duration : int
+            time in between screenshots
+        """
+        for _ in range(qty - 1):
             self._screenshot()
             time.sleep(duration)
         self._screenshot()
 
     def spider_closed(self, spider):
-        spider.logger.info('Spider opened: %s' % spider.name)
+        """
+        Close the spider and the webdriver.
+
+        Parameters
+        ----------
+        spider : scrapy.Spider
+            the current spider in use.
+        """
+        spider.logger.info(f"Spider opened: {spider.name}")
         self.driver.quit()
