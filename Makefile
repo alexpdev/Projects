@@ -51,6 +51,7 @@ test: ## run tests quickly with the default Python
 	tox
 
 push: clean test ## push to github
+	git add .
 	git commit -a -m "$m"
 	git push
 
