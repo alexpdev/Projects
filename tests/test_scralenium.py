@@ -96,7 +96,7 @@ class DummyCrawler:
 def test_request():
     """Test scraleniumrequest object."""
     url = "https://some.url.com"
-    pause = 12
+    pause = 0.2
     request = ScraleniumRequest(
         url, pause=pause, callback=lambda x: str(x) + "l"
     )
@@ -108,7 +108,7 @@ def test_request():
 def req():
     """Return a ScraleniumRequest"""
     return ScraleniumRequest(
-        "https://some.url.com", pause=10, callback=lambda x: str(x) + "s"
+        "https://some.url.com", pause=0.2, callback=lambda x: str(x) + "s"
     )
 
 
@@ -154,7 +154,7 @@ def test_response_error(req):
 @pytest.mark.parametrize("script", ["script", None])
 @pytest.mark.parametrize("cookies", [("name", "value"), None])
 @pytest.mark.parametrize("ua", ["scrapy", "mozilla", None])
-@pytest.mark.parametrize("screenshot", [None, (None, None), (3, 0.03)])
+@pytest.mark.parametrize("screenshot", [None, (None, None), (1, 0.03)])
 def test_process_request(
     req, ua, cookies, script, screenshot, driver, name, executable, close
 ):

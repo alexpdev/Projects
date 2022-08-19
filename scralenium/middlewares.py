@@ -13,6 +13,7 @@ DRIVERS = {
     "remote": webdriver.Remote,
 }
 
+
 class ScraleniumDownloaderMiddleware:
     """
     Middleware for controling initiating the webdriver.
@@ -181,7 +182,7 @@ class ScraleniumDownloaderMiddleware:
         """
         for _ in range(qty - 1):
             self._screenshot()
-            time.sleep(duration)
+            self.pause_wait(duration)
         self._screenshot()
 
     def spider_closed(self, spider):

@@ -1,5 +1,12 @@
 # scralenium ChangeLog
 
+## Version 0.1.3
+
+- updated Readme and middleware
+- bug fixes
+
+* * *
+
 ## Version 0.1.2
 
 -   Packaging and DevOps updates
