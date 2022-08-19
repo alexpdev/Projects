@@ -13,7 +13,6 @@ DRIVERS = {
     "remote": webdriver.Remote,
 }
 
-
 class ScraleniumDownloaderMiddleware:
     """
     Middleware for controling initiating the webdriver.
@@ -99,6 +98,19 @@ class ScraleniumDownloaderMiddleware:
         except KeyError:
             spider.logger.info("Couldn't apply User Agent.")
 
+    def pause_wait(self, amount):
+        """
+        Stall moving forward until certain amount of time has elapsed.
+
+        Parameters
+        ----------
+        amount : float
+            amount of time to wait in seconds
+        """
+        then = time.time()
+        while time.time() - then < amount:
+            pass
+
     def process_request(self, request, spider):
         """
         Process the current request.
@@ -124,6 +136,7 @@ class ScraleniumDownloaderMiddleware:
             if request.pause:
                 spider.logger.info("Implicitly Waiting...")
                 driver.implicitly_wait(request.pause)
+                self.pause_wait(request.pause)
             if request.script:
                 spider.logger.info("Runnin Script...")
                 driver.execute_script(request.script)

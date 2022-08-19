@@ -9,7 +9,6 @@
 [![CI](https://github.com/alexpdev/scralenium/actions/workflows/windows.yml/badge.svg?branch=master&event=push)](https://github.com/alexpdev/scralenium/actions/workflows/windows.yml)
 [![CI](https://github.com/alexpdev/scralenium/actions/workflows/mac.yml/badge.svg?branch=master&event=push)](https://github.com/alexpdev/scralenium/actions/workflows/mac.yml)
 ![GitHub repo size](https://img.shields.io/github/repo-size/alexpdev/scralenium)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/3b12aa2268684d349d5d47cbf0ac1b53)](https://www.codacy.com/gh/alexpdev/scralenium/dashboard?utm_source=github.com&utm_medium=referral&utm_content=alexpdev/scralenium&utm_campaign=Badge_Grade)
 [![codecov](https://codecov.io/gh/alexpdev/scralenium/branch/main/graph/badge.svg?token=jpj9Rgriqi)](https://codecov.io/gh/alexpdev/scralenium)
 
 Project name is a `scralenium` that allows _use selenium webdriver with scrapy_ to do scrape web data from dynamic web pages.  The name is actually really clever, if you didn't notice it is `scrapy` + `selenium` = `scralenium`.  Genius right? :)
@@ -20,6 +19,8 @@ Before you begin, ensure you have met the following requirements:
 
 -   You have installed the latest version of `python 3`
 -   You are familiar with the scrapy framework
+-   You are familiar with selenium
+-   You have a webdriver installed/available
 
 Requirements:
 
@@ -50,20 +51,17 @@ This project uses the following license: [Apache 2.0](./LICENSE).
 
 Using `scralenium` is really simple.
 
-In your scrappy settings set the `SELENIUM_DRIVER_NAME` and  
-`SELENIUM_DRIVER_EXECUTABLE` fields.  `scralenium` currently supports
-firfox, chrome, and remote as values in the SELENIUM_DRIVER_NAME field. If  
-the webdriver executable is already on `path` then it can be omitted. You 
-also need to enable the `ScraleniumDownloaderMiddleware` in the 
-`DOWNLOADER_MIDDLEWARES` feed.
+In your scrappy settings set the `SELENIUM_DRIVER_NAME` and
+`SELENIUM_DRIVER_EXECUTABLE` fields. **`scralenium`** currently supports
+chrome SELENIUM_DRIVER_NAME field. If the webdriver executable is already
+on `path` then it can be omitted. You also need to enable the
+`ScraleniumDownloaderMiddleware` in the `DOWNLOADER_MIDDLEWARES` feed.
 
 ```python
 from shutil import which
-
 SELENIUM_DRIVER_EXECUTABLE = which("chromedriver")
 SELENIUM_DRIVER_NAME = "chrome"
-
-DOWNLOADER_MIDDLEWARES {
+DOWNLOADER_MIDDLEWARES = {
     "scralenium.ScraleniumDownloaderMiddleware" : 950
 }
 ```
@@ -77,15 +75,18 @@ parse callback methods gives you full access to the normal scrapy response
 as well as all the features of the webdriver.
 
 ```python
+import scrapy
 from scralenium import ScraleniumRequest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
 class MySpider(scrapy.Spider):
-
+    """Example of using scrapy.Spider with ScraleniumRequest"""
+    ...
+     
     def start_requests(self):
         for url in self.start_urls:
-            ScreleniumRequest(url, callback=self.parse, pause=4)
+            yield ScreleniumRequest(url, callback=self.parse, pause=4)
     
     def parse(self, response):
         html = response.text
@@ -98,9 +99,9 @@ class MySpider(scrapy.Spider):
         yield {"title": title}
 ```
 
-I am have added some additional features but am behind on documenting them.
+I have added some additional features but am behind on documenting them.
 
 ## TODO
 
-[x] add features
-\[] document them
+[x] add features  
+[] document them
