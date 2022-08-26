@@ -42,42 +42,46 @@ class HeaderCombo(QComboBox):
         super().__init__(parent=parent)
         self.topic_line = TopicLine(self)
         self.setLineEdit(self.topic_line)
-        self.add_topics()
-        self.validator = Validator()
+        self.addItem("")
+        self.data = self.add_topics()
+        validator = Validator(self.data, parent=self)
+        self.setValidator(validator)
 
     def add_topics(self):
+        info = {}
         for filename in os.listdir(TOPICS_DIR):
             fullpath = os.path.join(TOPICS_DIR, filename)
             if os.path.isfile(fullpath) and fullpath.endswith(".json"):
                 with open(fullpath, "rt", encoding="utf-8") as fd:
                     data = json.load(fd)
                     name = data['name']
+                    info[name] = {"index": len(info), "path": fullpath}
                     self.addItem(name, fullpath)
+        return info
 
 
 class Validator(QValidator):
 
-    def __init__(self, parent=None):
+    def __init__(self, data, parent=None):
         super().__init__(parent=parent)
         self.combo = parent
+        self.info = data
 
     def fixup(self, text):
-        self.combo.setCurrentText(text[:-1])
+        while self.validate(text) == self.Invalid:
+            text = text[:-1]
+        return text
 
-    def validate(self, text, pos):
-        textlen = len(text)
-        intermed = False
-        for i in range(self.combo.count()):
-            itemtext = self.combo.itemText(i)
-            size = len(itemtext)
-            if textlen == size:
-                if text == itemtext:
-                    return self.Acceptable
-            if textlen < size:
-                if itemtext.startswith(text):
-                    intermed == True
-        if intermed:
+    def validate(self, text, _=None):
+        if text == "":
             return self.Intermediate
+        text = text.lower()
+        titles = [i.lower() for i in self.info]
+        if text in titles:
+            return self.Acceptable
+        for title in titles:
+            if title.startswith(text):
+                return self.Intermediate
         return self.Invalid
 
 
@@ -112,7 +116,14 @@ class Window(QMainWindow):
         data = self.header.itemData(index, Qt.UserRole)
         with open(data,"rt",encoding="utf-8") as fd:
             info = json.load(fd)
-        self.data = info
+        self.data = []
+        for section, value in info["sections"].items():
+            self.data += value
+        print(self.data)
+        row = self.data[0]
+        self.left_label.setText(row["key"])
+        self.right_label.setText(row["val"])
+
 
 
 
