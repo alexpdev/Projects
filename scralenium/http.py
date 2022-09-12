@@ -53,6 +53,53 @@ class ScraleniumRequest(Request):
         super().__init__(*args, **kwargs)
 
 
+class ScraleniumClickRequest(Request):
+    """
+    ScraleniumClickRequest is a subclass of scrapy request object.
+
+    Super Class
+    -----------
+    Request : scrapy.Request
+        the built in scrapy request object
+    """
+
+    def __init__(
+        self,
+        *args,
+        pause=None,
+        element=None,
+        screenshot=False,
+        screenshot_count=None,
+        screenshot_duration=None,
+        script=None,
+        **kwargs
+    ):
+        """
+        Construct for the ScraleniumRequest object class.
+
+        Parameters
+        ----------
+        pause : int, optional
+            number of seconds, by default None
+        screenshot : bool, optional
+            webdriver should capture screenshot, by default False
+        screenshot_count : int, optional
+            the number of screenshots, by default None
+        screenshot_duration : int, optional
+            number of seconds in between screenshots, by default None
+        script : str, optional
+            javescript script source, by default None
+        
+        """
+        self.pause = pause
+        self.element = element
+        self.screenshot = screenshot
+        self.screenshot_count = screenshot_count
+        self.screenshot_duration = screenshot_duration
+        self.script = script
+        super().__init__(*args, **kwargs)
+
+
 class ScraleniumResponse(TextResponse):
     """
     ScraleniumResponse is a subclass from scrapy.Response.

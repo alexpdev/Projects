@@ -5,7 +5,7 @@ import time
 from scrapy import signals
 from selenium import webdriver
 
-from scralenium.http import ScraleniumRequest, ScraleniumResponse
+from scralenium.http import ScraleniumRequest, ScraleniumResponse, ScraleniumClickRequest
 
 DRIVERS = {
     "chrome": webdriver.Chrome,
@@ -128,10 +128,16 @@ class ScraleniumDownloaderMiddleware:
         ScraleniumResponse
             the response created from the request received.
         """
-        if isinstance(request, ScraleniumRequest):
+        if isinstance(
+            request, ScraleniumRequest) or isinstance(
+                request, ScraleniumClickRequest):
             self._set_user_agent(request, spider)
             driver = self.driver
-            driver.get(request.url)
+            if isinstance(request, ScraleniumClickRequest):
+                element = request.element()
+                element.click()
+            else:
+                driver.get(request.url)
             for name, value in request.cookies.items():
                 driver.add_cookie({"name": name, "value": value})
             if request.pause:
