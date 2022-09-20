@@ -54,7 +54,7 @@ class Table(Widget):
     table_width = NumericProperty(3)
     table_columns = NumericProperty(3)
     table_rows = NumericProperty(5)
-    table_data = []
+    table_Information = []
     cols_titles = []
 
     def addHeader(self,list):
@@ -62,12 +62,12 @@ class Table(Widget):
         self.Build()
 
     def addRow(self,list):
-        self.table_data.insert(0,list)
+        self.table_Information.insert(0,list)
         self.Build()
 
     def Build(self):
         self.grid.clear_widgets()
-        print("Table data" + str(self.table_data))
+        print("Table Information" + str(self.table_Information))
         header = 0
         while self.table_columns > header:
             text=""
@@ -82,11 +82,11 @@ class Table(Widget):
             columnCheck = 0
             while columnCheck < self.table_columns:
                 text = ""
-                if len(self.table_data) > rowCheck:
-                    print("len col:" + str(self.table_data))
-                    if len(self.table_data[rowCheck]) > columnCheck:
-                        print("len row:" + str(self.table_data[rowCheck][columnCheck]))
-                        text = self.table_data[rowCheck][columnCheck]
+                if len(self.table_Information) > rowCheck:
+                    print("len col:" + str(self.table_Information))
+                    if len(self.table_Information[rowCheck]) > columnCheck:
+                        print("len row:" + str(self.table_Information[rowCheck][columnCheck]))
+                        text = self.table_Information[rowCheck][columnCheck]
                 if primaryorsecondary == 1:
                     label = MyLabelPrimary(text=text,size_hint=[.25,.25])
                 else:
@@ -119,18 +119,38 @@ class Table(Widget):
 class TestApp(App):
 
     def build(self):
-        self.root = root = Table(table_columns=6,table_rows=6,table_height =500,table_width=800,header_color=[0,1,1,.3])
+        self.root = root = Table(table_columns=6,table_rows=6,table_height =500,table_width=300,header_color=[0,1,1,.3])
         root.addRow(["2"])
-        root.addRow(["Data","Data2","Data3","Data4","Data5","Data6","Break it"])
-        root.addRow(["Data", "Data2", "Data3", "Data4", "Data5", "Data6", "Break it"])
-        root.addRow(["Data", "Data2", "Data3", "Data4", "Data5", "Data6", "Break it"])
-        root.addRow(["Data", "Data2", "Data3", "Data4", "Data5", "Data6", "Break it"])
-        root.addRow(["Data", "Data2", "Data3", "Data4", "Data5", "Data6", "Break it"])
-        root.addRow(["Data", "Data2", "Data3", "Data4", "Data5", "Data6", "Break it"])
-        root.addRow(["Data", "Data2", "Data3", "Data4", "Data5", "Data6", "Break it"])
-        root.addRow(["Data", "Data2", "Data3", "Data4", "Data5", "Data6", "Break it"])
-        root.addRow(["Data", "Data2", "Data3", "Yeet", "Data5", "Data6", "Break it"])
-        root.addHeader(["a","b","c","asd","c","asd","fucl"])
+        root.addRow(
+            ["Information","Information2","Information3","Information4","Information5","Information6","Break it"]
+            )
+        root.addRow(
+            ["Information", "Information2", "Information3", "Information4", "Information5", "Information6", "Break it"]
+            )
+        root.addRow(
+            ["Information", "Information2", "Information3", "Information4", "Information5", "Information6", "Break it"]
+            )
+        root.addRow(
+            ["Information", "Information2", "Information3", "Information4", "Information5", "Information6", "Break it"]
+            )
+        root.addRow(
+            ["Information", "Information2", "Information3", "Information4", "Information5", "Information6", "Break it"]
+            )
+        root.addRow(
+            ["Information", "Information2", "Information3", "Information4", "Information5", "Information6", "Break it"]
+            )
+        root.addRow(
+            ["Information", "Information2", "Information3", "Information4", "Information5", "Information6", "Break it"]
+            )
+        root.addRow(
+            ["Information", "Information2", "Information3", "Information4", "Information5", "Information6", "Break it"]
+            )
+        root.addRow(
+            ["Information", "Information2", "Information3", "Yeet", "Information5", "Information6", "Break it"]
+            )
+        root.addHeader(
+            ["a","b","c","asd","c","asd","fucl"]
+            )
         return root
 
 if __name__ == '__main__':
