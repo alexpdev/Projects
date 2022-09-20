@@ -1,0 +1,15 @@
+<TerminalLabel>:
+	markup:True
+	height: self.texture_size[1]
+	text_size: self.width, self.height
+	text: root.text
+
+<TerminalGrid>:
+	cols: 1
+	size_hint_y: None
+	canvas:
+		Color:
+			rgb: 0.2, 0.2, 0.2
+		Rectangle:
+			pos: self.x, self.y
+			size: self.width, self.height
