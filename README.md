@@ -1,2 +1,5 @@
-# KivySnippets
-Some custom kivy widgets and code snippets.  
+# Kivy Snippets
+
+Mix and match of cutom made kivy widgets and projects, as well as some interesting code snippets I have discovered.
+
+
