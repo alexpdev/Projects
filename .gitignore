@@ -3,6 +3,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 *.dat
 *.pyc
 __pycache__/
@@ -470,3 +471,10 @@ cython_debug/
 venv/
 *.json
 >>>>>>> bbd1914cbff4589d25be6218e559ac9550ded06a
+=======
+venv/
+__pycache__/
+*.pyc
+.vscode/
+.pytest_cache/
+>>>>>>> 9161427cac48ffb74b64d7fa12e174a3cfe5ebd9
