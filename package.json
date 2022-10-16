@@ -1,8 +1,12 @@
 {
+<<<<<<< HEAD
   "name": "games",
   "version": "1.0.0",
   "description": "* These are games and projects I am doing in my leisure time.",
   "name": "aftp4me",
+=======
+  "name": "qfilters",
+>>>>>>> bbd1914cbff4589d25be6218e559ac9550ded06a
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,12 +15,17 @@
   },
   "repository": {
     "type": "git",
+<<<<<<< HEAD
     "url": "git+https://github.com/alexpdev/Games.git"
+=======
+    "url": "git+https://github.com/alexpdev/QFilter.git"
+>>>>>>> bbd1914cbff4589d25be6218e559ac9550ded06a
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
+<<<<<<< HEAD
     "url": "https://github.com/alexpdev/Games/issues"
   },
   "homepage": "https://github.com/alexpdev/Games#readme"
@@ -57,4 +66,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC"
+=======
+    "url": "https://github.com/alexpdev/QFilter/issues"
+  },
+  "homepage": "https://github.com/alexpdev/QFilter#readme"
+>>>>>>> bbd1914cbff4589d25be6218e559ac9550ded06a
 }
