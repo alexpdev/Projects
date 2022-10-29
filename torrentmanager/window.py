@@ -6,20 +6,18 @@ from PySide6.QtGui import *
 
 class TableModel(QAbstractTableModel):
     def __init__(self, parent=None, manager=None):
-        super().__init__()
-        self.parent = parent
+        super().__init__(parent=parent)
         self.manager = manager
-        self.header_labels = ['Name', 'Path', 'Complete', 'Date Added']
+        self.torrents = manager.torrents
         self.headers = ['name', 'path', 'completed', 'date_added']
-        self.manager.dataReady.connect(self.addRows)
+        self.manager.torrentAdded.connect(self.add_row)
 
-    def addRows(self):
-        self.beginResetModel()
-        self.endResetModel()
-        
+    def add_row(self, row):
+        index = QModelIndex()
+        self.addRow(row, index)
 
     def rowCount(self, index):
-        return len(self.manager.torrents)
+        return len(self.torrents)
 
     def columnCount(self, index):
         return len(self.headers)
@@ -33,31 +31,26 @@ class TableModel(QAbstractTableModel):
         return None
 
     def headerData(self, section, orientation, role):
-        if orientation == Qt.Orientation.Horizontal:
-            if role == Qt.DisplayRole:
-                return self.header_labels[section]
+        if role == Qt.DisplayRole and orientation == Qt.Orientation.Horizontal:
+            return ' '.join(self.headers[section].split('_')).title()
 
-
-
-
-
+    def addRow(self, row, index):
+        self.beginInsertRows(index, row, row)
+        self.endInsertRows()
+        return True
 
 class Window(QMainWindow):
     """Window object."""
 
-    def __init__(self, parent=None) -> None:
+    def __init__(self, parent=None, manager=None) -> None:
         super().__init__(parent=parent)
         self.central = QWidget(parent=self)
         self.layout = QVBoxLayout(self.central)
-        self.manager = None
+        self.manager = manager
+        self.resize(600,400)
         self.setCentralWidget(self.central)
         self.setObjectName('MainWindow')
         self.setupUi()
-
-    def setManager(self, manager):
-        self.manager = manager
-        self.tablemodel = TableModel(parent=self, manager=self.manager)
-        self.table.setModel(self.tablemodel)
 
     def setupUi(self):
         self.table = QTableView()
@@ -65,6 +58,8 @@ class Window(QMainWindow):
         self.layout.addWidget(self.button)
         self.layout.addWidget(self.table)
         self.button.clicked.connect(self.torrent_search)
+        self.tablemodel = TableModel(parent=self, manager=self.manager)
+        self.table.setModel(self.tablemodel)
 
     def torrent_search(self):
         self.dialog = QDialog()
@@ -93,7 +88,6 @@ class Window(QMainWindow):
 
 def start_gui(manager, *args, **kwargs):
     app = QApplication([])
-    window = Window()
-    window.setManager(manager)
+    window = Window(manager=manager, parent=None)
     window.show()
     app.exec()
