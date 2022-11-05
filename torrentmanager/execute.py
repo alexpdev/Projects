@@ -2,8 +2,7 @@ import os
 import sys
 from argparse import ArgumentParser
 from torrentmanager.window import start_gui
-from torrentmanager.storage import JSONBackend
-from torrentmanager.manager import TorrentManager
+from torrentmanager.manager import TorrentManager, JSONBackend
 
 
 def main(args=None):

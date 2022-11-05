@@ -2,79 +2,11 @@ import pyben
 import os
 import json
 import atexit
-import asyncio
 from pathlib import Path
 from datetime import datetime
 from PySide6.QtWidgets import *
 from PySide6.QtCore import *
 from PySide6.QtGui import *
-
-class SearchThread(QThread):
-
-
-
-    def __init__(self, path, container):
-        super().__init__()
-        self.path = path
-        self.container = container
-        self.count = 0
-
-    def walk_path(self, root):
-        if root.is_file():
-            if root.suffix == ".torrent":
-                try:
-                    torrent = Torrent(root)
-                except PermissionError:
-                    print("Permission Error", root)
-                    return
-                self.container.append(torrent)
-                self.count += 1
-                if self.count and self.count % 50 == 0:
-                    print(self.objectName, " - Count: ", self.count)
-        elif root.is_dir():
-            try:
-                filelist = list(root.iterdir())
-            except PermissionError:
-                print("Permission Error", root)
-                return
-            for item in filelist:
-                self.walk_path(item)
-
-    def run(self):
-        self.walk_path(Path(self.path))
-        return self.container
-
-
-class TorrentManager(QObject):
-
-    dataReady = Signal()
-
-    def __init__(self, backend, path=None):
-        super().__init__()
-        self.backend = backend(path=path)
-        self.torrents = []
-        if len(self.backend.archive) > 0:
-            for item in self.backend.archive:
-                self.torrents.append(Torrent.from_dict(item))
-
-    def run_search(self, paths):
-        self.threads = []
-        for path in paths:
-            container = []
-            thread = SearchThread(path, container)
-            self.threads.append(thread)
-            thread.finished.connect(self.add_to_archive)
-            thread.start()
-
-    def add_to_archive(self):
-        for thread in self.threads:
-            if thread.isFinished():
-                for torrent in thread.container:
-                    if torrent not in self.torrents:
-                        self.torrents.append(torrent)
-                thread.container = []
-                thread.deleteLater()
-                self.dataReady.emit()
 
 class Torrent:
 
@@ -85,7 +17,7 @@ class Torrent:
         self.announce = None
         self.web_seeds = None
         self.http_seeds = None
-        self.completed = "?"
+        self.completed = ""
         self.date_added = str(datetime.today())
         self.meta_version = None
         self.file_tree = None
@@ -97,6 +29,7 @@ class Torrent:
         self.comment = None
         self.source = None
         self.created_by = None
+        self.content_path = None
         if path is not None:
             self.file_size = os.path.getsize(self.path)
             self.extract()
@@ -128,7 +61,7 @@ class Torrent:
             torrent.__dict__.setdefault(k, v)
 
     def __eq__(self, other):
-        return other.name == self.name and other.path == self.path
+        return other.name == self.name and self.announce == other.announce
 
 class Worker(QObject):
 
@@ -175,7 +108,6 @@ class TorrentManager(QObject):
     def __init__(self, backend, path=None):
         super().__init__()
         self.backend = backend(path=path)
-        self.torrents = asyncio.run(self.backend.get())
         self.threads = []
 
     def run_search(self, paths):
@@ -192,8 +124,10 @@ class TorrentManager(QObject):
 
     def add_torrent(self, torrent):
         self.backend.store(torrent)
-        self.torrents.append(torrent)
-        self.torrentAdded.emit(len(self.torrents))
+        self.torrentAdded.emit(torrent)
+
+    def get(self):
+        return self.backend.get()
 
 class StorageBackend:
 

@@ -1,69 +1,104 @@
+import os
 from PySide6.QtWidgets import *
 from PySide6.QtCore import *
 from PySide6.QtGui import *
 
-
-
 class TableModel(QAbstractTableModel):
+
+    rowAdded = Signal()
+
     def __init__(self, parent=None, manager=None):
         super().__init__()
         self.parent = parent
         self.manager = manager
-        self.header_labels = ['Name', 'Path', 'Complete', 'Date Added']
-        self.headers = ['name', 'path', 'completed', 'date_added']
-        self.manager.dataReady.connect(self.addRows)
+        self.torrents = self.manager.get()
+        self.all_fields = {
+            'name': 'Name',
+            'path': 'Path',
+            'completed': 'Completed',
+            'date_added': 'Date Added',
+            'length': 'Size',
+            'content_path': 'Content',
+            'meta_version': 'Version',
+            'piece_length': 'Piece Length',
+            'announce': 'Tracker',
+            'private': 'Private',
+            'source': 'Source'
+        }
+        self.fields = dict(list(self.all_fields.items()))
+        self.manager.torrentAdded.connect(self.addRow)
 
-    def addRows(self):
-        self.beginResetModel()
-        self.endResetModel()
-        
+    def addRow(self, torrent):
+        index = QModelIndex()
+        count = self.rowCount(index)
+        self.insertRow(count, index, torrent=torrent)
+
+    def insertRow(self, num, index, torrent=None):
+        if torrent:
+            self.beginInsertRows(index, num, num)
+            self.torrents.insert(num, torrent)
+            self.endInsertRows()
+            self.rowAdded.emit()
+            return True
+        return False
 
     def rowCount(self, index):
-        return len(self.manager.torrents)
+        return len(self.torrents)
 
     def columnCount(self, index):
-        return len(self.headers)
+        return len(self.fields)
 
     def data(self, index, role=Qt.DisplayRole):
         if index.isValid():
-            torrent = self.manager.torrents[index.row()]
+            torrent = self.torrents[index.row()]
             if role == Qt.DisplayRole:
                 col = index.column()
-                return torrent.__dict__[self.headers[col]]
+                field = list(self.fields.items())[col][0]
+                value = getattr(torrent, field)
+                if field == "path":
+                    value = os.path.dirname(value)
+                return str(value)
         return None
 
     def headerData(self, section, orientation, role):
         if orientation == Qt.Orientation.Horizontal:
             if role == Qt.DisplayRole:
-                return self.header_labels[section]
+                return list(self.fields.items())[section][1]
 
 
+class ToolBar(QToolBar):
 
-
-
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self.widget = parent
 
 class Window(QMainWindow):
-    """Window object."""
 
-    def __init__(self, parent=None) -> None:
+    def __init__(self, parent=None, manager=None) -> None:
         super().__init__(parent=parent)
         self.central = QWidget(parent=self)
+        self.resize(600,400)
         self.layout = QVBoxLayout(self.central)
-        self.manager = None
+        self.manager = manager
         self.setCentralWidget(self.central)
         self.setObjectName('MainWindow')
         self.setupUi()
 
-    def setManager(self, manager):
-        self.manager = manager
-        self.tablemodel = TableModel(parent=self, manager=self.manager)
-        self.table.setModel(self.tablemodel)
-
     def setupUi(self):
+        self.toolbar = ToolBar(parent=self)
+        self.layout.addWidget(self.toolbar)
+        self.splitter = QSplitter(Qt.Orientation.Vertical, parent=self)
+        self.layout.addWidget(self.splitter)
         self.table = QTableView()
-        self.button = QPushButton("Search for torrents")
-        self.layout.addWidget(self.button)
-        self.layout.addWidget(self.table)
+        self.tablemodel = TableModel(parent=self, manager=self.manager)
+        self.tablemodel.rowAdded.connect(self.table.resizeColumnsToContents)
+        self.table.setModel(self.tablemodel)
+        self.button = QToolButton()
+        self.button.setText("Search for torrents")
+        self.toolbar.addWidget(self.button)
+        self.splitter.addWidget(self.table)
+        self.scrollArea = QScrollArea(parent=self)
+        self.splitter.addWidget(self.scrollArea)
         self.button.clicked.connect(self.torrent_search)
 
     def torrent_search(self):
@@ -90,10 +125,8 @@ class Window(QMainWindow):
         self.manager.run_search(paths)
         self.dialog.close()
 
-
 def start_gui(manager, *args, **kwargs):
     app = QApplication([])
-    window = Window()
-    window.setManager(manager)
+    window = Window(parent=None, manager=manager)
     window.show()
     app.exec()
