@@ -1,83 +1,149 @@
+import sys
+import os
 from PySide6.QtWidgets import *
 from PySide6.QtCore import *
 from PySide6.QtGui import *
 
-
+from torrentmanager.common import getIcon
 
 class TableModel(QAbstractTableModel):
+
+    rowAdded = Signal()
+
     def __init__(self, parent=None, manager=None):
         super().__init__(parent=parent)
         self.manager = manager
-        self.torrents = manager.torrents
-        self.headers = ['name', 'path', 'completed', 'date_added']
-        self.manager.torrentAdded.connect(self.add_row)
+        self.torrents = self.manager.get()
+        self.all_fields = {
+            'name': 'Name',
+            'path': 'Path',
+            'completed': 'Completed',
+            'date_added': 'Date Added',
+            'length': 'Size',
+            'content_path': 'Content',
+            'meta_version': 'Version',
+            'piece_length': 'Piece Length',
+            'announce': 'Tracker',
+            'private': 'Private',
+            'source': 'Source'
+        }
+        self.fields = dict(list(self.all_fields.items()))
+        self.manager.torrentAdded.connect(self.addRow)
 
-    def add_row(self, row):
+    def addRow(self, torrent):
         index = QModelIndex()
-        self.addRow(row, index)
+        count = self.rowCount(index)
+        self.insertRow(count, index, torrent=torrent)
+
+    def insertRow(self, num, index, torrent=None):
+        if torrent:
+            self.beginInsertRows(index, num, num)
+            self.torrents.insert(num, torrent)
+            self.endInsertRows()
+            self.rowAdded.emit()
+            return True
+        return False
 
     def rowCount(self, index):
         return len(self.torrents)
 
     def columnCount(self, index):
-        return len(self.headers)
+        return len(self.fields)
 
     def data(self, index, role=Qt.DisplayRole):
         if index.isValid():
-            torrent = self.manager.torrents[index.row()]
+            torrent = self.torrents[index.row()]
             if role == Qt.DisplayRole:
                 col = index.column()
-                return torrent.__dict__[self.headers[col]]
+                field = list(self.fields.items())[col][0]
+                value = getattr(torrent, field)
+                if field == "path":
+                    value = os.path.dirname(value)
+                return str(value)
         return None
 
     def headerData(self, section, orientation, role):
-        if role == Qt.DisplayRole and orientation == Qt.Orientation.Horizontal:
-            return ' '.join(self.headers[section].split('_')).title()
+        if orientation == Qt.Orientation.Horizontal:
+            if role == Qt.DisplayRole:
+                return list(self.fields.items())[section][1]
 
-    def addRow(self, row, index):
-        self.beginInsertRows(index, row, row)
-        self.endInsertRows()
-        return True
+
+class ToolBar(QToolBar):
+
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self.widget = parent
+        self.add_files_action = QAction(icon=getIcon("addFiles"))
+        self.addAction(self.add_files_action)
+        self.add_files_action.triggered.connect(self.add_torrent_files)
+        self.add_dir_action = QAction(icon=getIcon("addFolder"))
+        self.addAction(self.add_dir_action)
+        self.add_dir_action.triggered.connect(self.add_torrent_dir)
+
+
+
+    def add_torrent_dir(self):
+        torrent_dir = QFileDialog.getExistingDirectory(
+            parent=self.widget, caption="Select torrent folder"
+        )
+        if not torrent_dir:
+            return self.widget.statusBar().showMessage("Nothing Selected", 10000)
+        self.send_to_manager(torrent_dir)
+
+    def add_torrent_files(self):
+        torrent_files = QFileDialog.getOpenFileNames(
+            parent=self.widget, caption="Select torrent file(s)",
+            filter="Torrent (*.torrent);;Any (*)"
+        )
+        if not torrent_files:
+            return self.widget.statusBar().showMessage("Nothing Selected", 10000)
+        self.send_to_manager(*torrent_files)
+
+    def send_to_manager(self, *args):
+        for arg in args:
+            self.widget.manager.run_search(arg)
+
+
+class MenuBar(QMenuBar):
+
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self.filemenu = QMenu("File", parent=self)
+        self.exitAction = QAction(text="Exit")
+        self.filemenu.addAction(self.exitAction)
+        self.exitAction.triggered.connect(self.exit)
+        self.addMenu(self.filemenu)
+
+    def exit(self):
+        self.parent().close()
 
 class Window(QMainWindow):
-    """Window object."""
 
     def __init__(self, parent=None, manager=None) -> None:
         super().__init__(parent=parent)
         self.central = QWidget(parent=self)
+        self.resize(600,400)
         self.layout = QVBoxLayout(self.central)
         self.manager = manager
-        self.resize(600,400)
+        self.statusbar = self.statusBar()
+        self.menubar = MenuBar(parent=self)
+        self.setMenuBar(self.menubar)
         self.setCentralWidget(self.central)
         self.setObjectName('MainWindow')
         self.setupUi()
 
     def setupUi(self):
+        self.toolbar = ToolBar(parent=self)
+        self.addToolBar(self.toolbar)
+        self.splitter = QSplitter(Qt.Orientation.Vertical, parent=self)
+        self.layout.addWidget(self.splitter)
         self.table = QTableView()
-        self.button = QPushButton("Search for torrents")
-        self.layout.addWidget(self.button)
-        self.layout.addWidget(self.table)
-        self.button.clicked.connect(self.torrent_search)
         self.tablemodel = TableModel(parent=self, manager=self.manager)
+        self.tablemodel.rowAdded.connect(self.table.resizeColumnsToContents)
         self.table.setModel(self.tablemodel)
-
-    def torrent_search(self):
-        self.dialog = QDialog()
-        dialogLayout = QVBoxLayout(self.dialog)
-        dialoghlayout = QHBoxLayout()
-        self.dialog_accept_button = QPushButton('accept')
-        self.dialog_cancel_button = QPushButton('cancel')
-        dialoghlayout.addWidget(self.dialog_cancel_button)
-        dialoghlayout.addWidget(self.dialog_accept_button)
-        self.dialog_plainTextEdit = QPlainTextEdit(self.dialog)
-        dialogLayout.addWidget(self.dialog_plainTextEdit)
-        dialogLayout.addLayout(dialoghlayout)
-        self.dialog_accept_button.clicked.connect(self.accept_paths)
-        self.dialog_cancel_button.clicked.connect(self.cancel_dialog)
-        self.dialog.exec()
-
-    def cancel_dialog(self):
-        self.dialog.close()
+        self.splitter.addWidget(self.table)
+        self.scrollArea = QScrollArea(parent=self)
+        self.splitter.addWidget(self.scrollArea)
 
     def accept_paths(self, paths):
         paths = self.dialog_plainTextEdit.toPlainText()
@@ -85,9 +151,8 @@ class Window(QMainWindow):
         self.manager.run_search(paths)
         self.dialog.close()
 
-
 def start_gui(manager, *args, **kwargs):
     app = QApplication([])
-    window = Window(manager=manager, parent=None)
+    window = Window(parent=None, manager=manager)
     window.show()
     app.exec()

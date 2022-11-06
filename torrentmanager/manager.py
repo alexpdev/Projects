@@ -1,6 +1,7 @@
 import atexit
 import os
 import json
+import atexit
 import pyben
 import shutil
 import asyncio
@@ -33,6 +34,7 @@ class Torrent:
         self.comment = None
         self.source = None
         self.created_by = None
+        self.content_path = None
         if path is not None:
             self.file_size = os.path.getsize(path)
             self.extract()
@@ -64,7 +66,7 @@ class Torrent:
             torrent.__dict__.setdefault(k, v)
 
     def __eq__(self, other):
-        return other.name == self.name and other.path == self.path
+        return other.name == self.name and self.announce == other.announce
 
 class Worker(QObject):
 
@@ -111,7 +113,6 @@ class TorrentManager(QObject):
     def __init__(self, backend, path=None):
         super().__init__()
         self.backend = backend(path=path)
-        self.torrents = asyncio.run(self.backend.get())
         self.threads = []
 
     def run_search(self, paths):
@@ -128,8 +129,10 @@ class TorrentManager(QObject):
 
     def add_torrent(self, torrent):
         self.backend.store(torrent)
-        self.torrents.append(torrent)
-        self.torrentAdded.emit(len(self.torrents))
+        self.torrentAdded.emit(torrent)
+
+    def get(self):
+        return self.backend.get()
 
 class StorageBackend:
 
@@ -156,17 +159,14 @@ class JSONBackend(StorageBackend):
                 os.makedirs(os.path.join(archive, *create_path[:-1]))
             json.dump([],open(self.path,'wt'))
 
-    async def get(self):
+    def get(self):
         data = json.load(open(self.path))
         return data
 
-    async def store(self, *items):
-        data = asyncio.run(self.get())
-        task1 = asyncio.create_task(store_items(items))
-        item_list = await task1
-        task2 = asyncio.create_task(
-            json.dump(data+item_list, open(self.path, 'wt', encoding='utf8')))
-        asyncio.run(task2)
+    def store(self, *items):
+        data = self.get()
+        item_list = store_items(items)
+        json.dump(data+item_list, open(self.path, 'wt', encoding='utf8'))
 
 def store_items(items):
     items = []
