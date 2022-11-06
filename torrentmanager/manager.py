@@ -1,7 +1,10 @@
-import pyben
+import atexit
 import os
 import json
 import atexit
+import pyben
+import shutil
+import asyncio
 from pathlib import Path
 from datetime import datetime
 from PySide6.QtWidgets import *
@@ -11,10 +14,12 @@ from PySide6.QtGui import *
 class Torrent:
 
     def __init__(self, path=None):
-        self.path = str(path)
+        self.fullpath = path
+        self.path = str(path.parent)
         self.name = None
         self.piece_length = None
         self.announce = None
+        self.category = None
         self.web_seeds = None
         self.http_seeds = None
         self.completed = ""
@@ -31,11 +36,11 @@ class Torrent:
         self.created_by = None
         self.content_path = None
         if path is not None:
-            self.file_size = os.path.getsize(self.path)
+            self.file_size = os.path.getsize(path)
             self.extract()
 
     def extract(self):
-        meta = pyben.load(self.path)
+        meta = pyben.load(self.fullpath)
         meta.update(meta['info'])
         del meta['info']
         for key in meta:
@@ -162,7 +167,6 @@ class JSONBackend(StorageBackend):
         data = self.get()
         item_list = store_items(items)
         json.dump(data+item_list, open(self.path, 'wt', encoding='utf8'))
-
 
 def store_items(items):
     items = []

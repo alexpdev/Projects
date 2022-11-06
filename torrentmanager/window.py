@@ -11,8 +11,7 @@ class TableModel(QAbstractTableModel):
     rowAdded = Signal()
 
     def __init__(self, parent=None, manager=None):
-        super().__init__()
-        self.parent = parent
+        super().__init__(parent=parent)
         self.manager = manager
         self.torrents = self.manager.get()
         self.all_fields = {
