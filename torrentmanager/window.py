@@ -1,7 +1,10 @@
+import sys
 import os
 from PySide6.QtWidgets import *
 from PySide6.QtCore import *
 from PySide6.QtGui import *
+
+from torrentmanager.common import getIcon
 
 class TableModel(QAbstractTableModel):
 
@@ -71,6 +74,49 @@ class ToolBar(QToolBar):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.widget = parent
+        self.add_files_action = QAction(icon=getIcon("addFiles"))
+        self.addAction(self.add_files_action)
+        self.add_files_action.triggered.connect(self.add_torrent_files)
+        self.add_dir_action = QAction(icon=getIcon("addFolder"))
+        self.addAction(self.add_dir_action)
+        self.add_dir_action.triggered.connect(self.add_torrent_dir)
+
+
+
+    def add_torrent_dir(self):
+        torrent_dir = QFileDialog.getExistingDirectory(
+            parent=self.widget, caption="Select torrent folder"
+        )
+        if not torrent_dir:
+            return self.widget.statusBar().showMessage("Nothing Selected", 10000)
+        self.send_to_manager(torrent_dir)
+
+    def add_torrent_files(self):
+        torrent_files = QFileDialog.getOpenFileNames(
+            parent=self.widget, caption="Select torrent file(s)",
+            filter="Torrent (*.torrent);;Any (*)"
+        )
+        if not torrent_files:
+            return self.widget.statusBar().showMessage("Nothing Selected", 10000)
+        self.send_to_manager(*torrent_files)
+
+    def send_to_manager(self, *args):
+        for arg in args:
+            self.widget.manager.run_search(arg)
+
+
+class MenuBar(QMenuBar):
+
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self.filemenu = QMenu("File", parent=self)
+        self.exitAction = QAction(text="Exit")
+        self.filemenu.addAction(self.exitAction)
+        self.exitAction.triggered.connect(self.exit)
+        self.addMenu(self.filemenu)
+
+    def exit(self):
+        self.parent().close()
 
 class Window(QMainWindow):
 
@@ -80,44 +126,25 @@ class Window(QMainWindow):
         self.resize(600,400)
         self.layout = QVBoxLayout(self.central)
         self.manager = manager
+        self.statusbar = self.statusBar()
+        self.menubar = MenuBar(parent=self)
+        self.setMenuBar(self.menubar)
         self.setCentralWidget(self.central)
         self.setObjectName('MainWindow')
         self.setupUi()
 
     def setupUi(self):
         self.toolbar = ToolBar(parent=self)
-        self.layout.addWidget(self.toolbar)
+        self.addToolBar(self.toolbar)
         self.splitter = QSplitter(Qt.Orientation.Vertical, parent=self)
         self.layout.addWidget(self.splitter)
         self.table = QTableView()
         self.tablemodel = TableModel(parent=self, manager=self.manager)
         self.tablemodel.rowAdded.connect(self.table.resizeColumnsToContents)
         self.table.setModel(self.tablemodel)
-        self.button = QToolButton()
-        self.button.setText("Search for torrents")
-        self.toolbar.addWidget(self.button)
         self.splitter.addWidget(self.table)
         self.scrollArea = QScrollArea(parent=self)
         self.splitter.addWidget(self.scrollArea)
-        self.button.clicked.connect(self.torrent_search)
-
-    def torrent_search(self):
-        self.dialog = QDialog()
-        dialogLayout = QVBoxLayout(self.dialog)
-        dialoghlayout = QHBoxLayout()
-        self.dialog_accept_button = QPushButton('accept')
-        self.dialog_cancel_button = QPushButton('cancel')
-        dialoghlayout.addWidget(self.dialog_cancel_button)
-        dialoghlayout.addWidget(self.dialog_accept_button)
-        self.dialog_plainTextEdit = QPlainTextEdit(self.dialog)
-        dialogLayout.addWidget(self.dialog_plainTextEdit)
-        dialogLayout.addLayout(dialoghlayout)
-        self.dialog_accept_button.clicked.connect(self.accept_paths)
-        self.dialog_cancel_button.clicked.connect(self.cancel_dialog)
-        self.dialog.exec()
-
-    def cancel_dialog(self):
-        self.dialog.close()
 
     def accept_paths(self, paths):
         paths = self.dialog_plainTextEdit.toPlainText()
