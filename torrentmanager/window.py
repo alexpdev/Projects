@@ -84,7 +84,7 @@ class ToolBar(QToolBar):
         self.addAction(self.connect_source_action)
 
     def connect_source(self):
-        
+
         selection = self.widget.table.currentSelection()
         for row in selection:
             item = self.widget.table.item(row, 0)
@@ -147,7 +147,7 @@ class Window(QMainWindow):
     def __init__(self, parent=None, manager=None) -> None:
         super().__init__(parent=parent)
         self.central = QWidget(parent=self)
-        self.resize(600,400)
+        self.resize(800,700)
         self.layout = QVBoxLayout(self.central)
         self.manager = manager
         self.statusbar = self.statusBar()
