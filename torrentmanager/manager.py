@@ -51,6 +51,8 @@ class Torrent:
                 key = '_'.join(key.split('-'))
             self.__dict__.setdefault(key, None)
             self.__dict__[key] = meta[original_key]
+        if 'meta version' not in meta:
+            self.meta_version = 1
 
     def to_dict(self):
         torrent = {}

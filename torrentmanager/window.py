@@ -79,8 +79,17 @@ class ToolBar(QToolBar):
         self.add_dir_action = QAction(icon=getIcon("addFolder"))
         self.addAction(self.add_dir_action)
         self.add_dir_action.triggered.connect(self.add_torrent_dir)
+        self.connect_source_action = QAction(icon=getIcon("connectSource"))
+        self.connect_source_action.triggered.connect(self.connect_source)
+        self.addAction(self.connect_source_action)
 
+    def connect_source(self):
+        
+        selection = self.widget.table.currentSelection()
+        for row in selection:
+            item = self.widget.table.item(row, 0)
 
+        print(selection)
 
     def add_torrent_dir(self):
         torrent_dir = QFileDialog.getExistingDirectory(
@@ -91,7 +100,7 @@ class ToolBar(QToolBar):
         self.send_to_manager(torrent_dir)
 
     def add_torrent_files(self):
-        torrent_files = QFileDialog.getOpenFileNames(
+        torrent_files, _ = QFileDialog.getOpenFileNames(
             parent=self.widget, caption="Select torrent file(s)",
             filter="Torrent (*.torrent);;Any (*)"
         )
@@ -100,8 +109,7 @@ class ToolBar(QToolBar):
         self.send_to_manager(*torrent_files)
 
     def send_to_manager(self, *args):
-        for arg in args:
-            self.widget.manager.run_search(arg)
+        self.widget.manager.run_search(args)
 
 
 class MenuBar(QMenuBar):
@@ -116,6 +124,23 @@ class MenuBar(QMenuBar):
 
     def exit(self):
         self.parent().close()
+
+
+class Table(QTableView):
+
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self.setSelectionBehavior(self.SelectRows)
+
+    def currentSelection(self):
+        smodel = self.selectionModel()
+        indexes = smodel.selectedIndexes()
+        return list(set([i.row() for i in indexes]))
+
+    def item(self, row, col):
+        return self.model().index(row, col)
+
+
 
 class Window(QMainWindow):
 
@@ -137,7 +162,7 @@ class Window(QMainWindow):
         self.addToolBar(self.toolbar)
         self.splitter = QSplitter(Qt.Orientation.Vertical, parent=self)
         self.layout.addWidget(self.splitter)
-        self.table = QTableView()
+        self.table = Table()
         self.tablemodel = TableModel(parent=self, manager=self.manager)
         self.tablemodel.rowAdded.connect(self.table.resizeColumnsToContents)
         self.table.setModel(self.tablemodel)
