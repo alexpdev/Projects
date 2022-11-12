@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Simple-Fun-Tools-and-Games
 
 * These are games and projects I am doing in my leisure time.
@@ -55,10 +56,47 @@ A tiny CLI for converting integers to binary.
 git clone https://github.com/alexpdev/bitprint.git
 cd bitprint
 python setup.py install
+=======
+# ElectronTorrentfile
+
+![torrentfileJS](https://github.com/alexpdev/torrentfilejs/blob/master/public/torrentfilejs.png)
+
+----
+
+![GitHub repo size](https://img.shields.io/github/repo-size/alexpdev/electrontorrentfile?color=purple&logo=electron&logoColor=orange&style=plastic)
+![GitHub](https://img.shields.io/github/license/alexpdev/electrontorrentfile?color=maroon&logo=apache&logoColor=skyblue&style=plastic)
+![GitHub package.json dependency version (dev dep on branch)](https://img.shields.io/github/package-json/dependency-version/alexpdev/electrontorrentfile/dev/electron?logo=electron&logoColor=orangered&style=plastic)
+![GitHub last commit](https://img.shields.io/github/last-commit/alexpdev/electrontorrentfile?color=skyblue&logo=github&logoColor=orange&style=plastic)
+
+A Desktop GUI form for creating Bittorrent Meta Files of any content in your local filesystem.  
+
+TorrentfileJS allows fine-grain controls over your bittorrent files size and 
+contents, it allows for including comments and cross-seed source inputs. 
+TorrentfileJs supports all versions of meta-files and provides the same 
+level of cutomization for each, including hybrids. 
+
+## Requirements
+
+- nodejs
+- electronjs
+- vue 3
+- bootstrap
+- typescript
+
+## Installation
+
+```bash
+git clone https://github.com/alexpdev/electrontorrentfile.git
+cd electrontorrentfile
+npm install .
+# or
+yarn add .
+>>>>>>> 28e86b5a6d04e848413a728d58194aec7e587120
 ```
 
 ## Usage
 
+<<<<<<< HEAD
 ```powershell
 > bitprint 1
 1
@@ -66,10 +104,18 @@ python setup.py install
 10
 > bitprint 12
 1100
+=======
+```bash
+npm run electron:build
+npm run start
+npm run electron:dev
+npm run production
+>>>>>>> 28e86b5a6d04e848413a728d58194aec7e587120
 ```
 
 ## License
 
+<<<<<<< HEAD
 [MIT](https://github.com/alexpdev/bitprint/_todo_)
 # TorrentFile
 
@@ -155,3 +201,20 @@ finish client commands
 =======
 # osslicensor
 >>>>>>> 79e38535999f90130c25c5c4501401fa1de2bd09
+=======
+ElectronTorrentfile is liscensed under the Apache 2.0 Open Source Software License
+see the LICENSE file in the root directory for more details.
+
+## Related Projects
+
+- [torrentfile](https://githube.com/alexpdev/torrentfile)  A CLI multitool for all things torrent files
+- [torrentfileQt](https://github.com/alexpdev/torrentfileQt) A much more robust and tested torrent file GUI tool
+- [pybem](https://github.com/alexpdev/pyben) The Bencode library used in torrentfile and TorrentfileQt
+
+All of these projects are written with python and have a much more robust featureset and have much better test
+coverage.
+
+## Contributing
+
+All PR's or feature requests are  Welcome.
+>>>>>>> 28e86b5a6d04e848413a728d58194aec7e587120

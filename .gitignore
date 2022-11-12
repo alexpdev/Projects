@@ -6,6 +6,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 *.dat
 *.pyc
 __pycache__/
@@ -494,20 +495,43 @@ node_modules
 .env.*.local
 
 # Log files
+=======
+# Logs
+logs
+*.log
+>>>>>>> 28e86b5a6d04e848413a728d58194aec7e587120
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+<<<<<<< HEAD
 
 # Editor directories and files
 .idea
 .vscode
+=======
+lerna-debug.log*
+.vscode/
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+>>>>>>> 28e86b5a6d04e848413a728d58194aec7e587120
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+<<<<<<< HEAD
 
 #Electron-builder output
 /dist_electron
 >>>>>>> 79e38535999f90130c25c5c4501401fa1de2bd09
+=======
+>>>>>>> 28e86b5a6d04e848413a728d58194aec7e587120

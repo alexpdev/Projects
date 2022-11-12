@@ -1,8 +1,11 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 79e38535999f90130c25c5c4501401fa1de2bd09
+=======
+>>>>>>> 28e86b5a6d04e848413a728d58194aec7e587120
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -204,6 +207,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+<<<<<<< HEAD
 <<<<<<< HEAD
 GNU Lesser General Public License
 =======
@@ -766,3 +770,5 @@ Library.
 >>>>>>> 68defe2c13b2c88af091f0318f6c1558e81de1b0
 =======
 >>>>>>> 79e38535999f90130c25c5c4501401fa1de2bd09
+=======
+>>>>>>> 28e86b5a6d04e848413a728d58194aec7e587120
