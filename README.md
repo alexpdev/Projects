@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Simple-Fun-Tools-and-Games
 
 * These are games and projects I am doing in my leisure time.
@@ -151,3 +152,6 @@ Will fill in later.
 TODO:
 add logging
 finish client commands
+=======
+# osslicensor
+>>>>>>> 79e38535999f90130c25c5c4501401fa1de2bd09
