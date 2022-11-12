@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Simple-Fun-Tools-and-Games
 
 * These are games and projects I am doing in my leisure time.
@@ -218,3 +219,10 @@ coverage.
 
 All PR's or feature requests are  Welcome.
 >>>>>>> 28e86b5a6d04e848413a728d58194aec7e587120
+=======
+# Kivy Snippets
+
+Mix and match of cutom made kivy widgets and projects, as well as some interesting code snippets I have discovered.
+
+
+>>>>>>> bbedc3b3aeae0f9a16997b504506b0db7e8680b3
