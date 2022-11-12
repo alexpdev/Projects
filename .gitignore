@@ -4,6 +4,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 *.dat
 *.pyc
 __pycache__/
@@ -478,3 +479,6 @@ __pycache__/
 .vscode/
 .pytest_cache/
 >>>>>>> 9161427cac48ffb74b64d7fa12e174a3cfe5ebd9
+=======
+venv/
+>>>>>>> f7d32b976e550631ebc3f63d065e977177b57268
