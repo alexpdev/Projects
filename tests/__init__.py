@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #! /usr/bin/python3
 # -*- coding: utf-8 -*-
 
@@ -150,3 +151,6 @@ def dir2():
     root = tempdir(ext="2")
     yield root
     rmpath(root)
+=======
+"""Init module for scralenium unit tests."""
+>>>>>>> 82330a7980332da35d5c1048959db71f75cccaf6

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # TorrentFile
 
 ## Version 0.2.0
@@ -76,3 +77,42 @@
 ## Version 0.0.1
 
     - New Project based off of torrentfile-legacy
+=======
+# scralenium ChangeLog
+
+## Version 0.1.3
+
+- updated Readme and middleware
+- bug fixes
+
+* * *
+
+## Version 0.1.2
+
+-   Packaging and DevOps updates
+-   Additions to CI workflow
+-   Additions to Readme
+-   Additions to Unittests
+
+* * *
+
+## Version 0.1.1
+
+-   Added Unittests
+-   Added Docstrings
+-   modified source
+-   removed unnecessary files
+-   using tox of testing
+-   created package ready
+-   passing all tests
+
+* * *
+
+## Version 0.1.0
+
+-   Initial commit
+-   added http module
+-   added middleware module
+
+* * *
+>>>>>>> 82330a7980332da35d5c1048959db71f75cccaf6
