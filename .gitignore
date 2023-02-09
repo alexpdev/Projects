@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Byte-compiled / optimized / DLL files
 activate.bat
 autorun.bat
@@ -844,3 +845,14 @@ dist-ssr
 >>>>>>> bbedc3b3aeae0f9a16997b504506b0db7e8680b3
 =======
 >>>>>>> 82330a7980332da35d5c1048959db71f75cccaf6
+=======
+venv/
+.vscode/
+__pycache__/
+*.pyc
+.torrentfilemanager/
+.coverage
+htmlcov/
+ftp.py
+testing.py
+>>>>>>> c4b6cfbcf3c1e44f1483155960bed15ddd9b5bc8
