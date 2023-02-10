@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #! /usr/bin/python3
 # -*- coding: utf-8 -*-
 
@@ -154,3 +155,6 @@ def dir2():
 =======
 """Init module for scralenium unit tests."""
 >>>>>>> 82330a7980332da35d5c1048959db71f75cccaf6
+=======
+"""Init module for the unittests of emptyfile."""
+>>>>>>> 847257796971bda380b5d2930f772bde3c84d257

@@ -2,6 +2,7 @@
 requires = ["setuptools >= 40.6.0", "wheel"]
 build-backend = "setuptools.build_meta"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 [project]
@@ -31,15 +32,23 @@ classifiers = [
 packages = ["scralenium"]
 
 >>>>>>> 82330a7980332da35d5c1048959db71f75cccaf6
+=======
+
+
+>>>>>>> 847257796971bda380b5d2930f772bde3c84d257
 [tool.bandit]
 skips = ["B101"]
 
 [tool.black]
 <<<<<<< HEAD
+<<<<<<< HEAD
 line-length = 80
 =======
 line-length = 79
 >>>>>>> 82330a7980332da35d5c1048959db71f75cccaf6
+=======
+line-length = 79
+>>>>>>> 847257796971bda380b5d2930f772bde3c84d257
 
 [tool.autopep8]
 max_line_length = 80
@@ -52,14 +61,19 @@ aggressive = 3
 testpaths = [
     "tests",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "torrentfile",
 =======
     "scralenium",
 >>>>>>> 82330a7980332da35d5c1048959db71f75cccaf6
+=======
+    "emptyfile",
+>>>>>>> 847257796971bda380b5d2930f772bde3c84d257
 ]
 console_output_style = "progress"
 addopts = "--maxfail=5"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 [build-system]
 requires = ["setuptools>=40.8.0", "wheel"]
@@ -68,18 +82,35 @@ requires = ["setuptools>=40.8.0", "wheel"]
 [tool.pylint. 'MESSAGES CONTROL']
 disable = [
     "no-name-in-module",
+=======
+
+[tool.pylint. 'MESSAGES CONTROL']
+disable = [
+>>>>>>> 847257796971bda380b5d2930f772bde3c84d257
     "R1729",
     "W0108",
     "redefined-outer-name",
     "attribute-defined-outside-init",
     "invalid-name",
     "not-callable",
+<<<<<<< HEAD
     "consider-using-with",
     "protected-access"
 ]
 
 [tool.pylint. 'FORMAT']
 max-line-length = 80
+=======
+    "consider-using-with"
+]
+
+[tool.pylint. 'VARIABLES']
+callbacks = ["cb_", "_cb", "hook_"]
+
+[tool.pylint. 'FORMAT']
+max-line-length = 80
+no-space-check = ["trailing-comma", "dict-separator"]
+>>>>>>> 847257796971bda380b5d2930f772bde3c84d257
 single-line-if-stmt = true
 
 [tool.pylint.'SIMILARITIES']
@@ -88,6 +119,7 @@ ignore-docstrings=true
 ignore-imports=true
 
 [tool.pylint. 'DESIGN']
+<<<<<<< HEAD
 max-args=10
 min-public-methods=0
 max-attributes=50
@@ -99,3 +131,12 @@ max-locals=25
 [tool.coverage.run]
 disable_warnings = ["couldnt-parse"]
 >>>>>>> 82330a7980332da35d5c1048959db71f75cccaf6
+=======
+max-args=15
+min-public-methods=0
+max-attributes=20
+max-statements=75
+max-branches=20
+min-similarity-lines=4
+max-locals=25
+>>>>>>> 847257796971bda380b5d2930f772bde3c84d257

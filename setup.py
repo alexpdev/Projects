@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #! /usr/bin/python3
 # -*- coding: utf-8 -*-
 
@@ -202,3 +203,23 @@ from setuptools import setup
 
 setup()
 >>>>>>> 82330a7980332da35d5c1048959db71f75cccaf6
+=======
+import os
+import json
+from setuptools import setup, find_packages
+
+pkg = os.path.join(os.path.dirname(os.path.abspath(__file__)), "package.json")
+params = json.load(open(pkg))
+
+setup(
+    name=params["name"],
+    version=params["version"],
+    description=params["description"],
+    license=open("LICENSE", "rt").read(),
+    zip_safe=False,
+    entry_points={"console_scripts": ["emptyfile=emptyfile.__main__:main"]},
+    packages=find_packages(),
+    requires=(),
+    include_package_data=True
+)
+>>>>>>> 847257796971bda380b5d2930f772bde3c84d257

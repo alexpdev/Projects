@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "tempath",
   "displayName": "Temp Paths",
   "version": "0.2.0",
@@ -199,4 +200,20 @@
     "wait-on": "^6.0.1"
   }
 >>>>>>> 28e86b5a6d04e848413a728d58194aec7e587120
+=======
+  "name": "emptyfile",
+  "version": "0.1.1",
+  "description": "empty file/folder remover.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexpdev/emptyfile.git"
+  },
+  "keywords": ["CLI"],
+  "author": "alexpdev",
+  "license": "Apache2",
+  "bugs": {
+    "url": "https://github.com/alexpdev/emptyfile/issues"
+  },
+  "homepage": "https://github.com/alexpdev/emptyfile#readme"
+>>>>>>> 847257796971bda380b5d2930f772bde3c84d257
 }

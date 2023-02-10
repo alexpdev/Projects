@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 847257796971bda380b5d2930f772bde3c84d257
 # Byte-compiled / optimized / DLL files
 activate.bat
 autorun.bat
@@ -14,6 +17,10 @@ __pycache__/
 *.lo
 *.o
 *.obj
+<<<<<<< HEAD
+=======
+.vscode/
+>>>>>>> 847257796971bda380b5d2930f772bde3c84d257
 
 # Precompiled Headers
 *.gch
@@ -81,6 +88,10 @@ htmlcov/
 .coverage.*
 .cache
 nosetests.xml
+<<<<<<< HEAD
+=======
+coverage.xml
+>>>>>>> 847257796971bda380b5d2930f772bde3c84d257
 *.cover
 *.py,cover
 .hypothesis/
@@ -162,6 +173,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -856,3 +868,5 @@ htmlcov/
 ftp.py
 testing.py
 >>>>>>> c4b6cfbcf3c1e44f1483155960bed15ddd9b5bc8
+=======
+>>>>>>> 847257796971bda380b5d2930f772bde3c84d257
