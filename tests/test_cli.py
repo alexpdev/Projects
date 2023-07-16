@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #! /usr/bin/python3
 # -*- coding: utf-8 -*-
 
@@ -323,3 +324,41 @@ def test_cli_empty_files(dir2, version):
     main()
     assert os.path.exists(str(dir2) + ".torrent")
     rmpath(str(dir2) + ".torrent")
+=======
+import sys
+import pytest
+
+from tests.conf import a, b, c
+from multitool import execute
+
+
+
+
+@pytest.mark.parametrize("val", a)
+def test_ord(val):
+    """
+    Test ord function.
+    """
+    key, val = val
+    sys.argv = ["mtool", "ord", key]
+    assert execute() == str(val)
+
+
+@pytest.mark.parametrize("val", b)
+def test_utf(val):
+    """
+    Test utf function.
+    """
+    key, val = val
+    sys.argv = ["mtool", "utf", str(key)]
+    assert execute()
+
+@pytest.mark.parametrize("val", c)
+def test_bin(val):
+    """
+    Test bin function.
+    """
+    key, val = val
+    sys.argv = ["mtool", "bin", str(key)]
+    assert execute() == val[2:]
+>>>>>>> 6851838bc9a6d1a43dbb8fc1bbf05afe631724e8

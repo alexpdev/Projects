@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     "python.testing.pytestArgs": [
         "tests"
     ],
@@ -6,4 +7,8 @@
     "python.testing.nosetestsEnabled": false,
     "python.testing.pytestEnabled": true,
     "python.pythonPath": "c:\\Users\\asp\\Documents\\Code\\projects\\web\\aFTP4me\\env\\Scripts\\python.exe"
+=======
+    "makefile.extensionOutputFolder": "./.vscode",
+    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools"
+>>>>>>> 6851838bc9a6d1a43dbb8fc1bbf05afe631724e8
 }

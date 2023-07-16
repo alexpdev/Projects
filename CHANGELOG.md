@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 # TorrentFile
 
 ## Version 0.2.0
@@ -135,8 +136,40 @@
 -------------------------
 
 ## Version `0.1.0`
+=======
+# ~~~MultiTool~~~ ChangeLog
+
+## Version [0.1.3]
+
+- fixed the package data assets
+- bug fixes
+- removed Pyside6 as dependency
+
+-------------------------
+
+## Version [0.1.2]
+
+- Added `utf` command
+- released on pypi
+
+-------------------------
+
+## Version [0.1.1]
+
+- Added commands to CLI
+- Added `binprint` feature
+- Added `synonyms` feature
+- Added docstrings
+
+-------------------------
+
+## Version [0.1.0]
+>>>>>>> 6851838bc9a6d1a43dbb8fc1bbf05afe631724e8
 
 - initial commit
 
 -------------------------
+<<<<<<< HEAD
 >>>>>>> 847257796971bda380b5d2930f772bde3c84d257
+=======
+>>>>>>> 6851838bc9a6d1a43dbb8fc1bbf05afe631724e8

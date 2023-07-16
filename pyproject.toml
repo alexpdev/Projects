@@ -1,5 +1,6 @@
 [build-system]
 requires = ["setuptools >= 40.6.0", "wheel"]
+<<<<<<< HEAD
 build-backend = "setuptools.build_meta"
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -140,3 +141,6 @@ max-branches=20
 min-similarity-lines=4
 max-locals=25
 >>>>>>> 847257796971bda380b5d2930f772bde3c84d257
+=======
+build-backend = "setuptools.build_meta"
+>>>>>>> 6851838bc9a6d1a43dbb8fc1bbf05afe631724e8
