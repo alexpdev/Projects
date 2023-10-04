@@ -5,7 +5,8 @@ class GBRspider(scrapy.Spider):
     name = 'epiroc'
 
     custom_settings = {
-        "CONCURRENT_REQUESTS": 3,
+        "CONCURRENT_REQUESTS": 15,
+        "ROBOTSTXT_OBEY": False,
     }
 
 
