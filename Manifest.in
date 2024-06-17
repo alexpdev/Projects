@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 include LICENSE
 include README.md
 
@@ -29,10 +28,3 @@ recursive-exclude * __pycache__
 recursive-exclude * *.pyc
 recursive-exclude * *.pyo
 recursive-exclude * empty
-=======
-recursive-include multitool/assets *
-
-recursive-include .github *
-recursive-exclude * __pycache__
-recursive-exclude * *.py[co]
->>>>>>> 6851838bc9a6d1a43dbb8fc1bbf05afe631724e8
